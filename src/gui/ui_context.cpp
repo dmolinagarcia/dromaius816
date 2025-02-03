@@ -10,8 +10,8 @@
 //> #include <dev_minimal_6502.h>
 //> #include <dev_commodore_pet.h>
 
-//> #include <algorithm>
-//> #include <iterator>
+#include <algorithm>
+#include <iterator>
 
 //> #include "panel_control.h"
 //> #include "panel_dev_commodore_pet.h"
@@ -23,18 +23,18 @@ namespace {
 
 } // unnamed namespace
 
-//> void UIContext::switch_machine(MachineType machine) {
-//> 
-//> 	// close current UI
-//> 	shutdown_ui();
-//> 
-//> 	// create new device
-//> 	create_device(machine);
-//> }
-//> 
+void UIContext::switch_machine(MachineType machine) {
+
+	// close current UI
+	shutdown_ui();
+
+	// create new device
+	create_device(machine);
+}
+
 void UIContext::setup_ui(struct GLFWwindow *window) {
 	glfw_window = window;
-//> 	switch_machine(config.machine_type);
+	switch_machine(config.machine_type);
 //> 	panel_memory_load_fonts();
 }
 //> 
@@ -62,10 +62,10 @@ void UIContext::shutdown_ui() {
 }
 //> 
 void UIContext::draw_ui() {
-//> 
-//> #ifdef DMS_NO_THREADING
-//> 	dms_execute(dms_ctx);
-//> #endif // DMS_NO_THREADING
+
+#ifdef DMS_NO_THREADING
+	dms_execute(dms_ctx);
+#endif // DMS_NO_THREADING
 //> 
 //> 	Cpu *cpu = device->get_cpu(device);
 //> 
@@ -93,7 +93,7 @@ void UIContext::draw_ui() {
 //> 		switch_machine_requested = false;
 //> 	}
 }
-//> 
+
 //> void UIContext::panel_add(Panel::uptr_t panel) {
 //> 	new_panels.push_back(std::move(panel));
 //> }
@@ -106,28 +106,28 @@ void UIContext::draw_ui() {
 //> 	panels.clear();
 //> }
 //> 
-//> void UIContext::create_device(MachineType machine) {
-//> 
-//> 	// create device
-//> 	switch (machine) {
-//> 		case MachineType::CommodorePet:
+void UIContext::create_device(MachineType machine) {
+
+	// create device
+	switch (machine) {
+		case MachineType::CommodorePet:
 //> 			create_commodore_pet(false);
-//> 			break;
-//> 		case MachineType::CommodorePetLite:
+			break;
+		case MachineType::CommodorePetLite:
 //> 			create_commodore_pet(true);
-//> 			break;
-//> 		case MachineType::Minimal6502:
+			break;
+		case MachineType::Minimal6502:
 //> 			create_minimal_6502();
-//> 			break;
-//> 	}
-//> 	last_pc = 0;
-//> 
+			break;
+	}
+	last_pc = 0;
+
 //> #ifndef DMS_NO_THREADING
 //> 	// start dromaius context
 //> 	dms_start_execution(dms_ctx);
 //> #endif // DMS_NO_THREADING
-//> }
-//> 
+}
+ 
 //> void UIContext::create_minimal_6502() {
 //> 
 //> 	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);

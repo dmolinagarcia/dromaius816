@@ -122,7 +122,10 @@ target_sources(${GUI_TARGET}
 	PRIVATE
 		src/gui/config.cpp
 		src/gui/config.h
+		src/gui/imgui_ex.cpp
+		src/gui/imgui_ex.h
 		src/gui/main.cpp
+		src/gui/panel.h
 		src/gui/std_helper.h	
 		src/gui/ui_context.cpp
 		src/gui/ui_context.h
