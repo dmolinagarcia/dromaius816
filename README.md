@@ -30,4 +30,14 @@ cd dromaius816/libs
 git submodule add https://github.com/ocornut/imgui.git
 git submodule add https://github.com/glfw/glfw.git
 
+-- Pasamos al branch Docking
 cd imgui
+git fetch
+cd ../..
+git add libs/imgui
+git commit -m "Actualizado submódulo imgui para apuntar a la rama docking"
+
+git config -f .gitmodules submodule.libs/imgui.branch docking
+git add .gitmodules
+git commit -m "Configurado imgui para seguir la rama docking por defecto"
+

@@ -6,6 +6,8 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include "gui/ui_context.h"
+
 // ARGument Handler
 // https://github.com/adishavit/argh/blob/master/argh.h
 #include <argh/argh.h>
@@ -20,11 +22,19 @@
 // Include glfw3.h after our OpenGL definitions
 #include <GLFW/glfw3.h>
 
+//>	#ifdef __EMSCRIPTEN__
+//>	#include <emscripten.h>
+//>	#include <emscripten/html5.h>
+//>
+//>	EM_BOOL emscripten_handle_resize(int eventType, const EmscriptenUiEvent *uiEvent, void *userData);
+//>	#endif // __EMSCRIPTEN__
+
 // Namespace Privado
 namespace {
 
 	// Emscripten requires full control of the main loop. Store GLFW book-keeping variables globally.
 		GLFWwindow *g_window = nullptr;
+		std::unique_ptr<UIContext> g_ui_context = nullptr;
 
     // GLFW Callback
     static void glfw_error_callback(int error,
@@ -88,6 +98,19 @@ int main(int argc, char ** argv) {
         exit(EXIT_FAILURE);
     }
 
+		// fill-out configuration structure
+//>		Config ui_config;
+//>
+//>		{
+//>			std::string machine;
+//>			cmd_line(ARG_MACHINE, "commodore-pet") >> machine;
+//>
+//>			if (!ui_config.set_machine_type(machine.c_str())) {
+//>				fprintf(stderr, "Invalid machine type specified (%s)\n", machine.c_str());
+//>				exit(EXIT_FAILURE);
+//>			}
+//>		}	
+
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -124,8 +147,16 @@ int main(int argc, char ** argv) {
         return 1;
     glfwMakeContextCurrent(g_window);	
 
+//>	#ifndef __EMSCRIPTEN__
+//>	    glfwSwapInterval(1); // Enable vsync
+//>	#endif	
+
 	// Initialize OpenGL loader
+//>	#ifdef __EMSCRIPTEN__
+//>		bool err = gladLoadGLES2Loader((GLADloadproc) glfwGetProcAddress) == 0;
+//>	#else	
 		bool err = gladLoadGL() == 0;
+//>	#endif	
 	    if (err)
 	    {
 	        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
@@ -136,12 +167,63 @@ int main(int argc, char ** argv) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-	// io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
 
+	// Setup Dear ImGui style
+	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsClassic();
+
+	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(g_window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);	
+
+	    // Load Fonts
+	    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont()
+		//   to select them.
+	    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+	    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application
+		//   (e.g. use an assertion, or display an error and quit).
+	    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling
+		//   ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+	    // - Read 'docs/FONTS.txt' for more instructions and details.
+	    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+	    io.Fonts->AddFontDefault();
+	    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+	    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+	    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+	    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+	    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+	    //IM_ASSERT(font != NULL);
+
+		// initialize application
+//>		g_ui_context = std::make_unique<UIContext>(ui_config);
+//>		g_ui_context->setup_ui(g_window);	
+
+//>	#ifdef __EMSCRIPTEN__
+//>		emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, 0, emscripten_handle_resize);
+//>		emscripten_set_main_loop_arg(main_loop, nullptr, 0, 1);
+//>	#else
 	// Main loop
 	while (!glfwWindowShouldClose(g_window)) {
 		main_loop(nullptr);
 	}
+//> #endif	
+
+//>		g_ui_context->shutdown_ui();
+
+    // cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwDestroyWindow(g_window);
     glfwTerminate();
@@ -151,12 +233,56 @@ int main(int argc, char ** argv) {
 
 	void main_loop([[maybe_unused]] void *arg) {
 
+	    ImGuiIO& io = ImGui::GetIO();
+	    ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
+
 		// Poll and handle events (inputs, window resize, etc.)
 		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
 		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
 		// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
 		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 		glfwPollEvents();
+
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// application specific stuff
+//>		g_ui_context->draw_ui();
+
+		//ImGui::ShowDemoWindow();
+		//ImGui::ShowMetricsWindow();
+
+		// Rendering
+		ImGui::Render();
+		glViewport(0, 0, (int) io.DisplaySize.x, (int) io.DisplaySize.y);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		// Update and Render additional Platform Windows
+		// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}		
+
 		glfwSwapBuffers(g_window);
 	}
 
+//>	#ifdef __EMSCRIPTEN__
+//>
+//>	EM_BOOL emscripten_handle_resize([[maybe_unused]] int eventType, [[maybe_unused]] const EmscriptenUiEvent *uiEvent, [[maybe_unused]] void *userData) {
+//>		double w, h;
+//>
+//>		emscripten_get_element_css_size("canvas", &w, &h);
+//>		glfwSetWindowSize(g_window, (int) w, (int) h);
+//>
+//>		return 0;
+//>	}
+//>
+//>	#endif // __EMSCRIPTEN__
