@@ -37,7 +37,7 @@ void UIContext::setup_ui(struct GLFWwindow *window) {
 	switch_machine(config.machine_type);
 //> 	panel_memory_load_fonts();
 }
-//> 
+
 void UIContext::shutdown_ui() {
 
 //> #ifndef DMS_NO_THREADING

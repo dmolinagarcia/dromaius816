@@ -112,7 +112,66 @@ endif()
 		)
 	endif()
 
+	# external library - single-file libraries
+	set (SFL_TARGET stb)
+	add_library(${SFL_TARGET} STATIC)
+	target_sources(${SFL_TARGET}
+		PRIVATE
+			libs/cute/cute_files.c
+			libs/cute/cute_files.h
+			libs/stb/stb_ds.h
+			libs/stb/stb_impl.c
+	)
 
+	# simulator library
+	set (LIB_TARGET dromaius)
+
+	add_library(${LIB_TARGET} STATIC)
+	target_sources(${LIB_TARGET}
+		PRIVATE
+			src/sys/atomics.h
+			src/sys/threads.c
+			src/sys/threads.h
+			src/chip.h
+			src/chip_oscillator.c
+			src/chip_oscillator.h		
+			src/crt.h
+			src/context.c
+			src/context.h
+			src/cpu.h
+			src/device.c
+			src/device.h
+			src/signal_history.c
+			src/signal_history.h
+#>			src/signal_history_profiles.c
+#>			src/signal_history_profiles.h
+			src/signal_line.c
+			src/signal_line.h
+			src/signal_pool.c
+			src/signal_pool.h
+			src/signal_types.h		
+			src/simulator.c
+			src/simulator.h
+			src/stopwatch.c
+			src/stopwatch.h
+			src/utils.c
+			src/utils.h
+	)
+
+	if (ENABLE_GTKWAVE_EXPORT)
+		message(STATUS "Enabling signal tracing with GTKWave")
+		target_link_libraries(${LIB_TARGET} PRIVATE ZLIB::ZLIB BZip2::BZip2)
+		target_compile_definitions(${LIB_TARGET} PUBLIC DMS_GTKWAVE_EXPORT)
+	endif()
+
+	target_include_directories(${LIB_TARGET} PRIVATE libs)
+	target_link_libraries(${LIB_TARGET} PRIVATE ${SFL_TARGET})
+	target_link_libraries(${LIB_TARGET} PRIVATE ${LIBS_MATH})
+	target_compile_definitions(${LIB_TARGET} PUBLIC ${PLATFORM_DEF})
+	if (NOT ENABLE_THREADING)
+		target_compile_definitions(${LIB_TARGET} PUBLIC DMS_NO_THREADING)
+	endif()
+	target_compile_warning(${LIB_TARGET})
 
 # gui
 set (GUI_TARGET dromaius816_gui)
@@ -126,6 +185,8 @@ target_sources(${GUI_TARGET}
 		src/gui/imgui_ex.h
 		src/gui/main.cpp
 		src/gui/panel.h
+		src/gui/panel_control.cpp
+		src/gui/panel_control.h
 		src/gui/std_helper.h	
 		src/gui/ui_context.cpp
 		src/gui/ui_context.h
