@@ -28,7 +28,7 @@ string(CONCAT PLATFORM_DEF "PLATFORM_" ${PLATFORM_NAME})
 macro(target_compile_warning target)
 	target_compile_options(${target} PRIVATE
 		$<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-		-Wall -Wextra -Wconversion -Wsign-conversion -Werror>
+		-Wall -Wextra -Wconversion -Wsign-conversion -Werror -Wno-error=unused-variable>
 		$<$<CXX_COMPILER_ID:MSVC>:
 			/W4
 			/wd"4200" /wd"4201" /wd"4204"	# disable specific non-standard extension warnings
