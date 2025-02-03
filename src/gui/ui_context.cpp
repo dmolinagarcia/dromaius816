@@ -1,9 +1,9 @@
-// gui/ui_context.h - Johan Smet - BSD-3-Clause (see LICENSE)
+// gui/ui_context.h - Johan Smet - BSD-3-Clause (see LICENSE) 
 
 #include "ui_context.h"
 
-//> #include <imgui/imgui.h>
-//> #include <imgui/imgui_internal.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 //> #include <context.h>
 //> #include <cpu.h>
@@ -32,23 +32,23 @@ namespace {
 //> 	create_device(machine);
 //> }
 //> 
-//> void UIContext::setup_ui(struct GLFWwindow *window) {
-//> 	glfw_window = window;
+void UIContext::setup_ui(struct GLFWwindow *window) {
+	glfw_window = window;
 //> 	switch_machine(config.machine_type);
 //> 	panel_memory_load_fonts();
-//> }
+}
 //> 
-//> void UIContext::shutdown_ui() {
-//> 
+void UIContext::shutdown_ui() {
+
 //> #ifndef DMS_NO_THREADING
 //> 	if (dms_ctx) {
 //> 		dms_stop_execution(dms_ctx);
 //> 	}
 //> #endif
-//> 
-//> 	// close panels
+
+	// close panels
 //> 	panel_close_all();
-//> 
+
 //> 	if (dms_ctx) {
 //> 		// release device
 //> 		if (device) {
@@ -59,9 +59,9 @@ namespace {
 //> 		// release context
 //> 		dms_release_context(dms_ctx);
 //> 	}
-//> }
+}
 //> 
-//> void UIContext::draw_ui() {
+void UIContext::draw_ui() {
 //> 
 //> #ifdef DMS_NO_THREADING
 //> 	dms_execute(dms_ctx);
@@ -92,7 +92,7 @@ namespace {
 //> 		switch_machine(config.machine_type);
 //> 		switch_machine_requested = false;
 //> 	}
-//> }
+}
 //> 
 //> void UIContext::panel_add(Panel::uptr_t panel) {
 //> 	new_panels.push_back(std::move(panel));

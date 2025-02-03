@@ -120,7 +120,12 @@ set (GUI_TARGET dromaius816_gui)
 add_executable(${GUI_TARGET} WIN32)
 target_sources(${GUI_TARGET}
 	PRIVATE
+		src/gui/config.cpp
+		src/gui/config.h
 		src/gui/main.cpp
+		src/gui/std_helper.h	
+		src/gui/ui_context.cpp
+		src/gui/ui_context.h
 )
 
 target_include_directories(${GUI_TARGET} PRIVATE libs src)

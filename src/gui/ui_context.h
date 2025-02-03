@@ -1,10 +1,10 @@
-// gui/ui_context.h - Johan Smet - BSD-3-Clause (see LICENSE)
+// gui/ui_context.h - Johan Smet - BSD-3-Clause (see LICENSE) 
 
 #ifndef DROMAIUS_GUI_CONTEXT_H
 #define DROMAIUS_GUI_CONTEXT_H
  
 #include "types.h"
-//> #include "config.h"
+#include "config.h"
 //> #include "panel.h"
  
 #include <vector>
@@ -12,16 +12,16 @@
 
 class UIContext {
 public:
-//> 	UIContext(const Config &config) : config(config) {
-//> 	};
-//> 
-//> 	// device management
+ 	UIContext(const Config &config) : config(config) {
+ 	};
+
+	// device management
 //> 	void switch_machine(MachineType machine);
 //> 
-//> 	// UI management
-//> 	void setup_ui(struct GLFWwindow *window);
-//> 	void shutdown_ui();
-//> 	void draw_ui();
+	// UI management
+	void setup_ui(struct GLFWwindow *window);
+ 	void shutdown_ui();
+ 	void draw_ui();
 //> 
 //> 	// panels
 //> 	void panel_add(Panel::uptr_t panel);
@@ -43,11 +43,11 @@ public:
 //> 
 //> 	void setup_dockspace();
 //> 
-//> // member variables
-//> public:
-//> 	Config config;
+// member variables
+public:
+	Config config;
 //> 	struct DmsContext *dms_ctx = nullptr;
-//> 	struct GLFWwindow *glfw_window = nullptr;
+	struct GLFWwindow *glfw_window = nullptr;
 //> 
 //> 	struct Device * device = nullptr;
 //> 	int64_t			last_pc = 0;

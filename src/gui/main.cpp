@@ -22,12 +22,12 @@
 // Include glfw3.h after our OpenGL definitions
 #include <GLFW/glfw3.h>
 
-//>	#ifdef __EMSCRIPTEN__
-//>	#include <emscripten.h>
-//>	#include <emscripten/html5.h>
-//>
-//>	EM_BOOL emscripten_handle_resize(int eventType, const EmscriptenUiEvent *uiEvent, void *userData);
-//>	#endif // __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+
+EM_BOOL emscripten_handle_resize(int eventType, const EmscriptenUiEvent *uiEvent, void *userData);
+#endif // __EMSCRIPTEN__
 
 // Namespace Privado
 namespace {
@@ -99,17 +99,17 @@ int main(int argc, char ** argv) {
     }
 
 		// fill-out configuration structure
-//>		Config ui_config;
-//>
-//>		{
-//>			std::string machine;
-//>			cmd_line(ARG_MACHINE, "commodore-pet") >> machine;
-//>
-//>			if (!ui_config.set_machine_type(machine.c_str())) {
-//>				fprintf(stderr, "Invalid machine type specified (%s)\n", machine.c_str());
-//>				exit(EXIT_FAILURE);
-//>			}
-//>		}	
+		Config ui_config;
+
+		{
+			std::string machine;
+			cmd_line(ARG_MACHINE, "commodore-pet") >> machine;
+
+			if (!ui_config.set_machine_type(machine.c_str())) {
+				fprintf(stderr, "Invalid machine type specified (%s)\n", machine.c_str());
+				exit(EXIT_FAILURE);
+			}
+		}	
 
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
@@ -147,16 +147,16 @@ int main(int argc, char ** argv) {
         return 1;
     glfwMakeContextCurrent(g_window);	
 
-//>	#ifndef __EMSCRIPTEN__
-//>	    glfwSwapInterval(1); // Enable vsync
-//>	#endif	
+	#ifndef __EMSCRIPTEN__
+	    glfwSwapInterval(1); // Enable vsync
+	#endif	
 
 	// Initialize OpenGL loader
-//>	#ifdef __EMSCRIPTEN__
-//>		bool err = gladLoadGLES2Loader((GLADloadproc) glfwGetProcAddress) == 0;
-//>	#else	
+	#ifdef __EMSCRIPTEN__
+		bool err = gladLoadGLES2Loader((GLADloadproc) glfwGetProcAddress) == 0;
+	#else	
 		bool err = gladLoadGL() == 0;
-//>	#endif	
+	#endif	
 	    if (err)
 	    {
 	        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
@@ -205,20 +205,20 @@ int main(int argc, char ** argv) {
 	    //IM_ASSERT(font != NULL);
 
 		// initialize application
-//>		g_ui_context = std::make_unique<UIContext>(ui_config);
-//>		g_ui_context->setup_ui(g_window);	
+		g_ui_context = std::make_unique<UIContext>(ui_config);
+		g_ui_context->setup_ui(g_window);	
 
-//>	#ifdef __EMSCRIPTEN__
-//>		emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, 0, emscripten_handle_resize);
-//>		emscripten_set_main_loop_arg(main_loop, nullptr, 0, 1);
-//>	#else
+#ifdef __EMSCRIPTEN__
+	emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, 0, emscripten_handle_resize);
+	emscripten_set_main_loop_arg(main_loop, nullptr, 0, 1);
+#else
 	// Main loop
 	while (!glfwWindowShouldClose(g_window)) {
 		main_loop(nullptr);
 	}
-//> #endif	
+#endif	
 
-//>		g_ui_context->shutdown_ui();
+	g_ui_context->shutdown_ui();
 
     // cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -249,7 +249,7 @@ int main(int argc, char ** argv) {
 		ImGui::NewFrame();
 
 		// application specific stuff
-//>		g_ui_context->draw_ui();
+		g_ui_context->draw_ui();
 
 		//ImGui::ShowDemoWindow();
 		//ImGui::ShowMetricsWindow();
@@ -274,15 +274,13 @@ int main(int argc, char ** argv) {
 		glfwSwapBuffers(g_window);
 	}
 
-//>	#ifdef __EMSCRIPTEN__
-//>
-//>	EM_BOOL emscripten_handle_resize([[maybe_unused]] int eventType, [[maybe_unused]] const EmscriptenUiEvent *uiEvent, [[maybe_unused]] void *userData) {
-//>		double w, h;
-//>
-//>		emscripten_get_element_css_size("canvas", &w, &h);
-//>		glfwSetWindowSize(g_window, (int) w, (int) h);
-//>
-//>		return 0;
-//>	}
-//>
-//>	#endif // __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+
+EM_BOOL emscripten_handle_resize([[maybe_unused]] int eventType, [[maybe_unused]] const EmscriptenUiEvent *uiEvent, [[maybe_unused]] void *userData) {
+	double w, h;
+	emscripten_get_element_css_size("canvas", &w, &h);
+	glfwSetWindowSize(g_window, (int) w, (int) h);
+	return 0;
+}
+
+#endif // __EMSCRIPTEN__
