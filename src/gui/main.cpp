@@ -67,7 +67,7 @@ namespace {
         printf("Usage:\n\n");
         printf("dromaius816_gui [options]\n\n");
         printf("Options\n");
-        printf(" %-25s specify machine to emulate (commodore-pet, commodore-pet-lite, minimal-6502).\n",
+        printf(" %-25s specify machine to emulate (commodore-pet, commodore-pet-lite, minimal-6502, nova64).\n",
             format_argh_list(ARG_MACHINE).c_str());
         printf(" %-25s display this help message and stop execution.\n",
             format_argh_list(ARG_HELP).c_str());

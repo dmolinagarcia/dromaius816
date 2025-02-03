@@ -5,15 +5,15 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
-//> #include <context.h>
-//> #include <cpu.h>
+#include <context.h>
+#include <cpu.h>
 //> #include <dev_minimal_6502.h>
 //> #include <dev_commodore_pet.h>
 
 #include <algorithm>
 #include <iterator>
 
-//> #include "panel_control.h"
+#include "panel_control.h"
 //> #include "panel_dev_commodore_pet.h"
 //> #include "panel_dev_minimal_6502.h"
 //> #include "panel_memory.h"
@@ -40,33 +40,33 @@ void UIContext::setup_ui(struct GLFWwindow *window) {
 
 void UIContext::shutdown_ui() {
 
-//> #ifndef DMS_NO_THREADING
-//> 	if (dms_ctx) {
-//> 		dms_stop_execution(dms_ctx);
-//> 	}
-//> #endif
+#ifndef DMS_NO_THREADING
+	if (dms_ctx) {
+		dms_stop_execution(dms_ctx);
+	}
+#endif
 
 	// close panels
-//> 	panel_close_all();
+	panel_close_all();
 
-//> 	if (dms_ctx) {
-//> 		// release device
-//> 		if (device) {
-//> 			device->destroy(device);
-//> 			device = nullptr;
-//> 		}
-//> 
-//> 		// release context
-//> 		dms_release_context(dms_ctx);
-//> 	}
+ 	if (dms_ctx) {
+		// release device
+		if (device) {
+//>			device->destroy(device);
+//>			device = nullptr;
+		}
+
+		// release context
+		dms_release_context(dms_ctx);
+	}
 }
-//> 
+ 
 void UIContext::draw_ui() {
 
 #ifdef DMS_NO_THREADING
 	dms_execute(dms_ctx);
 #endif // DMS_NO_THREADING
-//> 
+ 
 //> 	Cpu *cpu = device->get_cpu(device);
 //> 
 //> 	if (cpu && cpu->is_at_start_of_instruction(cpu)) {
@@ -94,30 +94,33 @@ void UIContext::draw_ui() {
 //> 	}
 }
 
-//> void UIContext::panel_add(Panel::uptr_t panel) {
-//> 	new_panels.push_back(std::move(panel));
-//> }
-//> 
-//> void UIContext::panel_close(Panel *panel) {
-//> 	dms::remove_owner(panels, panel);
-//> }
-//> 
-//> void UIContext::panel_close_all() {
-//> 	panels.clear();
-//> }
-//> 
+void UIContext::panel_add(Panel::uptr_t panel) {
+	new_panels.push_back(std::move(panel));
+}
+
+void UIContext::panel_close(Panel *panel) {
+	dms::remove_owner(panels, panel);
+}
+
+void UIContext::panel_close_all() {
+	panels.clear();
+}
+ 
 void UIContext::create_device(MachineType machine) {
 
 	// create device
 	switch (machine) {
 		case MachineType::CommodorePet:
-//> 			create_commodore_pet(false);
+			create_commodore_pet(false);
 			break;
 		case MachineType::CommodorePetLite:
-//> 			create_commodore_pet(true);
+			create_commodore_pet(true);
 			break;
 		case MachineType::Minimal6502:
-//> 			create_minimal_6502();
+			create_minimal_6502();
+			break;
+		case MachineType::Nova64:
+ 			create_nova64();
 			break;
 	}
 	last_pc = 0;
@@ -128,7 +131,7 @@ void UIContext::create_device(MachineType machine) {
 //> #endif // DMS_NO_THREADING
 }
  
-//> void UIContext::create_minimal_6502() {
+void UIContext::create_minimal_6502() {
 //> 
 //> 	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);
 //> 	device = (Device *) device_6502;
@@ -144,9 +147,11 @@ void UIContext::create_device(MachineType machine) {
 //> 	));
 //> 
 //> 	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
-//> }
+}
 //> 
-//> void UIContext::create_commodore_pet(bool lite) {
+void UIContext::create_commodore_pet(bool lite) {
+
+		bool dummy = lite ;
 //> 
 //> 	DevCommodorePet *device_pet = (lite) ? dev_commodore_pet_lite_create() : dev_commodore_pet_create();
 //> 	device = (Device *) device_pet;
@@ -167,9 +172,27 @@ void UIContext::create_device(MachineType machine) {
 //> 	));
 //> 
 //> 	panel_add(panel_dev_commodore_pet_create(this, {0, 240}, device_pet));
-//> }
+}
+
+void UIContext::create_nova64() {
+ 
+//> 	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);
+//> 	device = (Device *) device_6502;
 //> 
-//> void UIContext::setup_dockspace() {
-//> 	auto viewport = ImGui::GetMainViewport();
+//> 	// create dromaius context
+//> 	dms_ctx = dms_create_context();
+//> 	dms_set_device(dms_ctx, device);
+//> 
+//> 	// create UI panels
+//> 	panel_add(panel_control_create(this, {0, 0}, device_6502->oscillator,
+//> 								  {device_6502->signals[SIG_M6502_CPU_SYNC], true, false},
+//> 								  {{device_6502->signals[SIG_M6502_CLOCK], true, true}}
+//> 	));
+//> 
+//> 	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
+}
+
+void UIContext::setup_dockspace() {
+	auto viewport = ImGui::GetMainViewport();
 //> 	dock_id_main = ImGui::DockSpaceOverViewport(viewport, ImGuiDockNodeFlags_PassthruCentralNode);
-//> }
+}
