@@ -102,7 +102,7 @@ public:
 				// remaining signals
 				ImGui::Text("Remaining Signals");
 
-				if (ImGui::BeginTable("signals", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingFixedFit)) {
+				if (ImGui::BeginTable("signals", 8, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingFixedFit)) {
 					ImGui::TableSetupColumn("##type");
 					ImGui::TableSetupColumn("/RES");
 					ImGui::TableSetupColumn("/IRQ");
@@ -110,6 +110,7 @@ public:
 					ImGui::TableSetupColumn("RDY");
 					ImGui::TableSetupColumn("SYNC");
 					ImGui::TableSetupColumn("R/W");
+					ImGui::TableSetupColumn("PHI2");
 					ImGui::TableHeadersRow();
 
 					ImGui::TableNextRow();
@@ -120,6 +121,7 @@ public:
 					ImGui::TableNextColumn();	ui_signal_short(SIGNAL_VALUE(RDY));
 					ImGui::TableNextColumn();	ui_signal_short(SIGNAL_VALUE(SYNC));
 					ImGui::TableNextColumn();	ui_signal_short(SIGNAL_VALUE(RW));
+					ImGui::TableNextColumn();	ui_signal_short(SIGNAL_VALUE(CLK));
 
 					ImGui::TableNextRow();
 					ImGui::TableNextColumn();	ImGui::Text("Out");
@@ -129,6 +131,7 @@ public:
 					ImGui::TableNextColumn();
 					ImGui::TableNextColumn();	ui_signal_short(SIGNAL_VALUE_AT_CHIP(SYNC));
 					ImGui::TableNextColumn();	ui_signal_short(SIGNAL_VALUE_AT_CHIP(RW));
+					ImGui::TableNextColumn();	
 
 					ImGui::EndTable();
 				}
