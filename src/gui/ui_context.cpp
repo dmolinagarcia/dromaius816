@@ -15,7 +15,7 @@
 
 #include "panel_control.h"
 //> #include "panel_dev_commodore_pet.h"
-//> #include "panel_dev_minimal_6502.h"
+#include "panel_dev_minimal_6502.h"
 //> #include "panel_memory.h"
 
 namespace {
@@ -52,8 +52,8 @@ void UIContext::shutdown_ui() {
  	if (dms_ctx) {
 		// release device
 		if (device) {
-//>			device->destroy(device);
-//>			device = nullptr;
+			device->destroy(device);
+			device = nullptr;
 		}
 
 		// release context
@@ -87,11 +87,11 @@ void UIContext::draw_ui() {
 		std::move(std::begin(new_panels), std::end(new_panels), std::back_inserter(panels));
 		new_panels.clear();
 	}
-//> 
-//> 	if (switch_machine_requested) {
-//> 		switch_machine(config.machine_type);
-//> 		switch_machine_requested = false;
-//> 	}
+
+	if (switch_machine_requested) {
+		switch_machine(config.machine_type);
+		switch_machine_requested = false;
+	}
 
 }
 
@@ -126,30 +126,29 @@ void UIContext::create_device(MachineType machine) {
 	}
 	last_pc = 0;
 
-//> #ifndef DMS_NO_THREADING
-//> 	// start dromaius context
-//> 	dms_start_execution(dms_ctx);
-//> #endif // DMS_NO_THREADING
+#ifndef DMS_NO_THREADING
+	// start dromaius context
+	dms_start_execution(dms_ctx);
+#endif // DMS_NO_THREADING
 }
  
 void UIContext::create_minimal_6502() {
  
  	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);
  	device = (Device *) device_6502;
-//> 
-//> 	// create dromaius context
-//> 	dms_ctx = dms_create_context();
-//> 	dms_set_device(dms_ctx, device);
-//> 
-//> 	// create UI panels
+
+	// create dromaius context
+	dms_ctx = dms_create_context();
+	dms_set_device(dms_ctx, device);
+
+	// create UI panels
  	panel_add(panel_control_create(this, {0, 0}, device_6502->oscillator,
  								  {device_6502->signals[SIG_M6502_CPU_SYNC], true, false},
  								  {{device_6502->signals[SIG_M6502_CLOCK], true, true}}
 	));
-//> 
-//> 	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
+	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
 }
-//> 
+
 void UIContext::create_commodore_pet(bool lite) {
 
 		bool dummy = lite ;
@@ -195,7 +194,5 @@ void UIContext::create_nova64() {
 
 void UIContext::setup_dockspace() {
 	auto viewport = ImGui::GetMainViewport();
- 	// dock_id_main = ImGui::DockSpaceOverViewport(viewport, ImGuiDockNodeFlags_PassthruCentralNode);
-	// Cambio de la función en imgui en el último commit, que es el que uso.
-	dock_id_main = ImGui::DockSpaceOverViewport(0, viewport, ImGuiDockNodeFlags_PassthruCentralNode);
+ 	dock_id_main = ImGui::DockSpaceOverViewport(viewport, ImGuiDockNodeFlags_PassthruCentralNode);
 }

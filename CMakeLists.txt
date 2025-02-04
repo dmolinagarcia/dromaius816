@@ -190,6 +190,10 @@ target_sources(${GUI_TARGET}
 		src/gui/panel.h
 		src/gui/panel_control.cpp
 		src/gui/panel_control.h
+		src/gui/panel_dev_minimal_6502.cpp
+		src/gui/panel_dev_minimal_6502.h
+		src/gui/popup_file_selector.cpp
+		src/gui/popup_file_selector.h
 		src/gui/std_helper.h	
 		src/gui/ui_context.cpp
 		src/gui/ui_context.h

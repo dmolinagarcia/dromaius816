@@ -26,7 +26,8 @@
 constexpr static const char *MACHINE_NAMES[] = {
 	"Commodore PET - 2001N",
 	"Commodore PET - 2001N (lite)",
-	"Minimal 6502"
+	"Minimal 6502",
+	"Nova 64"
 };
 
 class PanelControl : public Panel {
@@ -66,134 +67,134 @@ public:
 		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
 		ImGui::Begin(title);
-//> 
-//> 			ImGui::AlignTextToFramePadding();
-//> 
-//> 			// choose which machine to emulate
-//> 			ImGui::Text("Machine");
-//> 			ImGui::SameLine();
-//> 			ImGui::SetNextItemWidth(-FLT_MIN);
-//> 			if (ImGui::Combo("##machine", (int *) &ui_context->config.machine_type, MACHINE_NAMES, sizeof(MACHINE_NAMES) / sizeof(MACHINE_NAMES[0]))) {
-//> 				ui_context->switch_machine_requested = true;
-//> 			}
-//> 
-//> 			ImGui::Spacing();
-//> 			ImGui::Separator();
-//> 			ImGui::Spacing();
-//> 
-//> 			// execution control
-//> 			bool sim_paused = dms_is_paused(ui_context->dms_ctx);
-//> 			if (sim_paused) {
-//> 				if (ImGui::Button(txt_sim_run, {button_run_pause_width, 0.0f})) {
-//> 					dms_run(ui_context->dms_ctx);
-//> 				}
-//> 			} else {
-//> 				if (ImGui::Button(txt_sim_pause, {button_run_pause_width, 0.0f})) {
-//> 					dms_pause(ui_context->dms_ctx);
-//> 				}
-//> 			}
-//> 
-//> 			ImGui::SameLine();
-//> 
-//> 			if (ImGui::Button(txt_reset_soft)) {
-//> 				Device *device = dms_get_device(ui_context->dms_ctx);
-//> 				device->reset(device);
-//> 			}
-//> 
-//> 			ImGui::Spacing();
-//> 			ImGui::Separator();
-//> 			ImGui::Spacing();
-//> 
-//> 			// debug - stepping
-//> 			ImGui::BeginDisabled(!sim_paused);
-//> 
-//> 			if (ImGui::Button(txt_step_single)) {
-//> 				dms_single_step(ui_context->dms_ctx);
-//> 			}
-//> 			ImGui::SameLine();
-//> 
-//> 			if (!step_clocks.empty()) {
-//> 				if (ImGui::Button(txt_step_clock)) {
-//> 					auto &clk = step_clocks[step_clock_sel];
-//> 					dms_step_signal(ui_context->dms_ctx, clk.signal, clk.pos_edge, clk.neg_edge);
-//> 				}
-//> 				ImGui::SameLine();
-//> 
-//> 				ImGui::SetNextItemWidth(-1);
-//> 				auto *signal_pool = ui_context->device->simulator->signal_pool;
-//> 				if (ImGui::BeginCombo("##stepClock", signal_get_name(signal_pool, step_clocks[step_clock_sel].signal))) {
-//> 					for (size_t i = 0; i < step_clocks.size(); ++i) {
-//> 						bool is_selected = (i == step_clock_sel);
-//> 						if (ImGui::Selectable(signal_get_name(signal_pool, step_clocks[i].signal), is_selected)) {
-//> 							step_clock_sel = i;
-//> 						}
-//> 						if (is_selected) {
-//> 							ImGui::SetItemDefaultFocus();
-//> 						}
-//> 					}
-//> 
-//> 					ImGui::EndCombo();
-//> 				}
-//> 			}
-//> 
-//> 			if (!signal_is_undefined(step_next_instruction.signal)  && ImGui::Button(txt_step_instruction, {-1.0f, 0.0f})) {
-//> 				dms_step_signal(ui_context->dms_ctx, step_next_instruction.signal, step_next_instruction.pos_edge, step_next_instruction.neg_edge);
-//> 			}
-//> 
-//> 			ImGui::EndDisabled();
-//> 
-//> 			ImGui::Spacing();
-//> 			ImGui::Separator();
-//> 			ImGui::Spacing();
-//> 
-//> 			// simulation frequency
-//> 			if (ImGui::BeginTable("table_freq", 2)) {
-//> 
-//> 				// header
-//> 				ImGui::TableSetupColumn(txt_freq_header_type, ImGuiTableColumnFlags_WidthFixed, freq_column_0_width);
-//> 				ImGui::TableSetupColumn(txt_freq_header_freq);
-//> 				ImGui::TableHeadersRow();
-//> 
-//> 				// normal frequency
-//> 				ImGui::TableNextRow();
-//> 				ImGui::TableSetColumnIndex(0);
-//> 				ImGui::Text(txt_freq_normal);
-//> 				ImGui::TableSetColumnIndex(1);
-//> 				ui_text_frequency(oscillator->frequency);
-//> 
-//> 				// actual frequency
-//> 				ImGui::TableNextRow();
-//> 				ImGui::TableSetColumnIndex(0);
-//> 				ImGui::Text(txt_freq_actual);
-//> 				ImGui::TableSetColumnIndex(1);
-//> 				double actual_ratio = dms_simulation_speed_ratio(ui_context->dms_ctx);
-//> 				ui_text_frequency((int64_t) ((double) oscillator->frequency * actual_ratio));
-//> 
-//> 				// target frequency
-//> 				ImGui::TableNextRow();
-//> 				ImGui::TableSetColumnIndex(0);
-//> 				ImGui::Text(txt_freq_target);
-//> 				ImGui::TableSetColumnIndex(1);
-//> 
-//> 				int freq = (int) ((float) oscillator->frequency * speed_ratio);
-//> 				int new_freq = freq / FREQUENCY_SCALE[ui_freq_unit_idx];
-//> 
-//> 				ImGui::SetNextItemWidth(-freq_combo_width);
-//> 				ImGui::DragInt("##freq", &new_freq, 1, 1, 2000);
-//> 				ImGui::SameLine();
-//> 				ImGui::SetNextItemWidth(-FLT_MIN);
-//> 				ImGui::Combo("##target", &ui_freq_unit_idx, FREQUENCY_UNITS, sizeof(FREQUENCY_UNITS) / sizeof(FREQUENCY_UNITS[0]));
-//> 
-//> 				new_freq *= FREQUENCY_SCALE[ui_freq_unit_idx];
-//> 				if (new_freq != freq) {
-//> 					speed_ratio = (float) new_freq / (float) oscillator->frequency;
-//> 					dms_change_simulation_speed_ratio(ui_context->dms_ctx, speed_ratio);
-//> 				}
-//> 
-//> 				ImGui::EndTable();
-//> 
-//> 			}
-//> 
+
+			ImGui::AlignTextToFramePadding();
+
+			// choose which machine to emulate
+			ImGui::Text("Machine");
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			if (ImGui::Combo("##machine", (int *) &ui_context->config.machine_type, MACHINE_NAMES, sizeof(MACHINE_NAMES) / sizeof(MACHINE_NAMES[0]))) {
+				ui_context->switch_machine_requested = true;
+			}
+
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			// execution control
+			bool sim_paused = dms_is_paused(ui_context->dms_ctx);
+			if (sim_paused) {
+				if (ImGui::Button(txt_sim_run, {button_run_pause_width, 0.0f})) {
+					dms_run(ui_context->dms_ctx);
+				}
+			} else {
+				if (ImGui::Button(txt_sim_pause, {button_run_pause_width, 0.0f})) {
+					dms_pause(ui_context->dms_ctx);
+				}
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(txt_reset_soft)) {
+				Device *device = dms_get_device(ui_context->dms_ctx);
+				device->reset(device);
+			}
+
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			// debug - stepping
+			ImGui::BeginDisabled(!sim_paused);
+
+			if (ImGui::Button(txt_step_single)) {
+				dms_single_step(ui_context->dms_ctx);
+			}
+			ImGui::SameLine();
+
+			if (!step_clocks.empty()) {
+				if (ImGui::Button(txt_step_clock)) {
+					auto &clk = step_clocks[step_clock_sel];
+					dms_step_signal(ui_context->dms_ctx, clk.signal, clk.pos_edge, clk.neg_edge);
+				}
+				ImGui::SameLine();
+
+				ImGui::SetNextItemWidth(-1);
+				auto *signal_pool = ui_context->device->simulator->signal_pool;
+				if (ImGui::BeginCombo("##stepClock", signal_get_name(signal_pool, step_clocks[step_clock_sel].signal))) {
+					for (size_t i = 0; i < step_clocks.size(); ++i) {
+						bool is_selected = (i == step_clock_sel);
+						if (ImGui::Selectable(signal_get_name(signal_pool, step_clocks[i].signal), is_selected)) {
+							step_clock_sel = i;
+						}
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+
+					ImGui::EndCombo();
+				}
+			}
+
+			if (!signal_is_undefined(step_next_instruction.signal)  && ImGui::Button(txt_step_instruction, {-1.0f, 0.0f})) {
+				dms_step_signal(ui_context->dms_ctx, step_next_instruction.signal, step_next_instruction.pos_edge, step_next_instruction.neg_edge);
+			}
+
+			ImGui::EndDisabled();
+
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+		// simulation frequency
+			if (ImGui::BeginTable("table_freq", 2)) {
+
+				// header
+				ImGui::TableSetupColumn(txt_freq_header_type, ImGuiTableColumnFlags_WidthFixed, freq_column_0_width);
+				ImGui::TableSetupColumn(txt_freq_header_freq);
+				ImGui::TableHeadersRow();
+
+				// normal frequency
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text(txt_freq_normal);
+				ImGui::TableSetColumnIndex(1);
+				ui_text_frequency(oscillator->frequency);
+
+				// actual frequency
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text(txt_freq_actual);
+				ImGui::TableSetColumnIndex(1);
+				double actual_ratio = dms_simulation_speed_ratio(ui_context->dms_ctx);
+				ui_text_frequency((int64_t) ((double) oscillator->frequency * actual_ratio));
+
+				// target frequency
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text(txt_freq_target);
+				ImGui::TableSetColumnIndex(1);
+
+				int freq = (int) ((float) oscillator->frequency * speed_ratio);
+				int new_freq = freq / FREQUENCY_SCALE[ui_freq_unit_idx];
+
+				ImGui::SetNextItemWidth(-freq_combo_width);
+				ImGui::DragInt("##freq", &new_freq, 1, 1, 2000);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::Combo("##target", &ui_freq_unit_idx, FREQUENCY_UNITS, sizeof(FREQUENCY_UNITS) / sizeof(FREQUENCY_UNITS[0]));
+
+				new_freq *= FREQUENCY_SCALE[ui_freq_unit_idx];
+				if (new_freq != freq) {
+					speed_ratio = (float) new_freq / (float) oscillator->frequency;
+					dms_change_simulation_speed_ratio(ui_context->dms_ctx, speed_ratio);
+				}
+
+				ImGui::EndTable();
+
+			}
+
 		ImGui::End();
 	}
 

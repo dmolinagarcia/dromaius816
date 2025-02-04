@@ -41,3 +41,16 @@ git config -f .gitmodules submodule.libs/imgui.branch docking
 git add .gitmodules
 git commit -m "Configurado imgui para seguir la rama docking por defecto"
 
+-- pasamos a los mismos commits que dromiaius
+cd ~/work/dromaius816
+cd libs/glfw
+git fetch 
+git checkout 2bac7ee8da526257d808bd026b027246c98e4f2f 
+cd ../imgui
+git fetch
+git checkout 64519c6875fde64796aa1d098c02e1b346ac99fe
+cd ../../
+git add libs/glfw libs/imgui
+git commit -m "Actualizados submódulos glfw e imgui a commits específicos"
+git push
+
