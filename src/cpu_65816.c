@@ -2197,7 +2197,7 @@ int64_t CPU_65816_program_counter(Cpu65816 *cpu) {
 static void CPU_65816_destroy(Cpu65816 *cpu);
 static void CPU_65816_process(Cpu65816 *cpu);
 
-Cpu65816 *CPU_65816_create(Simulator *sim, Cpu65816Signals signals) {
+Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 
 	Cpu65816_private *priv = (Cpu65816_private *) dms_calloc(1, sizeof(Cpu65816_private));
 	Cpu65816 *cpu = &priv->intf;
