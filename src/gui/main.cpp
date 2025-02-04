@@ -2,6 +2,7 @@
 // dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
 
 // Librerias gráficas para gestion de ventanas
+
 #include "imgui.h"
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -142,6 +143,12 @@ int main(int argc, char ** argv) {
 	#endif		
 
     // Create window with graphics context
+	// Asegura que la ventana tenga bordes y controles
+	glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);  // Activa el borde de la ventana (decorations)
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  // Permite redimensionar
+	glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);    // Se enfoca automáticamente
+	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);    // Asegura que la ventana sea visible
+
     g_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), "Dromaius", NULL, NULL);
     if (g_window == NULL)
         return 1;
@@ -168,6 +175,7 @@ int main(int argc, char ** argv) {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
+	// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	// Setup Dear ImGui style
 	//ImGui::StyleColorsDark();
@@ -176,11 +184,14 @@ int main(int argc, char ** argv) {
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
 
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-    }
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        style.WindowRounding = 5.0f;                  // Asegura que no sea completamente cuadrada
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;     // Asegura que la ventana sea visible
+    
+        // Forzar decoraciones en las ventanas de la plataforma
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        viewport->Flags &= ~ImGuiViewportFlags_NoDecoration;
+    }	
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(g_window, true);
@@ -205,6 +216,7 @@ int main(int argc, char ** argv) {
 	    //IM_ASSERT(font != NULL);
 
 		// initialize application
+
 		g_ui_context = std::make_unique<UIContext>(ui_config);
 		g_ui_context->setup_ui(g_window);	
 

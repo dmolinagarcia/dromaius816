@@ -28,7 +28,7 @@ string(CONCAT PLATFORM_DEF "PLATFORM_" ${PLATFORM_NAME})
 macro(target_compile_warning target)
 	target_compile_options(${target} PRIVATE
 		$<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-		-Wall -Wextra -Wconversion -Wsign-conversion -Werror -Wno-error=unused-variable>
+		-Wall -Wextra -Wconversion -Wsign-conversion -Werror -Wno-error=unused-variable -Wno-error=unused-parameter>
 		$<$<CXX_COMPILER_ID:MSVC>:
 			/W4
 			/wd"4200" /wd"4201" /wd"4204"	# disable specific non-standard extension warnings
@@ -141,6 +141,8 @@ endif()
 			src/cpu.h
 			src/device.c
 			src/device.h
+			src/dev_minimal_6502.c
+			src/dev_minimal_6502.h
 			src/signal_history.c
 			src/signal_history.h
 #>			src/signal_history_profiles.c
@@ -179,6 +181,7 @@ set (GUI_TARGET dromaius816_gui)
 add_executable(${GUI_TARGET} WIN32)
 target_sources(${GUI_TARGET}
 	PRIVATE
+	    src/gui/debug.h
 		src/gui/config.cpp
 		src/gui/config.h
 		src/gui/imgui_ex.cpp

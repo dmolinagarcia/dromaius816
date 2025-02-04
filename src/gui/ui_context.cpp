@@ -7,7 +7,7 @@
 
 #include <context.h>
 #include <cpu.h>
-//> #include <dev_minimal_6502.h>
+#include <dev_minimal_6502.h>
 //> #include <dev_commodore_pet.h>
 
 #include <algorithm>
@@ -35,7 +35,7 @@ void UIContext::switch_machine(MachineType machine) {
 void UIContext::setup_ui(struct GLFWwindow *window) {
 	glfw_window = window;
 	switch_machine(config.machine_type);
-//> 	panel_memory_load_fonts();
+//> 	panel_memory_load_fonts();								Viene de panel_memory.h
 }
 
 void UIContext::shutdown_ui() {
@@ -73,25 +73,26 @@ void UIContext::draw_ui() {
 //> 		last_pc = cpu->program_counter(cpu);
 //> 	}
 //> 
-//> 	setup_dockspace();
-//> 
-//> 	for (auto &panel : panels) {
-//> 		panel->display_panel();
-//> 
-//> 		if (panel->want_close()) {
-//> 			panel_close(panel.get());
-//> 		}
-//> 	}
-//> 
-//> 	if (!new_panels.empty()) {
-//> 		std::move(std::begin(new_panels), std::end(new_panels), std::back_inserter(panels));
-//> 		new_panels.clear();
-//> 	}
+	setup_dockspace();
+
+	for (auto &panel : panels) {
+		panel->display_panel();
+
+		if (panel->want_close()) {
+			panel_close(panel.get());
+		}
+	}
+
+	if (!new_panels.empty()) {
+		std::move(std::begin(new_panels), std::end(new_panels), std::back_inserter(panels));
+		new_panels.clear();
+	}
 //> 
 //> 	if (switch_machine_requested) {
 //> 		switch_machine(config.machine_type);
 //> 		switch_machine_requested = false;
 //> 	}
+
 }
 
 void UIContext::panel_add(Panel::uptr_t panel) {
@@ -132,19 +133,19 @@ void UIContext::create_device(MachineType machine) {
 }
  
 void UIContext::create_minimal_6502() {
-//> 
-//> 	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);
-//> 	device = (Device *) device_6502;
+ 
+ 	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);
+ 	device = (Device *) device_6502;
 //> 
 //> 	// create dromaius context
 //> 	dms_ctx = dms_create_context();
 //> 	dms_set_device(dms_ctx, device);
 //> 
 //> 	// create UI panels
-//> 	panel_add(panel_control_create(this, {0, 0}, device_6502->oscillator,
-//> 								  {device_6502->signals[SIG_M6502_CPU_SYNC], true, false},
-//> 								  {{device_6502->signals[SIG_M6502_CLOCK], true, true}}
-//> 	));
+ 	panel_add(panel_control_create(this, {0, 0}, device_6502->oscillator,
+ 								  {device_6502->signals[SIG_M6502_CPU_SYNC], true, false},
+ 								  {{device_6502->signals[SIG_M6502_CLOCK], true, true}}
+	));
 //> 
 //> 	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
 }
