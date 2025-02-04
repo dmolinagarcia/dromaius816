@@ -54,3 +54,17 @@ git add libs/glfw libs/imgui
 git commit -m "Actualizados submódulos glfw e imgui a commits específicos"
 git push
 
+## Diario
+### 04 / 02 / 2025
+
+He conseguido montar un básico con reloj, reset y cpu. Tambíen he clonado la CPU6502 a una CPU65816. 
+Siguientes pasos son. Como pintar toda la información posible. Veo la CPU pero... quiero ver circuito? Es posible?
+Al menos, pintar reset, clock, por ahora.
+Además, quiero entender la CPU.
+También debo enganchar una memoria. Al minimal65816.
+Conseguir ejecutar algo básico (teniendo en cuenta que sigo siendo un 6502 a pesar del nombre)
+NOP test
+LDAs, cosas muy basicas vaya
+Tras esto, destripar la cpu65816 y comenzar a añadir cosas de poco a poco.
+
+
