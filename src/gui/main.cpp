@@ -104,7 +104,7 @@ int main(int argc, char ** argv) {
 
 		{
 			std::string machine;
-			cmd_line(ARG_MACHINE, "commodore-pet") >> machine;
+			cmd_line(ARG_MACHINE, "minimal-6502") >> machine;
 
 			if (!ui_config.set_machine_type(machine.c_str())) {
 				fprintf(stderr, "Invalid machine type specified (%s)\n", machine.c_str());

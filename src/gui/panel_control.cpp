@@ -116,6 +116,7 @@ public:
 			if (!step_clocks.empty()) {
 				if (ImGui::Button(txt_step_clock)) {
 					auto &clk = step_clocks[step_clock_sel];
+					DBG_PRINT ("Call dms_step_signal_1");
 					dms_step_signal(ui_context->dms_ctx, clk.signal, clk.pos_edge, clk.neg_edge);
 				}
 				ImGui::SameLine();
@@ -138,6 +139,7 @@ public:
 			}
 
 			if (!signal_is_undefined(step_next_instruction.signal)  && ImGui::Button(txt_step_instruction, {-1.0f, 0.0f})) {
+				DBG_PRINT ("Call dms_step_signal_1");
 				dms_step_signal(ui_context->dms_ctx, step_next_instruction.signal, step_next_instruction.pos_edge, step_next_instruction.neg_edge);
 			}
 

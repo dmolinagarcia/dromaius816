@@ -11,8 +11,8 @@
 //> #include "chip_6520.h"
 //> #include "chip_hd44780.h"
 #include "chip_oscillator.h"
-//> #include "chip_poweronreset.h"
-//> #include "cpu_6502.h"
+#include "chip_poweronreset.h"
+#include "cpu_6502.h"
 //> #include "input_keypad.h"
 //> #include "ram_8d_16a.h"
 //> #include "rom_8d_16a.h"
@@ -151,17 +151,17 @@ typedef struct ChipGlueLogic {
 #define SIGNAL_OWNER		device
 
 
-//> Cpu6502* dev_minimal_6502_get_cpu(DevMinimal6502 *device) {
-//> 	assert(device);
-//> 	return device->cpu;
-//> }
+Cpu6502* dev_minimal_6502_get_cpu(DevMinimal6502 *device) {
+	assert(device);
+	return device->cpu;
+}
 
 size_t dev_minimal_6502_get_irq_signals(DevMinimal6502 *device, SignalBreakpoint **irq_signals);
 
 DevMinimal6502 *dev_minimal_6502_create(const uint8_t *rom_data) {
 	DevMinimal6502 *device = (DevMinimal6502 *) dms_calloc(1, sizeof(DevMinimal6502));
 
-//> 	device->get_cpu = (DEVICE_GET_CPU) dev_minimal_6502_get_cpu;
+ 	device->get_cpu = (DEVICE_GET_CPU) dev_minimal_6502_get_cpu;
 	device->process = (DEVICE_PROCESS) device_process;
 	device->reset = (DEVICE_RESET) dev_minimal_6502_reset;
 	device->destroy = (DEVICE_DESTROY) dev_minimal_6502_destroy;
@@ -196,43 +196,43 @@ DevMinimal6502 *dev_minimal_6502_create(const uint8_t *rom_data) {
 
 	signal_set_name(SIGNAL_POOL, SIGNAL(CLOCK), "CLK");
 
-//> 	// cpu
-//> 	device->cpu = cpu_6502_create(device->simulator, (Cpu6502Signals) {
-//> 										[PIN_6502_AB0]  = SIGNAL(AB0),
-//> 										[PIN_6502_AB1]  = SIGNAL(AB1),
-//> 										[PIN_6502_AB2]  = SIGNAL(AB2),
-//> 										[PIN_6502_AB3]  = SIGNAL(AB3),
-//> 										[PIN_6502_AB4]  = SIGNAL(AB4),
-//> 										[PIN_6502_AB5]  = SIGNAL(AB5),
-//> 										[PIN_6502_AB6]  = SIGNAL(AB6),
-//> 										[PIN_6502_AB7]  = SIGNAL(AB7),
-//> 										[PIN_6502_AB8]  = SIGNAL(AB8),
-//> 										[PIN_6502_AB9]  = SIGNAL(AB9),
-//> 										[PIN_6502_AB10] = SIGNAL(AB10),
-//> 										[PIN_6502_AB11] = SIGNAL(AB11),
-//> 										[PIN_6502_AB12] = SIGNAL(AB12),
-//> 										[PIN_6502_AB13] = SIGNAL(AB13),
-//> 										[PIN_6502_AB14] = SIGNAL(AB14),
-//> 										[PIN_6502_AB15] = SIGNAL(AB15),
-//> 
-//> 										[PIN_6502_DB0]  = SIGNAL(DB0),
-//> 										[PIN_6502_DB1]  = SIGNAL(DB1),
-//> 										[PIN_6502_DB2]  = SIGNAL(DB2),
-//> 										[PIN_6502_DB3]  = SIGNAL(DB3),
-//> 										[PIN_6502_DB4]  = SIGNAL(DB4),
-//> 										[PIN_6502_DB5]  = SIGNAL(DB5),
-//> 										[PIN_6502_DB6]  = SIGNAL(DB6),
-//> 										[PIN_6502_DB7]  = SIGNAL(DB7),
-//> 
-//> 										[PIN_6502_CLK]   = SIGNAL(CLOCK),
-//> 										[PIN_6502_RES_B] = SIGNAL(RESET_B),
-//> 										[PIN_6502_RW]	 = SIGNAL(CPU_RW),
-//> 										[PIN_6502_IRQ_B] = SIGNAL(CPU_IRQ_B),
-//> 										[PIN_6502_NMI_B] = SIGNAL(CPU_NMI_B),
-//> 										[PIN_6502_SYNC]  = SIGNAL(CPU_SYNC),
-//> 										[PIN_6502_RDY]   = SIGNAL(CPU_RDY)
-//> 	});
-//> 	DEVICE_REGISTER_CHIP("CPU", device->cpu);
+ 	// cpu
+ 	device->cpu = cpu_6502_create(device->simulator, (Cpu6502Signals) {
+ 										[PIN_6502_AB0]  = SIGNAL(AB0),
+ 										[PIN_6502_AB1]  = SIGNAL(AB1),
+ 										[PIN_6502_AB2]  = SIGNAL(AB2),
+ 										[PIN_6502_AB3]  = SIGNAL(AB3),
+ 										[PIN_6502_AB4]  = SIGNAL(AB4),
+ 										[PIN_6502_AB5]  = SIGNAL(AB5),
+ 										[PIN_6502_AB6]  = SIGNAL(AB6),
+ 										[PIN_6502_AB7]  = SIGNAL(AB7),
+ 										[PIN_6502_AB8]  = SIGNAL(AB8),
+ 										[PIN_6502_AB9]  = SIGNAL(AB9),
+ 										[PIN_6502_AB10] = SIGNAL(AB10),
+ 										[PIN_6502_AB11] = SIGNAL(AB11),
+ 										[PIN_6502_AB12] = SIGNAL(AB12),
+ 										[PIN_6502_AB13] = SIGNAL(AB13),
+ 										[PIN_6502_AB14] = SIGNAL(AB14),
+ 										[PIN_6502_AB15] = SIGNAL(AB15),
+ 
+ 										[PIN_6502_DB0]  = SIGNAL(DB0),
+ 										[PIN_6502_DB1]  = SIGNAL(DB1),
+ 										[PIN_6502_DB2]  = SIGNAL(DB2),
+ 										[PIN_6502_DB3]  = SIGNAL(DB3),
+ 										[PIN_6502_DB4]  = SIGNAL(DB4),
+ 										[PIN_6502_DB5]  = SIGNAL(DB5),
+ 										[PIN_6502_DB6]  = SIGNAL(DB6),
+ 										[PIN_6502_DB7]  = SIGNAL(DB7),
+ 
+ 										[PIN_6502_CLK]   = SIGNAL(CLOCK),
+ 										[PIN_6502_RES_B] = SIGNAL(RESET_B),
+ 										[PIN_6502_RW]	 = SIGNAL(CPU_RW),
+ 										[PIN_6502_IRQ_B] = SIGNAL(CPU_IRQ_B),
+ 										[PIN_6502_NMI_B] = SIGNAL(CPU_NMI_B),
+ 										[PIN_6502_SYNC]  = SIGNAL(CPU_SYNC),
+ 										[PIN_6502_RDY]   = SIGNAL(CPU_RDY)
+ 	});
+ 	DEVICE_REGISTER_CHIP("CPU", device->cpu);
 
 	// oscillator
 	device->oscillator = oscillator_create(10000, device->simulator, (OscillatorSignals) {
@@ -240,11 +240,11 @@ DevMinimal6502 *dev_minimal_6502_create(const uint8_t *rom_data) {
 	});
 	DEVICE_REGISTER_CHIP("OSC", device->oscillator);
 
-//>	// power-on-reset
-//>	DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (PowerOnResetSignals) {
-//>										[CHIP_POR_TRIGGER_B] = SIGNAL(RESET_BTN_B),
-//>										[CHIP_POR_RESET_B] = SIGNAL(RESET_B)
-//>	}));
+// power-on-reset
+DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (PowerOnResetSignals) {
+									[CHIP_POR_TRIGGER_B] = SIGNAL(RESET_BTN_B),
+									[CHIP_POR_RESET_B] = SIGNAL(RESET_B)
+}));
 //>
 //>	// ram
 //>	device->ram = ram_8d16a_create(15, device->simulator, (Ram8d16aSignals) {

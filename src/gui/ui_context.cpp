@@ -67,12 +67,12 @@ void UIContext::draw_ui() {
 	dms_execute(dms_ctx);
 #endif // DMS_NO_THREADING
  
-//> 	Cpu *cpu = device->get_cpu(device);
-//> 
-//> 	if (cpu && cpu->is_at_start_of_instruction(cpu)) {
-//> 		last_pc = cpu->program_counter(cpu);
-//> 	}
-//> 
+ 	Cpu *cpu = device->get_cpu(device);
+
+	if (cpu && cpu->is_at_start_of_instruction(cpu)) {
+		last_pc = cpu->program_counter(cpu);
+	}
+
 	setup_dockspace();
 
 	for (auto &panel : panels) {

@@ -7,6 +7,8 @@ project(dromaius816)
 option (ENABLE_THREADING "Enable multithreading in the Dromaius context" ON)
 option (ENABLE_GTKWAVE_EXPORT "Enable dumping of signals to GTKWave" OFF)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # force C11 for all targets
 #  - don't do this on MSVC anymore. In march 2020 support for a fully compliant C11 preprocessor
 #	 was added to MSVC, but the compiler itself isn't fully C11 compliant yet. CMake 3.18 passes the
@@ -135,10 +137,14 @@ endif()
 			src/chip.h
 			src/chip_oscillator.c
 			src/chip_oscillator.h		
+			src/chip_poweronreset.c
+			src/chip_poweronreset.h
 			src/crt.h
 			src/context.c
 			src/context.h
 			src/cpu.h
+			src/cpu_6502.c
+			src/cpu_6502.h
 			src/device.c
 			src/device.h
 			src/dev_minimal_6502.c
@@ -190,6 +196,8 @@ target_sources(${GUI_TARGET}
 		src/gui/panel.h
 		src/gui/panel_control.cpp
 		src/gui/panel_control.h
+		src/gui/panel_cpu_6502.cpp
+		src/gui/panel_cpu_6502.h
 		src/gui/panel_dev_minimal_6502.cpp
 		src/gui/panel_dev_minimal_6502.h
 		src/gui/popup_file_selector.cpp
