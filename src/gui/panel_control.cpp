@@ -11,7 +11,7 @@
 #include "chip_oscillator.h"
 #include "signal_line.h"
 
-//> #include "widgets.h"
+#include "widgets.h"
 
 #include <algorithm>
 #include <vector>

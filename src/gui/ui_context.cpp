@@ -194,5 +194,7 @@ void UIContext::create_nova64() {
 
 void UIContext::setup_dockspace() {
 	auto viewport = ImGui::GetMainViewport();
-//> 	dock_id_main = ImGui::DockSpaceOverViewport(viewport, ImGuiDockNodeFlags_PassthruCentralNode);
+ 	// dock_id_main = ImGui::DockSpaceOverViewport(viewport, ImGuiDockNodeFlags_PassthruCentralNode);
+	// Cambio de la función en imgui en el último commit, que es el que uso.
+	dock_id_main = ImGui::DockSpaceOverViewport(0, viewport, ImGuiDockNodeFlags_PassthruCentralNode);
 }
