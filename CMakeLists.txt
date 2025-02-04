@@ -151,6 +151,8 @@ endif()
 			src/device.h
 			src/dev_minimal_6502.c
 			src/dev_minimal_6502.h
+			src/dev_minimal_65816.c
+			src/dev_minimal_65816.h
 			src/signal_history.c
 			src/signal_history.h
 #>			src/signal_history_profiles.c
