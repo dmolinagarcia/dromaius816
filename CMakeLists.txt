@@ -7,7 +7,7 @@ project(dromaius816)
 option (ENABLE_THREADING "Enable multithreading in the Dromaius context" ON)
 option (ENABLE_GTKWAVE_EXPORT "Enable dumping of signals to GTKWave" OFF)
 
-set(CMAKE_BUILD_TYPE Debug)
+## set(CMAKE_BUILD_TYPE Debug)
 
 # force C11 for all targets
 #  - don't do this on MSVC anymore. In march 2020 support for a fully compliant C11 preprocessor
@@ -145,6 +145,8 @@ endif()
 			src/cpu.h
 			src/cpu_6502.c
 			src/cpu_6502.h
+			src/cpu_65816.c
+			src/cpu_65816.h
 			src/device.c
 			src/device.h
 			src/dev_minimal_6502.c

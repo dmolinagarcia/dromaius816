@@ -14,7 +14,7 @@
 #include <functional>
 
 static ImVec4 UI_COLOR_SIGNAL_HIGH = {0.0f, 0.9f, 0.0f, 1.0f};
-static ImVec4 UI_COLOR_SIGNAL_LOW  = {0.0f, 0.6f, 0.0f, 1.0f};
+static ImVec4 UI_COLOR_SIGNAL_LOW  = {1.0f, 0.0f, 0.0f, 1.0f};  
 static ImVec4 UI_COLOR_SIGNAL_HIZ  = {0.7f, 0.7f, 0.7f, 1.0f};
 
 static const char *nibble_bit_string[16] = {

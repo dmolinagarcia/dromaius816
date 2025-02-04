@@ -8,7 +8,7 @@
 
 //> #include "panel_chip_6520.h"
 //> #include "panel_chip_hd44780.h"
-//> #include "panel_cpu_6502.h"
+#include "panel_cpu_6502.h"
 //> #include "panel_input_keypad.h"
 //> #include "panel_memory.h"
 //> #include "panel_monitor.h"
@@ -62,12 +62,12 @@ public:
 //> 						load_rom = true;
 //> 					});
 //> 
-//> 		auto &cat_cpu = hardware_list.add_category("CPU");
-//> 		cat_cpu.add_leaf("MOS Technology 6502")
-//> 					.add_action("View", [&]() {
-//> 						ui_context->panel_add(panel_cpu_6502_create(ui_context, {2, 342}, device->cpu));
-//> 					});
-//> 
+		auto &cat_cpu = hardware_list.add_category("CPU");
+		cat_cpu.add_leaf("MOS Technology 6502")
+					.add_action("View", [&]() {
+						ui_context->panel_add(panel_cpu_6502_create(ui_context, {2, 342}, device->cpu));
+					});
+
 //> 		auto &cat_support = hardware_list.add_category("Support Chips");
 //> 		cat_support.add_leaf("PIA (6520)")
 //> 					.add_action("View", [&]() {
