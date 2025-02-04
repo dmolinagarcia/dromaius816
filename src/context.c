@@ -3,7 +3,7 @@
 // main external interface for others to control a Dromaius instance
 // define DMS_NO_THREADING to disable multithreading
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #define DBG_PRINT(fmt, ...) printf("[DEBUG] %s:%d:%s(): " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
