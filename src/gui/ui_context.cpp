@@ -8,6 +8,7 @@
 #include <context.h>
 #include <cpu.h>
 #include <dev_minimal_6502.h>
+#include <dev_minimal_65816.h>
 //> #include <dev_commodore_pet.h>
 
 #include <algorithm>
@@ -16,6 +17,7 @@
 #include "panel_control.h"
 //> #include "panel_dev_commodore_pet.h"
 #include "panel_dev_minimal_6502.h"
+#include "panel_dev_minimal_65816.h"
 //> #include "panel_memory.h"
 
 namespace {
@@ -120,6 +122,9 @@ void UIContext::create_device(MachineType machine) {
 		case MachineType::Minimal6502:
 			create_minimal_6502();
 			break;
+		case MachineType::Minimal65816:
+			create_minimal_65816();
+			break;
 		case MachineType::Nova64:
  			create_nova64();
 			break;
@@ -147,6 +152,23 @@ void UIContext::create_minimal_6502() {
  								  {{device_6502->signals[SIG_M6502_CLOCK], true, true}}
 	));
 	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
+}
+
+void UIContext::create_minimal_65816() {
+ 
+ 	DevMinimal65816 *device_65816 = dev_minimal_65816_create(NULL);
+ 	device = (Device *) device_65816;
+
+	// create dromaius context
+	dms_ctx = dms_create_context();
+	dms_set_device(dms_ctx, device);
+
+	// create UI panels
+ 	panel_add(panel_control_create(this, {0, 0}, device_65816->oscillator,
+ 								  {device_65816->signals[SIG_M65816_CPU_SYNC], true, false},
+ 								  {{device_65816->signals[SIG_M65816_CLOCK], true, true}}
+	));
+	panel_add(panel_dev_minimal_65816_create(this, {0, 240}, device_65816));
 }
 
 void UIContext::create_commodore_pet(bool lite) {

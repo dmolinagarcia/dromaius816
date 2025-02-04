@@ -10,7 +10,8 @@ enum class MachineType : int {
 	CommodorePet = 0,
 	CommodorePetLite = 1,
 	Minimal6502 = 2,
-	Nova64 = 3
+	Minimal65816 = 3,
+	Nova64 = 4
 };
 
 struct Config {

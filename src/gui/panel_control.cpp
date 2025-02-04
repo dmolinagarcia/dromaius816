@@ -27,6 +27,7 @@ constexpr static const char *MACHINE_NAMES[] = {
 	"Commodore PET - 2001N",
 	"Commodore PET - 2001N (lite)",
 	"Minimal 6502",
+	"Minimal 65816",
 	"Nova 64"
 };
 

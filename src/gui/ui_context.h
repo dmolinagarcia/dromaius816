@@ -39,6 +39,7 @@ public:
 private:
 	void create_device(MachineType machine);
 	void create_minimal_6502();
+	void create_minimal_65816();
 	void create_commodore_pet(bool lite);
 	void create_nova64();
 	void setup_dockspace();
