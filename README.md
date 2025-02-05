@@ -64,10 +64,14 @@ git push
 >> Los devices (un devices es un emulador) originales están. PET, PETlite y Minimal6502
 >> No tienen nada más que el OSCilador y la CPU
 >> Creados un dev_nova_64 y un dev_minimal_65816. Seran las bases donde construiré mi emulador
+>> Single step es el paso más pequeño de la simulacion. Step clock es half clock
+>> Comprendido a grandes rasgos el funcionamiento del emulador. Gracias ChatGPT
 
 ### Pendientes
 
-Entender el reloj, oscilador. Step clock y step cycle
+Añadir logic analyzer. Solo lo tiene PET. Añadirlo al PET. Y comprobar que funciona.
+Despues, añadirlo al resto. Documentar el proceso.
+Entender el reloj, oscilador.
 Crear un panel para el oscilador
 Crear un panel para schematic (device dependant)
 Siguientes pasos son. Como pintar toda la información posible. Veo la CPU pero... quiero ver circuito? Es posible?

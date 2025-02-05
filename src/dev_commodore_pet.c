@@ -2887,14 +2887,14 @@ void dev_commodore_pet_reset(DevCommodorePet *device) {
 //> 	return 1;
 //> }
 
-//> void dev_commodore_pet_diag_mode(DevCommodorePet *device, bool in_diag) {
-//> 	assert(device);
-//> 
-//> 	if (in_diag != device->diag_mode) {
-//> 		device->diag_mode = in_diag;
-//> 		device->diag_toggled = true;
-//> 	}
-//> }
+void dev_commodore_pet_diag_mode(DevCommodorePet *device, bool in_diag) {
+	assert(device);
+
+	if (in_diag != device->diag_mode) {
+		device->diag_mode = in_diag;
+		device->diag_toggled = true;
+	}
+}
 
 //> bool dev_commodore_pet_load_prg(DevCommodorePet* device, const char* filename, bool use_prg_address) {
 //> 
