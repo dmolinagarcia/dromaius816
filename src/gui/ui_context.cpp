@@ -10,6 +10,7 @@
 #include <dev_minimal_6502.h>
 #include <dev_minimal_65816.h>
 #include <dev_commodore_pet.h>
+#include <dev_nova_64.h>
 
 #include <algorithm>
 #include <iterator>
@@ -18,6 +19,7 @@
 #include "panel_dev_commodore_pet.h"
 #include "panel_dev_minimal_6502.h"
 #include "panel_dev_minimal_65816.h"
+#include "panel_dev_nova_64.h"
 //> #include "panel_memory.h"
 
 namespace {
@@ -196,20 +198,20 @@ void UIContext::create_commodore_pet(bool lite) {
 
 void UIContext::create_nova64() {
  
-//> 	DevMinimal6502 *device_6502 = dev_minimal_6502_create(NULL);
-//> 	device = (Device *) device_6502;
-//> 
-//> 	// create dromaius context
-//> 	dms_ctx = dms_create_context();
-//> 	dms_set_device(dms_ctx, device);
-//> 
-//> 	// create UI panels
-//> 	panel_add(panel_control_create(this, {0, 0}, device_6502->oscillator,
-//> 								  {device_6502->signals[SIG_M6502_CPU_SYNC], true, false},
-//> 								  {{device_6502->signals[SIG_M6502_CLOCK], true, true}}
-//> 	));
-//> 
-//> 	panel_add(panel_dev_minimal_6502_create(this, {0, 240}, device_6502));
+ 	DevNova64 *device_nova_64 = dev_nova_64_create(NULL);
+	device = (Device *) device_nova_64;
+
+	// create dromaius context
+	dms_ctx = dms_create_context();
+	dms_set_device(dms_ctx, device);
+
+	// create UI panels
+	panel_add(panel_control_create(this, {0, 0}, device_nova_64->oscillator,
+ 								  {device_nova_64->signals[SIG_NOVA64_CPU_SYNC], true, false},
+ 								  {{device_nova_64->signals[SIG_NOVA64_CLOCK], true, true}}
+ 	));
+
+	panel_add(panel_dev_nova_64_create(this, {0, 240}, device_nova_64));
 }
 
 void UIContext::setup_dockspace() {

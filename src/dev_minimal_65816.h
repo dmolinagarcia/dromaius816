@@ -1,4 +1,4 @@
-// dev_minimal_65816.h - Johan Smet - BSD-3-Clause (see LICENSE)
+// dev_minimal_65816.h - Daniel Molina - BSD-3-Clause (see LICENSE)
 // 
 // dev_minimal_6502.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //

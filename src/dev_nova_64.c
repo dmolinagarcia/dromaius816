@@ -1,10 +1,12 @@
+// dev_nova_64.c - Daniel Molina - BSD-3-Clause (see LICENSE)
+// extending
 // dev_minimal_65816.c - Daniel Molina - BSD-3-Clause (see LICENSE)
 // based on 
 // dev_minimal_6502.c - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // Emulates a minimal MOS-65816 based system, with 32kb of RAM and a 16kb system ROM.
 
-#include "dev_minimal_65816.h"
+#include "dev_nova_64.h"
 
 #include "crt.h"
 #include "utils.h"
@@ -61,7 +63,7 @@ typedef enum {
 typedef struct ChipGlueLogic {
 	CHIP_DECLARE_BASE
 
-	DevMinimal65816 *device;
+	DevNova64 *device;
 
 	Signal			signals[CHIP_GLUE_LOGIC_PIN_COUNT];
 	SignalPool *	signal_pool;
@@ -79,7 +81,7 @@ typedef struct ChipGlueLogic {
 	chip->pin_types[pin] = (t);			\
 	++pin;
 
-//> static ChipGlueLogic *glue_logic_create(DevMinimal65816 *device) {
+//> static ChipGlueLogic *glue_logic_create(DevNova64 *device) {
 //> 	ChipGlueLogic *chip = (ChipGlueLogic *) dms_calloc(1, sizeof(ChipGlueLogic));
 //> 	chip->device = device;
 //> 	chip->signal_pool = device->signal_pool;
@@ -94,13 +96,13 @@ typedef struct ChipGlueLogic {
 //> 	}
 //> 	SIGNAL_GROUP(address) = signal_group_create_from_array(16, chip->signals);
 //> 
-//> 	GLUE_PIN(device->signals[SIG_M65816_CPU_RW],      CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
-//> 	GLUE_PIN(device->signals[SIG_M65816_CLOCK],	     CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
-//> 	GLUE_PIN(device->signals[SIG_M65816_RESET_BTN_B], CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_RAM_OE_B],    CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_RAM_WE_B],    CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_ROM_CE_B],    CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_PIA_CS2_B],   CHIP_PIN_OUTPUT);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_CPU_RW],      CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_CLOCK],	     CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_RESET_BTN_B], CHIP_PIN_OUTPUT);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_RAM_OE_B],    CHIP_PIN_OUTPUT);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_RAM_WE_B],    CHIP_PIN_OUTPUT);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_ROM_CE_B],    CHIP_PIN_OUTPUT);
+//> 	GLUE_PIN(device->signals[SIG_NOVA64_PIA_CS2_B],   CHIP_PIN_OUTPUT);
 //> 
 //> 	assert(pin == CHIP_GLUE_LOGIC_PIN_COUNT);
 //> 
@@ -115,7 +117,7 @@ typedef struct ChipGlueLogic {
 //> 
 //> static void glue_logic_process(ChipGlueLogic *chip) {
 //> 	assert(chip);
-//> 	DevMinimal65816 *device = chip->device;
+//> 	DevNova64 *device = chip->device;
 //> 
 //> 	// >> reset logic
 //> 	SIGNAL_WRITE(RESET_BTN_B, !device->in_reset);
@@ -148,28 +150,28 @@ typedef struct ChipGlueLogic {
 //
 
 #undef  SIGNAL_PREFIX
-#define SIGNAL_PREFIX		SIG_M65816_
+#define SIGNAL_PREFIX		SIG_NOVA64_
 #undef  SIGNAL_OWNER
 #define SIGNAL_OWNER		device
 
 
-Cpu65816* dev_minimal_65816_get_cpu(DevMinimal65816 *device) {
+Cpu65816* dev_nova_64_get_cpu(DevNova64 *device) {
 	assert(device);
 	return device->cpu;
 }
 
-size_t dev_minimal_65816_get_irq_signals(DevMinimal65816 *device, SignalBreakpoint **irq_signals);
+size_t dev_nova_64_get_irq_signals(DevNova64 *device, SignalBreakpoint **irq_signals);
 
-DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
-	DevMinimal65816 *device = (DevMinimal65816 *) dms_calloc(1, sizeof(DevMinimal65816));
+DevNova64 *dev_nova_64_create(const uint8_t *rom_data) {
+	DevNova64 *device = (DevNova64 *) dms_calloc(1, sizeof(DevNova64));
 
- 	device->get_cpu = (DEVICE_GET_CPU) dev_minimal_65816_get_cpu;
+ 	device->get_cpu = (DEVICE_GET_CPU) dev_nova_64_get_cpu;
 	device->process = (DEVICE_PROCESS) device_process;
-	device->reset = (DEVICE_RESET) dev_minimal_65816_reset;
-	device->destroy = (DEVICE_DESTROY) dev_minimal_65816_destroy;
-	device->read_memory = (DEVICE_READ_MEMORY) dev_minimal_65816_read_memory;
-	device->write_memory = (DEVICE_WRITE_MEMORY) dev_minimal_65816_write_memory;
-	device->get_irq_signals = (DEVICE_GET_IRQ_SIGNALS) dev_minimal_65816_get_irq_signals;
+	device->reset = (DEVICE_RESET) dev_nova_64_reset;
+	device->destroy = (DEVICE_DESTROY) dev_nova_64_destroy;
+	device->read_memory = (DEVICE_READ_MEMORY) dev_nova_64_read_memory;
+	device->write_memory = (DEVICE_WRITE_MEMORY) dev_nova_64_write_memory;
+	device->get_irq_signals = (DEVICE_GET_IRQ_SIGNALS) dev_nova_64_get_irq_signals;
 
 	device->simulator = simulator_create(NS_TO_PS(20));
 	device->signal_pool = device->simulator->signal_pool;
@@ -370,7 +372,7 @@ if (rom_data) {
 	return device;
 }
 
-void dev_minimal_65816_destroy(DevMinimal65816 *device) {
+void dev_nova_64_destroy(DevNova64 *device) {
 	assert(device);
 
 	signal_group_destroy(device->sg_address);
@@ -380,11 +382,11 @@ void dev_minimal_65816_destroy(DevMinimal65816 *device) {
 	dms_free(device);
 }
 
-void dev_minimal_65816_reset(DevMinimal65816 *device) {
+void dev_nova_64_reset(DevNova64 *device) {
 	device->in_reset = true;
 }
 
-void dev_minimal_65816_read_memory(DevMinimal65816 *device, size_t start_address, size_t size, uint8_t *output) {
+void dev_nova_64_read_memory(DevNova64 *device, size_t start_address, size_t size, uint8_t *output) {
 	assert(device);
 	assert(output);
 
@@ -433,7 +435,7 @@ void dev_minimal_65816_read_memory(DevMinimal65816 *device, size_t start_address
 	}
 }
 
-void dev_minimal_65816_write_memory(DevMinimal65816 *device, size_t start_address, size_t size, uint8_t *input) {
+void dev_nova_64_write_memory(DevNova64 *device, size_t start_address, size_t size, uint8_t *input) {
 	assert(device);
 	assert(input);
 
@@ -454,7 +456,7 @@ void dev_minimal_65816_write_memory(DevMinimal65816 *device, size_t start_addres
 //>	dms_memcpy(device->ram->data_array + start_address, input, real_size);
 }
 
-size_t dev_minimal_65816_get_irq_signals(DevMinimal65816 *device, SignalBreakpoint **irq_signals) {
+size_t dev_nova_64_get_irq_signals(DevNova64 *device, SignalBreakpoint **irq_signals) {
 	assert(device);
 	assert(irq_signals);
 
@@ -471,14 +473,14 @@ size_t dev_minimal_65816_get_irq_signals(DevMinimal65816 *device, SignalBreakpoi
 	return 1;
 }
 
-void dev_minimal_65816_rom_from_file(DevMinimal65816 *device, const char *filename) {
+void dev_nova_64_rom_from_file(DevNova64 *device, const char *filename) {
 //>	file_load_binary_fixed(filename, device->rom->data_array, device->rom->data_size);
 	if (device && filename) {
 		//> dummy if to avoid warning due to unused device
 	}
 }
 
-void dev_minimal_65816_ram_from_file(DevMinimal65816 *device, const char *filename) {
+void dev_nova_64_ram_from_file(DevNova64 *device, const char *filename) {
 //>	file_load_binary_fixed(filename, device->ram->data_array, device->ram->data_size);
 	if (device && filename) {
 		//> dummy if to avoid warning due to unused device

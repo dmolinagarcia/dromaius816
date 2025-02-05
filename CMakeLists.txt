@@ -155,6 +155,8 @@ endif()
 			src/dev_minimal_6502.h
 			src/dev_minimal_65816.c
 			src/dev_minimal_65816.h
+			src/dev_nova_64.c
+			src/dev_nova_64.h 
 			src/signal_history.c
 			src/signal_history.h
 			src/signal_history_profiles.c
@@ -212,6 +214,8 @@ target_sources(${GUI_TARGET}
 		src/gui/panel_dev_minimal_6502.h
 		src/gui/panel_dev_minimal_65816.cpp
 		src/gui/panel_dev_minimal_65816.h
+		src/gui/panel_dev_nova_64.cpp
+		src/gui/panel_dev_nova_64.h
 		src/gui/popup_file_selector.cpp
 		src/gui/popup_file_selector.h
 		src/gui/std_helper.h	
