@@ -34,17 +34,21 @@
 
 ## ✅ **Tareas Pendientes**
 
-> - [ ] Añadir **Logic Analyzer**:
+> - [ ] **Oscilador y Reset:**
+>   - [ ] Entender su funcionamiento. Schedule es la clave.
+>   - [ ] Crear un panel para el oscilador.
+>   - [ ] Crear un panel para el reset
+> 
+> - [ ] Añadir **Logic Analyzer**
 >   - [ ] Solo lo tiene `PET`. Añadirlo y comprobar que funciona.
 >   - [ ] Entender su funcionamiento y documentarlo.
 >   - [ ] Añadirlo al resto de devices y documentar el proceso.
 > 
-> - [ ] **Reloj y Oscilador:**
->   - [ ] Entender su funcionamiento.
->   - [ ] Crear un panel para el oscilador.
-> 
-> - [ ] **Paneles:**
+> - [ ] **Schematic:**
 >   - [ ] Crear un panel para `schematic` (*dependiente del dispositivo*).
+>     - [ ] Como dibujar un `schematic` fijo
+>     - [ ] Como colorear un `schematic` fijo
+>     - [ ] Puedo autogenerar el `schematic` a partir del device?
 > 
 > - [ ] **Visualización:**
 >   - [ ] Pintar toda la información posible:
@@ -52,12 +56,15 @@
 >     - [ ] Pintar `reset` y `clock`.
 >     - [ ] ¿Es posible ver el circuito completo? Evaluar esta opción.
 > 
+> - [ ] **Simulaciones:**
+>   - [ ] Simular chips `74xx`.
+> 
 > - [ ] **Nuevos Chips:**
 >   - [ ] Crear un chip nuevo llamado **HELIUM** (*FPGA*):
 >     - [ ] Debe tener como input el **master clock** y como output un **PHI** dividido por `n` (¿4? ¿16?).
-> 
-> - [ ] **Simulaciones:**
->   - [ ] Simular chips `74xx`.
+>   - [ ] Power button
+>   - [ ] PSRam
+>   - [ ] SD Card
 > 
 > - [ ] **CPU:**
 >   - [ ] Entender el funcionamiento interno de la CPU.
