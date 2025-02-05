@@ -1,34 +1,78 @@
-## Diario
-### 03 / 02 / 2025
+## 🗓️ Diario de Trabajo
 
->> Creamos paso a paso una emuacion básica. Mostrando la ventana por pantalla y algunos paneles. No consigo aun arrancar simulacion.
+---
 
-### 04 / 02 / 2025
+### ✅ **03 / 02 / 2025**
+> **Avance:**
+> - [x] Creamos paso a paso una emulación básica.
+> - [x] Mostramos la ventana por pantalla y algunos paneles.
+> - [x] **Problema:** No consigo aún arrancar la simulación (resuelto más adelante).
 
->> He conseguido montar un básico con reloj, reset y cpu. Tambíen he clonado la CPU6502 a una CPU65816. 
+---
 
-### 05 / 02 / 2025
+### ✅ **04 / 02 / 2025**
+> **Logros:**
+> - [x] He conseguido montar un básico con **reloj**, **reset** y **CPU**.
+> - [x] Clonado la **CPU6502** a una **CPU65816**.
 
->> Los devices (un devices es un emulador) originales están. PET, PETlite y Minimal6502
->> No tienen nada más que el OSCilador y la CPU
->> Creados un dev_nova_64 y un dev_minimal_65816. Seran las bases donde construiré mi emulador
->> Single step es el paso más pequeño de la simulacion. Step clock es half clock
->> Comprendido a grandes rasgos el funcionamiento del emulador. Gracias ChatGPT. Documentado
+---
 
-### Pendientes
+### ✅ **05 / 02 / 2025**
+> **Observaciones:**
+> - [x] Los **devices** (un *device* es un emulador) originales están:
+>   - [x] `PET`, `PETlite` y `Minimal6502`.
+> - [x] No tienen más que el **oscilador** y la **CPU**.
+> - [x] Creados:
+>   - [x] `dev_nova_64` y `dev_minimal_65816` → serán las bases para construir mi emulador.
+> - **Conceptos entendidos:**
+>   - [x] `Single step`: el paso más pequeño de la simulación.
+>   - [x] `Step clock`: medio ciclo de reloj.
+> - [x] Comprendido a grandes rasgos el funcionamiento del emulador.
+>   - [x] ¡Gracias ChatGPT! Documentado.
 
-Añadir logic analyzer. Solo lo tiene PET. Añadirlo al PET. Y comprobar que funciona. Entenderlo y documentarlo.
-Despues, añadirlo al resto. Documentar el proceso.
-Entender el reloj, oscilador.
-Crear un panel para el oscilador
-Crear un panel para schematic (device dependant)
-Siguientes pasos son. Como pintar toda la información posible. Veo la CPU pero... quiero ver circuito? Es posible?
-Al menos, pintar reset, clock, por ahora.
-Crear un chip nuevo. HELIUM. FPGA. De momento... quiero que tenga como input el master clock y output un PHI partido por n (4? 16?)
-Simular chips 74xx
-Además, quiero entender la CPU.
-También debo enganchar una memoria. Al minimal65816.
-Conseguir ejecutar algo básico (teniendo en cuenta que sigo siendo un 6502 a pesar del nombre)
-NOP test
-LDAs, cosas muy basicas vaya
-Tras esto, destripar la cpu65816 y comenzar a añadir cosas de poco a poco.
+---
+
+## ✅ **Tareas Pendientes**
+
+> - [ ] Añadir **Logic Analyzer**:
+>   - [ ] Solo lo tiene `PET`. Añadirlo y comprobar que funciona.
+>   - [ ] Entender su funcionamiento y documentarlo.
+>   - [ ] Añadirlo al resto de devices y documentar el proceso.
+> 
+> - [ ] **Reloj y Oscilador:**
+>   - [ ] Entender su funcionamiento.
+>   - [ ] Crear un panel para el oscilador.
+> 
+> - [ ] **Paneles:**
+>   - [ ] Crear un panel para `schematic` (*dependiente del dispositivo*).
+> 
+> - [ ] **Visualización:**
+>   - [ ] Pintar toda la información posible:
+>     - [ ] Ver la CPU.
+>     - [ ] Pintar `reset` y `clock`.
+>     - [ ] ¿Es posible ver el circuito completo? Evaluar esta opción.
+> 
+> - [ ] **Nuevos Chips:**
+>   - [ ] Crear un chip nuevo llamado **HELIUM** (*FPGA*):
+>     - [ ] Debe tener como input el **master clock** y como output un **PHI** dividido por `n` (¿4? ¿16?).
+> 
+> - [ ] **Simulaciones:**
+>   - [ ] Simular chips `74xx`.
+> 
+> - [ ] **CPU:**
+>   - [ ] Entender el funcionamiento interno de la CPU.
+>   - [ ] Enganchar una memoria al `minimal65816`.
+>   - [ ] Conseguir ejecutar algo básico (aunque siga siendo un `6502` a pesar del nombre).
+>     - [ ] Test de `NOP`.
+>     - [ ] Instrucciones básicas como `LDA`.
+> 
+> - [ ] **Desarrollo CPU65816:**
+>   - [ ] Destripar la `CPU65816`.
+>   - [ ] Comenzar a añadir funcionalidades poco a poco.
+ 
+---
+
+> ### 🚀 **Siguientes Pasos:**
+> - Priorizar la visualización y análisis del reloj y el oscilador.
+> - Consolidar la documentación para facilitar futuras iteraciones.
+> - Foco en pruebas básicas de la `CPU65816` antes de extender funcionalidades.
