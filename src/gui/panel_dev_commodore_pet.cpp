@@ -119,7 +119,7 @@ public:
 
 private:
 	ImVec2			position;
-	const ImVec2	size = {0, 0};
+	const ImVec2	size = {330, 0};
 	DevCommodorePet *device;
 
 	UITree			pet_hardware;

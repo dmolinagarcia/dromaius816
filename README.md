@@ -58,6 +58,7 @@ git push
 ### 04 / 02 / 2025
 
 >> He conseguido montar un básico con reloj, reset y cpu. Tambíen he clonado la CPU6502 a una CPU65816. 
+Entender el reloj, oscilador. Step clock y step cycle
 Siguientes pasos son. Como pintar toda la información posible. Veo la CPU pero... quiero ver circuito? Es posible?
 Al menos, pintar reset, clock, por ahora.
 Crear un chip nuevo. HELIUM. FPGA. De momento... quiero que tenga como input el master clock y output un PHI partido por n (4? 16?)

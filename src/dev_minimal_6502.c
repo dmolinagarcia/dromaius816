@@ -310,9 +310,9 @@ DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (Pow
 //>	});
 //>	DEVICE_REGISTER_CHIP("ROM", device->rom);
 //>
-//>	if (rom_data) {
+if (rom_data) {
 //>		dms_memcpy(device->rom->data_array, rom_data, arrlenu(rom_data));
-//>	}
+}
 //>
 //>	// pia
 //>	device->pia = chip_6520_create(device->simulator, (Chip6520Signals) {
@@ -395,6 +395,10 @@ void dev_minimal_6502_read_memory(DevMinimal6502 *device, size_t start_address, 
 		return;
 	}
 
+	if (device->get_cpu(device)) {
+			//> dummy if to avoid warning due to unused device
+	}
+
 	// find start region
 	int sr = NUM_REGIONS - 1;
 	while (start_address < REGION_START[sr] && sr > 0) {
@@ -431,6 +435,14 @@ void dev_minimal_6502_write_memory(DevMinimal6502 *device, size_t start_address,
 	assert(device);
 	assert(input);
 
+	if (input) {
+			//> dummy if to avoid warning due to unused device
+	}
+
+	if (device->get_cpu(device)) {
+			//> dummy if to avoid warning due to unused device
+	}
+
 	// only allow writes to the RAM area
 	if (start_address > 0x7fff) {
 		return;
@@ -463,8 +475,14 @@ size_t dev_minimal_6502_get_irq_signals(DevMinimal6502 *device, SignalBreakpoint
 
 void dev_minimal_6502_rom_from_file(DevMinimal6502 *device, const char *filename) {
 //>	file_load_binary_fixed(filename, device->rom->data_array, device->rom->data_size);
+	if (device && filename) {
+		//> dummy if to avoid warning due to unused device
+	}
 }
 
 void dev_minimal_6502_ram_from_file(DevMinimal6502 *device, const char *filename) {
 //>	file_load_binary_fixed(filename, device->ram->data_array, device->ram->data_size);
+	if (device && filename) {
+		//> dummy if to avoid warning due to unused device
+	}
 }

@@ -173,8 +173,6 @@ void UIContext::create_minimal_65816() {
 
 void UIContext::create_commodore_pet(bool lite) {
 
-		bool dummy = lite ;
-
 	DevCommodorePet *device_pet = (lite) ? dev_commodore_pet_lite_create() : dev_commodore_pet_create();
 	device = (Device *) device_pet;
 

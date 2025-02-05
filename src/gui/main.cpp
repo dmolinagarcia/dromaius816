@@ -185,7 +185,7 @@ int main(int argc, char ** argv) {
     ImGuiStyle& style = ImGui::GetStyle();
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        style.WindowRounding = 5.0f;                  // Asegura que no sea completamente cuadrada
+        style.WindowRounding = 2.0f;                  // Asegura que no sea completamente cuadrada
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;     // Asegura que la ventana sea visible
     
         // Forzar decoraciones en las ventanas de la plataforma

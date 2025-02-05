@@ -88,6 +88,7 @@ public:
 	void display() override {
 
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
 		load_rom = false;
 		load_ram = false;
@@ -129,6 +130,8 @@ public:
 
 private:
 	ImVec2			position;
+	const ImVec2			size = {330, 0};
+
 	DevMinimal6502 *device;
 
 	UITree			hardware_list;

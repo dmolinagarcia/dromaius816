@@ -23,7 +23,7 @@ public:
 
 	void display() override {
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowSize({0, 0}, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
 		if (ImGui::Begin(title.c_str(), &stay_open)) {
 
@@ -150,7 +150,7 @@ private:
 private:
 	ImVec2				position;
 	std::string			title;
-
+	const ImVec2			size = {330, 0};
 	Cpu6502	*			cpu;
 };
 

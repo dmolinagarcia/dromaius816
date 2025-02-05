@@ -25,7 +25,7 @@ public:
 
 	void display() override {
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowSize({0, 0}, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
 		if (ImGui::Begin(title.c_str(), &stay_open)) {
 
@@ -142,6 +142,8 @@ public:
 	}
 
 private:
+	const ImVec2			size = {330, 0};
+
 	static constexpr const char *txt_header_registers = "Registers";
 	static constexpr const char *txt_header_flags = "Status Flags";
 	static constexpr const char *txt_header_signals = "Signals";

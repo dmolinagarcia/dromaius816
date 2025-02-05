@@ -1870,7 +1870,7 @@ void circuit_create_06(DevCommodorePet *device) {
 //> }
 
 // sheet 08: display rams components
-void circuit_create_08(DevCommodorePet *device) {
+//> void circuit_create_08(DevCommodorePet *device) {
 
 	// >> h11 - binary counter
 //> 	DEVICE_REGISTER_CHIP("H11", chip_7493_binary_counter_create(device->simulator, (Chip7493Signals) {
@@ -2024,10 +2024,10 @@ void circuit_create_08(DevCommodorePet *device) {
 //> 
 //> 	// glue-logic
 //> 	DEVICE_REGISTER_CHIP("LOGIC8", glue_logic_create_08(device));
-}
+//> }
 
 // peripherals
-void circuit_create_peripherals(DevCommodorePet *device, bool lite) {
+//> void circuit_create_peripherals(DevCommodorePet *device, bool lite) {
 
 	// keyboard
 //> 	device->keypad = input_keypad_create(device->simulator, false, 10, 8, 500, 100,
@@ -2086,10 +2086,10 @@ void circuit_create_peripherals(DevCommodorePet *device, bool lite) {
 //> 											[PERIF_FD2031_DIO7  ] = SIGNAL(DIO7),
 //> 	});
 //> 	DEVICE_REGISTER_CHIP("488TEST", device->disk_2031);
-}
+//> }
 
 // lite-PET: RAM circuitry
-void circuit_lite_create_ram(DevCommodorePet *device) {
+//> void circuit_lite_create_ram(DevCommodorePet *device) {
 
 //> 	Ram8d16a *ram = ram_8d16a_create(15, device->simulator, (Ram8d16aSignals) {
 //> 										[CHIP_RAM8D16A_A0] = SIGNAL(BA0),
@@ -2126,7 +2126,7 @@ void circuit_lite_create_ram(DevCommodorePet *device) {
 //> 
 //> 	// glue-logic
 //> 	DEVICE_REGISTER_CHIP("LOGIC5", glue_logic_create_05(device));
-}
+//> }
 
 // lite-PET: master timing
 void circuit_lite_create_timing(DevCommodorePet *device) {
@@ -2137,8 +2137,8 @@ void circuit_lite_create_timing(DevCommodorePet *device) {
 }
 
 // lite-PET: display ram
-void circuit_lite_create_vram(DevCommodorePet *device) {
-	assert(device);
+//> void circuit_lite_create_vram(DevCommodorePet *device) {
+//>	assert(device);
 //> 	DEVICE_REGISTER_CHIP("VRAM", ram_8d16a_create(10, device->simulator, (Ram8d16aSignals) {
 //> 										[CHIP_RAM8D16A_A0] = SIGNAL(BA0),
 //> 										[CHIP_RAM8D16A_A1] = SIGNAL(BA1),
@@ -2166,7 +2166,7 @@ void circuit_lite_create_vram(DevCommodorePet *device) {
 //> 	}));
 //> 
 //> 	DEVICE_REGISTER_CHIP("LOGIC7", glue_logic_create_07_lite(device));
-}
+//> }
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -2522,20 +2522,20 @@ DevCommodorePet *create_pet_device(bool lite) {
 //> 		circuit_create_07(device);
 
 		// sheet 08: display rams components
-		circuit_create_08(device);
+//>		circuit_create_08(device);
 	} else {
 		// main ram
-		circuit_lite_create_ram(device);
+//> 		circuit_lite_create_ram(device);
 
 		// master timing
 		circuit_lite_create_timing(device);
 
 		// display ram
-		circuit_lite_create_vram(device);
+//> 		circuit_lite_create_vram(device);
 	}
 
 	// peripherals
-	circuit_create_peripherals(device, lite);
+//> 	circuit_create_peripherals(device, lite);
 
 	// let the simulator know no more chips will be added
 	simulator_device_complete(device->simulator);
@@ -2613,8 +2613,9 @@ void dev_commodore_pet_reset(DevCommodorePet *device) {
 	assert(device);
 	device->in_reset = true;
 }
-void dev_commodore_pet_read_memory(DevCommodorePet *device, size_t start_address, size_t size, uint8_t *output) {
-	assert(device);
+
+//> void dev_commodore_pet_read_memory(DevCommodorePet *device, size_t start_address, size_t size, uint8_t *output) {
+//> 	assert(device);
 //> 
 //> 	assert(output);
 //> 	// note: this function skips the free rom slots
@@ -2693,7 +2694,8 @@ void dev_commodore_pet_read_memory(DevCommodorePet *device, size_t start_address
 //> 
 //> 		done += to_copy;
 //> 	}
-}
+//> }
+
 //> void dev_commodore_pet_write_memory(DevCommodorePet *device, size_t start_address, size_t size, uint8_t *input) {
 //> 	assert(device);
 //> 

@@ -312,9 +312,9 @@ DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (Pow
 //>	});
 //>	DEVICE_REGISTER_CHIP("ROM", device->rom);
 //>
-//>	if (rom_data) {
+if (rom_data) {
 //>		dms_memcpy(device->rom->data_array, rom_data, arrlenu(rom_data));
-//>	}
+}
 //>
 //>	// pia
 //>	device->pia = chip_6520_create(device->simulator, (Chip6520Signals) {
@@ -388,6 +388,10 @@ void dev_minimal_65816_read_memory(DevMinimal65816 *device, size_t start_address
 	assert(device);
 	assert(output);
 
+	if (device->get_cpu(device)) {
+		//> dummy if to avoid warning due to unused device
+	}
+
 	static const size_t	REGION_START[] = {0x0000, 0x8000, 0xc000};
 	static const size_t REGION_SIZE[]  = {0x8000, 0x4000, 0x4000};
 	static const int NUM_REGIONS = sizeof(REGION_START) / sizeof(REGION_START[0]);
@@ -433,6 +437,10 @@ void dev_minimal_65816_write_memory(DevMinimal65816 *device, size_t start_addres
 	assert(device);
 	assert(input);
 
+	if (device->get_cpu(device) && input) {
+		//> dummy if to avoid warning due to unused device
+	}
+
 	// only allow writes to the RAM area
 	if (start_address > 0x7fff) {
 		return;
@@ -465,8 +473,14 @@ size_t dev_minimal_65816_get_irq_signals(DevMinimal65816 *device, SignalBreakpoi
 
 void dev_minimal_65816_rom_from_file(DevMinimal65816 *device, const char *filename) {
 //>	file_load_binary_fixed(filename, device->rom->data_array, device->rom->data_size);
+	if (device && filename) {
+		//> dummy if to avoid warning due to unused device
+	}
 }
 
 void dev_minimal_65816_ram_from_file(DevMinimal65816 *device, const char *filename) {
 //>	file_load_binary_fixed(filename, device->ram->data_array, device->ram->data_size);
+	if (device && filename) {
+		//> dummy if to avoid warning due to unused device
+	}
 }
