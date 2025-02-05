@@ -149,14 +149,16 @@ endif()
 			src/cpu_65816.h
 			src/device.c
 			src/device.h
+			src/dev_commodore_pet.c
+			src/dev_commodore_pet.h
 			src/dev_minimal_6502.c
 			src/dev_minimal_6502.h
 			src/dev_minimal_65816.c
 			src/dev_minimal_65816.h
 			src/signal_history.c
 			src/signal_history.h
-#>			src/signal_history_profiles.c
-#>			src/signal_history_profiles.h
+			src/signal_history_profiles.c
+			src/signal_history_profiles.h
 			src/signal_line.c
 			src/signal_line.h
 			src/signal_pool.c
@@ -204,6 +206,8 @@ target_sources(${GUI_TARGET}
 		src/gui/panel_cpu_6502.h
 		src/gui/panel_cpu_65816.cpp
 		src/gui/panel_cpu_65816.h
+		src/gui/panel_dev_commodore_pet.cpp
+		src/gui/panel_dev_commodore_pet.h
 		src/gui/panel_dev_minimal_6502.cpp
 		src/gui/panel_dev_minimal_6502.h
 		src/gui/panel_dev_minimal_65816.cpp

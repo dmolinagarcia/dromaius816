@@ -57,9 +57,11 @@ git push
 ## Diario
 ### 04 / 02 / 2025
 
-He conseguido montar un básico con reloj, reset y cpu. Tambíen he clonado la CPU6502 a una CPU65816. 
+>> He conseguido montar un básico con reloj, reset y cpu. Tambíen he clonado la CPU6502 a una CPU65816. 
 Siguientes pasos son. Como pintar toda la información posible. Veo la CPU pero... quiero ver circuito? Es posible?
 Al menos, pintar reset, clock, por ahora.
+Crear un chip nuevo. HELIUM. FPGA. De momento... quiero que tenga como input el master clock y output un PHI partido por n (4? 16?)
+Simular chips 74xx
 Además, quiero entender la CPU.
 También debo enganchar una memoria. Al minimal65816.
 Conseguir ejecutar algo básico (teniendo en cuenta que sigo siendo un 6502 a pesar del nombre)

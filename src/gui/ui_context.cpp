@@ -9,13 +9,13 @@
 #include <cpu.h>
 #include <dev_minimal_6502.h>
 #include <dev_minimal_65816.h>
-//> #include <dev_commodore_pet.h>
+#include <dev_commodore_pet.h>
 
 #include <algorithm>
 #include <iterator>
 
 #include "panel_control.h"
-//> #include "panel_dev_commodore_pet.h"
+#include "panel_dev_commodore_pet.h"
 #include "panel_dev_minimal_6502.h"
 #include "panel_dev_minimal_65816.h"
 //> #include "panel_memory.h"
@@ -174,26 +174,26 @@ void UIContext::create_minimal_65816() {
 void UIContext::create_commodore_pet(bool lite) {
 
 		bool dummy = lite ;
-//> 
-//> 	DevCommodorePet *device_pet = (lite) ? dev_commodore_pet_lite_create() : dev_commodore_pet_create();
-//> 	device = (Device *) device_pet;
-//> 
-//> 	// create dromaius context
-//> 	dms_ctx = dms_create_context();
-//> 	dms_set_device(dms_ctx, device);
-//> 
-//> 	// create UI panels
-//> 	std::initializer_list<StepSignal> lite_signals = {{device_pet->signals[SIG_P2001N_CLK1], true, true}};
-//> 	std::initializer_list<StepSignal> all_signals  = {{device_pet->signals[SIG_P2001N_CLK1], true, true},
-//> 									  {device_pet->signals[SIG_P2001N_CLK8], true, true},
-//> 									  {device_pet->signals[SIG_P2001N_CLK16], true, true}};
-//> 
-//> 	panel_add(panel_control_create(this, {0, 0}, device_pet->oscillator_y1,
-//> 								  {device_pet->signals[SIG_P2001N_SYNC], true, false},
-//> 								  (lite) ? lite_signals : all_signals
-//> 	));
-//> 
-//> 	panel_add(panel_dev_commodore_pet_create(this, {0, 240}, device_pet));
+
+	DevCommodorePet *device_pet = (lite) ? dev_commodore_pet_lite_create() : dev_commodore_pet_create();
+	device = (Device *) device_pet;
+
+	// create dromaius context
+	dms_ctx = dms_create_context();
+	dms_set_device(dms_ctx, device);
+
+	// create UI panels
+	std::initializer_list<StepSignal> lite_signals = {{device_pet->signals[SIG_P2001N_CLK1], true, true}};
+	std::initializer_list<StepSignal> all_signals  = {{device_pet->signals[SIG_P2001N_CLK1], true, true},
+									  {device_pet->signals[SIG_P2001N_CLK8], true, true},
+									  {device_pet->signals[SIG_P2001N_CLK16], true, true}};
+
+	panel_add(panel_control_create(this, {0, 0}, device_pet->oscillator_y1,
+								  {device_pet->signals[SIG_P2001N_SYNC], true, false},
+								  (lite) ? lite_signals : all_signals
+	));
+
+	panel_add(panel_dev_commodore_pet_create(this, {0, 240}, device_pet));
 }
 
 void UIContext::create_nova64() {
