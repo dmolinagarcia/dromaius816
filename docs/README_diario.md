@@ -49,6 +49,7 @@
 >     - [ ] Como dibujar un `schematic` fijo
 >     - [ ] Como colorear un `schematic` fijo
 >     - [ ] Puedo autogenerar el `schematic` a partir del device?
+>   - [ ] Emscripten. Como funciona?
 > 
 > - [ ] **Visualización:**
 >   - [ ] Pintar toda la información posible:
@@ -74,8 +75,12 @@
 >     - [ ] Instrucciones básicas como `LDA`.
 > 
 > - [ ] **Desarrollo CPU65816:**
->   - [ ] Destripar la `CPU65816`.
+>   - [ ] Destripar la `CPU65816` de todo su contenido.
 >   - [ ] Comenzar a añadir funcionalidades poco a poco.
+>     - [ ] Unicamente, avanza el PC en cada ciclo. 
+>     - [ ] Añadir NOP para un NOP free loop
+>     - [ ] Añadir registros internos del 65816
+>     - [ ] Timing y comportamiento del bus. Necesito implementer el BankAddress
  
 ---
 
