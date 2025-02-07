@@ -7,7 +7,6 @@
 #ifndef DROMAIUS_GUI_PANEL_DEV_NOVA_64_H
 #define DROMAIUS_GUI_PANEL_DEV_NOVA_64_H
 
-
 #include "panel.h"
 
 Panel::uptr_t panel_dev_nova_64_create(class UIContext *ctx, struct ImVec2 pos, struct DevNova64 *device);

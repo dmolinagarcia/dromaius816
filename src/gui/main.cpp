@@ -29,7 +29,7 @@
 EM_BOOL emscripten_handle_resize(int eventType, const EmscriptenUiEvent *uiEvent, void *userData);
 #endif // __EMSCRIPTEN__
 
-// Namespace Privado
+// Private Namespace
 namespace {
 
 	// Emscripten requires full control of the main loop. Store GLFW book-keeping variables globally.
@@ -48,8 +48,7 @@ namespace {
     static constexpr argh_list_t ARG_MACHINE = {"-m", "--machine" };
     static constexpr argh_list_t ARG_HELP = {"-h", "--help" };
 
-    // Y una función para mostrar la ayuda si no se proporcionan 
-    // los adecuados
+    // Print help if requested or wrong arguments
     void print_help() {
         auto format_argh_list = [](const argh_list_t & args) -> auto {
             std::string result;
@@ -142,11 +141,11 @@ int main(int argc, char ** argv) {
 	#endif		
 
     // Create window with graphics context
-	// Asegura que la ventana tenga bordes y controles
-	glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);  // Activa el borde de la ventana (decorations)
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  // Permite redimensionar
-	glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);    // Se enfoca automáticamente
-	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);    // Asegura que la ventana sea visible
+	// Window will have borders, title and control buttons
+	glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);  
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  
+	glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);    
+	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);    
 
     g_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), "Dromaius", NULL, NULL);
     if (g_window == NULL)
@@ -184,10 +183,9 @@ int main(int argc, char ** argv) {
     ImGuiStyle& style = ImGui::GetStyle();
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        style.WindowRounding = 2.0f;                  // Asegura que no sea completamente cuadrada
-        style.Colors[ImGuiCol_WindowBg].w = 1.0f;     // Asegura que la ventana sea visible
+        style.WindowRounding = 2.0f;                  
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;     
     
-        // Forzar decoraciones en las ventanas de la plataforma
         ImGuiViewport* viewport = ImGui::GetMainViewport();
         viewport->Flags &= ~ImGuiViewportFlags_NoDecoration;
     }	

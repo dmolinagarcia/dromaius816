@@ -4,7 +4,7 @@
 // based on
 // dev_minimal_6502.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
-// Emulates a minimal MOS-65816 based system, with 32kb of RAM and a 16kb system ROM.
+// Emulates a minimal 65816 based system
 
 /* Address space:
    // TBD

@@ -1,3 +1,5 @@
+// context.c - Daniel MOlina - BSD-3-Clause (see LICENSE)
+// adapted from 
 // context.c - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // main external interface for others to control a Dromaius instance

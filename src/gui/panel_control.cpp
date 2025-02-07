@@ -1,3 +1,5 @@
+// gui/panel_control.c - Daniel Molina - BSD-3-Clause (see LICENSE)
+// extends
 // gui/panel_control.c - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // UI panel to control the emulator

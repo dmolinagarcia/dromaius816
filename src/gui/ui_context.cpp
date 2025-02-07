@@ -1,3 +1,5 @@
+// gui/ui_context.h - Daniel Molina - BSD-3-Clause (see LICENSE) 
+// Extends
 // gui/ui_context.h - Johan Smet - BSD-3-Clause (see LICENSE) 
 
 #include "ui_context.h"
