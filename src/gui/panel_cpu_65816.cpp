@@ -20,7 +20,7 @@ public:
 		Panel(ctx),
 		position(pos),
 		cpu(cpu) {
-		title = ui_context->unique_panel_id("CPU - MOS 65816");
+		title = ui_context->unique_panel_id("CPU - WDC 65c816");
 	}
 
 	void display() override {

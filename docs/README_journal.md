@@ -32,10 +32,16 @@
 
 ---
 
+### ✅ **07 / FEB / 2025**
+> **Understanding chips and the simulator**
+> Each of the chips is defined within the Chip Struct. One of its properties is `schedule_timestamp` that represents the next time the chip has to perform an action. This is used to implement delays (e.g. a signal change after a clock edge, or e clock change after half a cycle).
+> The Oscillator uses this to schedule a clock flip afetr half a cycle. PowerOnReset schedules e resert DEASSERT after its predefined delay
+> On each step of the simulator, signal changed are calculated. Any chips affected by changed signals is marked as dirty. On process, all dirty chips and all scheduled actions in the past are executed.
+
 ## ✅ **Pending Tasks**
 
-> - [ ] **Oscillator and Reset:**
->   - [ ] Understand their behaviour. Understand the scheduler.
+> - [x] **Oscillator and Reset:**
+>   - ⏳ Understand their behaviour. Understand the scheduler. (More work needed on the scheduler, but good enough)
 >   - [ ] Create a panel for the oscillator.
 >   - [ ] Create a panel for the reset.
 > 
@@ -81,10 +87,3 @@
 >     - [ ] Add NOP for a NOP free loop.
 >     - [ ] Add internal registers for the 65816.
 >     - [ ] Timing and bus behavior. I need to implement the BankAddress.
- 
----
-
-> ### 🚀 **Next Steps:**
-> - Prioritize the visualization and analysis of the clock and oscillator.
-> - Consolidate documentation to facilitate future iterations.
-> - Focus on basic tests of the `CPU65816` before extending its functionalities.

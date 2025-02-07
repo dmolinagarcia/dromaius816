@@ -67,7 +67,7 @@ public:
 //> 					});
 //> 
 		auto &cat_cpu = hardware_list.add_category("CPU");
-		cat_cpu.add_leaf("MOS Technology 65816")
+		cat_cpu.add_leaf("WDC 65c816")
 					.add_action("View", [&]() {
 						ui_context->panel_add(panel_cpu_65816_create(ui_context, {2, 342}, device->cpu));
 					});

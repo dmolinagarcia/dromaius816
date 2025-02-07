@@ -102,7 +102,7 @@ int main(int argc, char ** argv) {
 
 		{
 			std::string machine;
-			cmd_line(ARG_MACHINE, "minimal-6502") >> machine;
+			cmd_line(ARG_MACHINE, "minimal-65816") >> machine;
 
 			if (!ui_config.set_machine_type(machine.c_str())) {
 				fprintf(stderr, "Invalid machine type specified (%s)\n", machine.c_str());
@@ -147,7 +147,7 @@ int main(int argc, char ** argv) {
 	glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);    
 	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);    
 
-    g_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), "Dromaius", NULL, NULL);
+    g_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), "Dromaius816", NULL, NULL);
     if (g_window == NULL)
         return 1;
     glfwMakeContextCurrent(g_window);	

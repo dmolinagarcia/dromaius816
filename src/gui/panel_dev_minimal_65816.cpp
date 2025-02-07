@@ -64,8 +64,10 @@ public:
 //> 						load_rom = true;
 //> 					});
 //> 
+		auto &cat_tmr = hardware_list.add_category("TIMER & CONTROL");
+
 		auto &cat_cpu = hardware_list.add_category("CPU");
-		cat_cpu.add_leaf("MOS Technology 65816")
+		cat_cpu.add_leaf("WDC 65c816")
 					.add_action("View", [&]() {
 						ui_context->panel_add(panel_cpu_65816_create(ui_context, {2, 342}, device->cpu));
 					});
@@ -85,6 +87,9 @@ public:
 //> 					.add_action("Open", [&]() {
 //> 						ui_context->panel_add(panel_signals_create(ui_context, {340, 310}));
 //> 					});
+
+		auto &cat_sch = hardware_list.add_category("SCHEMATIC");
+
 	}
 
 	void display() override {
