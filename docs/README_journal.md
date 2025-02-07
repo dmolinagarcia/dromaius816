@@ -41,7 +41,7 @@
 ## ✅ **Pending Tasks**
 
 > - [x] **Oscillator and Reset:**
->   - ⏳ Understand their behaviour. Understand the scheduler. (More work needed on the scheduler, but good enough)
+>   ⏳ Understand their behaviour. Understand the scheduler. (More work needed on the scheduler, but good enough)
 >   - [ ] Create a panel for the oscillator.
 >   - [ ] Create a panel for the reset.
 > 
