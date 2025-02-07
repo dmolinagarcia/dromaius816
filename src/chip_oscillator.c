@@ -4,7 +4,6 @@
 
 #include "chip_oscillator.h"
 #include "simulator.h"
-
 #include "crt.h"
 
 #define SIGNAL_PREFIX		CHIP_OSCILLATOR_
