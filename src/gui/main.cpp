@@ -1,7 +1,7 @@
 // main application entry point (native + wasm), based upon
 // dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
 
-// Librerias gráficas para gestion de ventanas
+// Graphic libs for window manager
 
 #include "imgui.h"
 #include <backends/imgui_impl_glfw.h>
@@ -13,11 +13,10 @@
 // https://github.com/adishavit/argh/blob/master/argh.h
 #include <argh/argh.h>
 
-// Funciones apoyo C++
+// Standard C++ funcionts
 #include <cstdio>
 #include <memory>
 
-// Y mas funciones graficas. No se por que no estan juntas, pero bueno
 #include <glad/glad.h>  // Initialize with gladLoadGL()
 
 // Include glfw3.h after our OpenGL definitions
@@ -44,7 +43,7 @@ namespace {
     }
 
     // ARGument Handler
-    // Definimos primero la lista de argumentos
+    // We start by defining the argument list
     using argh_list_t = std::initializer_list < const char * const > ;
     static constexpr argh_list_t ARG_MACHINE = {"-m", "--machine" };
     static constexpr argh_list_t ARG_HELP = {"-h", "--help" };

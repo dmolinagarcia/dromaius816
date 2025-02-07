@@ -1,3 +1,6 @@
+// gui/debug.h - Daniel MOlina - BSD-3-Clause (see LICENSE)
+// Debugging functions for development
+
 // DEBUG
 #include <iostream>
 #include <chrono>
@@ -6,7 +9,7 @@
 
 #define DEBUG
 
-// Función para obtener el timestamp actual
+// Get Current Timestamp
 inline std::string get_timestamp() {
     using namespace std::chrono;
 
@@ -21,7 +24,7 @@ inline std::string get_timestamp() {
     return oss.str();
 }
 
-// Macro de depuración mejorado con timestamp
+// DEBUG Macro
 #ifdef DEBUG
     #define DBG_PRINT(fmt, ...) \
         printf("[%s] [DEBUG] %s:%d:%s(): " fmt "\n", get_timestamp().c_str(), __FILE__, __LINE__, __func__, ##__VA_ARGS__)

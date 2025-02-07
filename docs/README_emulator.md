@@ -1,18 +1,18 @@
-## 🚀 Resumen del Flujo de Funcionamiento del Emulador
+## 🚀 Emulator Execution Flow Summary
 
-### 🧩 **1. Interfaz Gráfica (UI)**
+### 🧙️ **1. Graphical Interface (UI)**
 
-- El usuario interactúa con la interfaz gráfica (por ejemplo, al pulsar el botón de "paso único"):  
+- The user interacts with the graphical interface (e.g., pressing the "single step" button):  
   ```c
   if (ImGui::Button(txt_step_single)) {
       dms_single_step(ui_context->dms_ctx);
   }
   ```
 
-### 🔄 **2. Cambio de Estado en `dms_single_step`**
+### 🔄 **2. State Change in `dms_single_step`**
 
-- Se llama a `dms_single_step()` con el contexto de la simulación (`dms_ctx`).
-- Si el simulador está en pausa (`DS_WAIT`), cambia el estado a `DS_SINGLE_STEP`:
+- `dms_single_step()` is called with the simulation context (`dms_ctx`).
+- If the simulator is paused (`DS_WAIT`), it changes the state to `DS_SINGLE_STEP`:
 
   ```c
   void dms_single_step(DmsContext *dms) {
@@ -23,9 +23,9 @@
   }
   ```
 
-### 🧵 **3. Hilo de Simulación (Context Background Thread)**
+### 🧕 **3. Simulation Thread (Context Background Thread)**
 
-- En un hilo independiente, el bucle principal de la simulación llama continuamente a `context_execute()` si el estado no es `DS_WAIT`:
+- In a separate thread, the main simulation loop continuously calls `context_execute()` if the state is not `DS_WAIT`:
 
   ```c
   while (dms->running) {
@@ -35,15 +35,15 @@
   }
   ```
 
-### ⚙️ **4. Ejecución del Contexto (`context_execute`)**
+### ⚙️ **4. Context Execution (`context_execute`)**
 
-- Se llama a `dms->device->process(dms->device)` para procesar el dispositivo emulado:
+- Calls `dms->device->process(dms->device)` to process the emulated device:
 
   ```c
   dms->device->process(dms->device);
   ```
 
-- Luego, se verifica el estado para decidir si continuar o pausar:
+- Then checks the state to decide whether to continue or pause:
 
   ```c
   switch (dms->config.state) {
@@ -58,9 +58,9 @@
   }
   ```
 
-### 📦 **5. Procesamiento del Dispositivo (`device_process`)**
+### 📦 **5. Device Processing (`device_process`)**
 
-- `process` apunta a `device_process`, que es una función común para todos los dispositivos:
+- `process` points to `device_process`, a common function for all devices:
 
   ```c
   void device_process(Device *device) {
@@ -69,9 +69,9 @@
   }
   ```
 
-### ⏱️ **6. Simulación del Timestep (`simulator_simulate_timestep`)**
+### ⏱️ **6. Simulation Timestep (`simulator_simulate_timestep`)**
 
-- Esta función es el **corazón de la simulación**, avanzando un ciclo del simulador:
+- This function is the **core of the simulation**, advancing one simulation cycle:
 
   ```c
   void simulator_simulate_timestep(Simulator *sim) {
@@ -87,33 +87,31 @@
   }
   ```
 
-#### 🔑 **Tareas Clave en `simulator_simulate_timestep`**
+#### 🔑 **Key Tasks in `simulator_simulate_timestep`**
 
-1. **Avanzar el reloj de la simulación (`current_tick`).**
-2. **Gestionar eventos programados (interrupciones, temporizadores).**
-3. **Procesar los dispositivos "sucios" (CPU, GPU, etc.).**
-4. **Detectar cambios en las señales para el siguiente ciclo.**
-5. **Registrar el historial de señales si está habilitado.**
+1. **Advance the simulation clock (`current_tick`).**
+2. **Handle scheduled events (interrupts, timers).**
+3. **Process "dirty" devices (CPU, GPU, etc.).**
+4. **Detect signal changes for the next cycle.**
+5. **Log signal history if enabled.**
 
-### 🗺️ **7. Ciclo Completo**
+### 🗙️ **7. Complete Cycle**
 
-- Tras procesar un ciclo:
-  - Si el estado es `DS_SINGLE_STEP`, se vuelve a `DS_WAIT`.
-  - Si el estado es `DS_RUN`, se sigue ejecutando hasta alcanzar un breakpoint.
-
----
-
-### 🚀 **Resumen del Flujo**
-
-1. **Interfaz gráfica:** Interacción del usuario.
-2. **Cambio de estado:** Pausa → Paso único (`DS_SINGLE_STEP`).
-3. **Hilo de simulación:** Llama a `context_execute`.
-4. **Procesamiento del dispositivo:** A través de `device_process`.
-5. **Simulación de un ciclo:** En `simulator_simulate_timestep`.
-6. **Actualización del estado:** Pausa o continuar, según el estado.
+- After processing a cycle:
+  - If the state is `DS_SINGLE_STEP`, it returns to `DS_WAIT`.
+  - If the state is `DS_RUN`, execution continues until a breakpoint is reached.
 
 ---
 
-✅ **Con esto tienes una visión completa del flujo de ejecución del emulador.**
-Si necesitas profundizar en alguna parte específica, ¡estaré aquí para ayudarte! 🚀
+### 🚀 **Flow Summary**
 
+1. **Graphical interface:** User interaction.
+2. **State change:** Pause → Single Step (`DS_SINGLE_STEP`).
+3. **Simulation thread:** Calls `context_execute`.
+4. **Device processing:** Through `device_process`.
+5. **Simulation cycle:** In `simulator_simulate_timestep`.
+6. **State update:** Pause or continue, depending on the state.
+
+---
+
+**Created with the help of ChatGPT-4o**

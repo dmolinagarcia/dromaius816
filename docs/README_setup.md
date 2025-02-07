@@ -1,7 +1,8 @@
-## Preparando la vbox
+## Getting ready the VM
 
-Clonamos la VM standar
+We clone our standby devbox VM and then
 
+```
 sudo apt-get update
 sudo apt install cmake
 sudo apt install libx11-dev
@@ -13,32 +14,35 @@ sudo apt install libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev
 sudo apt install wayland-protocols libwayland-dev
 sudo apt install pkg-config
 sudo apt install libxkbcommon-dev
+```
 
+## Trying the original Dromaius Project
 
-## Intentando compilar el original
-
+```
 cmake . -B _build -DCMAKE_BUILD_TYPE=Release
 cmake --build _build 
+```
 
-## Funciona, voy creando dentro de dromaius816 el mio
-Carga de librerias
+## As we made it work, let's create our own project
 
+```
+mkdir dromaius816
 cd dromaius816/libs
 git submodule add https://github.com/ocornut/imgui.git
 git submodule add https://github.com/glfw/glfw.git
 
--- Pasamos al branch Docking
+# Jump to Docking brach for IMGUI
 cd imgui
 git fetch
 cd ../..
 git add libs/imgui
-git commit -m "Actualizado submódulo imgui para apuntar a la rama docking"
+git commit -m "Updated IMGUI submodule to jump to Docking branch"
 
 git config -f .gitmodules submodule.libs/imgui.branch docking
 git add .gitmodules
-git commit -m "Configurado imgui para seguir la rama docking por defecto"
+git commit -m "IMGUI configured to follow Docking branch"
 
--- pasamos a los mismos commits que dromiaius
+# Revert to same commits as the original project, due to some errores
 cd ~/work/dromaius816
 cd libs/glfw
 git fetch 
@@ -48,5 +52,6 @@ git fetch
 git checkout 64519c6875fde64796aa1d098c02e1b346ac99fe
 cd ../../
 git add libs/glfw libs/imgui
-git commit -m "Actualizados submódulos glfw e imgui a commits específicos"
+git commit -m "GFLW and IMGUI updated to specific commits"
 git push
+```
