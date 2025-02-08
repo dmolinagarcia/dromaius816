@@ -38,12 +38,21 @@
 > The Oscillator uses this to schedule a clock flip afetr half a cycle. PowerOnReset schedules e resert DEASSERT after its predefined delay
 > On each step of the simulator, signal changed are calculated. Any chips affected by changed signals is marked as dirty. On process, all dirty chips and all scheduled actions in the past are executed.
 
+---
+
+### ✅ **08 / FEB / 2025**
+> **Panel for the oscillator**
+> I've managed to create a new panel for the oscillator. A new panel for the reset should be easy now.
+
 ## ✅ **Pending Tasks**
 
 > - [ ] **Oscillator and Reset:**
 >   - [x] Understand their behaviour. Understand the scheduler. (More work needed on the scheduler, but good enough)
->   - [ ] Create a panel for the oscillator.
+>   - [x] Create a panel for the oscillator.
 >   - [ ] Create a panel for the reset.
+>
+> - [ ] **GUI: **
+>   - [ ] Avoid opening duplicate panels
 > 
 > - [ ] Add **Logic Analyzer**
 >   - [ ] Only `PET` currently has it. Add it and verify that it works.

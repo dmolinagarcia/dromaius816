@@ -11,6 +11,7 @@
 //> #include "panel_chip_6520.h"
 //> #include "panel_chip_hd44780.h"
 #include "panel_cpu_65816.h"
+#include "panel_chip_oscillator.h"
 //> #include "panel_input_keypad.h"
 //> #include "panel_memory.h"
 //> #include "panel_monitor.h"
@@ -65,6 +66,10 @@ public:
 //> 					});
 //> 
 		auto &cat_tmr = hardware_list.add_category("TIMER & CONTROL");
+		cat_tmr.add_leaf("Main Clock")
+					.add_action("View", [&]() {
+						ui_context->panel_add(panel_chip_oscillator_create(ui_context, {2, 342}, device->oscillator));
+					});
 
 		auto &cat_cpu = hardware_list.add_category("CPU");
 		cat_cpu.add_leaf("WDC 65c816")
@@ -88,7 +93,7 @@ public:
 //> 						ui_context->panel_add(panel_signals_create(ui_context, {340, 310}));
 //> 					});
 
-		auto &cat_sch = hardware_list.add_category("SCHEMATIC");
+//> 		auto &cat_sch = hardware_list.add_category("SCHEMATIC");
 
 	}
 

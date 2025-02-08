@@ -204,6 +204,8 @@ target_sources(${GUI_TARGET}
 		src/gui/panel.h
 		src/gui/panel_control.cpp
 		src/gui/panel_control.h
+		src/gui/panel_chip_oscillator.cpp
+		src/gui/panel_chip_oscillator.h
 		src/gui/panel_cpu_6502.cpp
 		src/gui/panel_cpu_6502.h
 		src/gui/panel_cpu_65816.cpp
