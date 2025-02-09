@@ -44,15 +44,21 @@
 > **Panel for the oscillator**
 > I've managed to create a new panel for the oscillator. A new panel for the reset should be easy now.
 
+---
+
+### ✅ **09 / FEB / 2025**
+> **Panel for the power on reset**
+> I've managed to create a new panel for the poweronreset. The soft reset button on the control panel signals the reset function within the device. In the minimal 65816 this toggles the in_reset attribute for the device. Then, the glue logic signals de TRIGGER_B pin in the power on reset circuit. Righit now this is not working as the glue logic is not implemented. I am creating a new task to investigate how the glue logic works.
+
 ## ✅ **Pending Tasks**
 
-> - [ ] **Oscillator and Reset:**
->   - [x] Understand their behaviour. Understand the scheduler. (More work needed on the scheduler, but good enough)
->   - [x] Create a panel for the oscillator.
->   - [ ] Create a panel for the reset.
+> - [ ] **Glue Logic:**
+>   - [ ] What is it, how does it work?
+>   - [ ] Reconnect reset in the Minimal65816
 >
-> - [ ] **GUI: **
+> - [ ] **GUI:**
 >   - [ ] Avoid opening duplicate panels
+>   - [ ] Add modifiers to panels. Oscillator and reset are good choices
 > 
 > - [ ] Add **Logic Analyzer**
 >   - [ ] Only `PET` currently has it. Add it and verify that it works.

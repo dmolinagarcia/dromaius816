@@ -93,6 +93,7 @@ typedef struct DevMinimal65816 {
 	struct ChipHd44780 *lcd;
 	struct InputKeypad *keypad;
 	struct Oscillator *	oscillator;
+	struct PowerOnReset * poweronreset;
 
 	bool			in_reset;
 

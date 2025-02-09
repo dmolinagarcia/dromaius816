@@ -7,7 +7,12 @@ project(dromaius816)
 option (ENABLE_THREADING "Enable multithreading in the Dromaius context" ON)
 option (ENABLE_GTKWAVE_EXPORT "Enable dumping of signals to GTKWave" OFF)
 
+# Enable Debug
 set(CMAKE_BUILD_TYPE Debug)
+
+# Enable profiling
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 
 # force C11 for all targets
 #  - don't do this on MSVC anymore. In march 2020 support for a fully compliant C11 preprocessor
@@ -206,6 +211,8 @@ target_sources(${GUI_TARGET}
 		src/gui/panel_control.h
 		src/gui/panel_chip_oscillator.cpp
 		src/gui/panel_chip_oscillator.h
+		src/gui/panel_chip_poweronreset.cpp
+		src/gui/panel_chip_poweronreset.h
 		src/gui/panel_cpu_6502.cpp
 		src/gui/panel_cpu_6502.h
 		src/gui/panel_cpu_65816.cpp

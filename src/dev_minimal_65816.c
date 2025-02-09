@@ -170,7 +170,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	device->read_memory = (DEVICE_READ_MEMORY) dev_minimal_65816_read_memory;
 	device->write_memory = (DEVICE_WRITE_MEMORY) dev_minimal_65816_write_memory;
 	device->get_irq_signals = (DEVICE_GET_IRQ_SIGNALS) dev_minimal_65816_get_irq_signals;
-
+	
 	device->simulator = simulator_create(NS_TO_PS(20));
 	device->signal_pool = device->simulator->signal_pool;
 
@@ -243,10 +243,11 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	DEVICE_REGISTER_CHIP("OSC", device->oscillator);
 
 // power-on-reset
-DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (PowerOnResetSignals) {
+	device->poweronreset = poweronreset_create(1000000, device->simulator, (PowerOnResetSignals) {
 									[CHIP_POR_TRIGGER_B] = SIGNAL(RESET_BTN_B),
 									[CHIP_POR_RESET_B] = SIGNAL(RESET_B)
-}));
+	});
+	DEVICE_REGISTER_CHIP("POR", device->poweronreset);
 //>
 //>	// ram
 //>	device->ram = ram_8d16a_create(15, device->simulator, (Ram8d16aSignals) {
