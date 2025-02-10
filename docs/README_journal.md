@@ -61,7 +61,7 @@
 > - [ ] **Signals:**
 >   - [ ] Understand how signals work
 >   - [ ] Understand how a device creates and defines signals
->   - [ ] Obtain signal list.
+>   - [ ] Obtain signal list for the device. 
 >   - [ ] Create signal map -> Precursor for schematic
 >
 > - [ ] **GUI:**
@@ -99,15 +99,22 @@
 > 
 > - [ ] **CPU:**
 >   - [ ] Understand the internal workings of the CPU.
+>     - [ ] Differences between the 65c02 and 65c816 Processor Status Register
 >   - [ ] Connect memory to the `minimal65816`.
 >   - [ ] Get something basic running (even though it’s still a `6502` despite the name).
 >     - [ ] `NOP` test.
 >     - [ ] Basic instructions such as `LDA`.
 > 
 > - [ ] **CPU65816 Development:**
->   - [ ] Dissect the `CPU65816` completely.
+>   - [ ] Dissect the `CPU65816` completely. Remove any functionality and everything from its pannel
 >   - [ ] Begin adding functionalities gradually.
->     - [ ] Initially, only advance the PC each cycle.
->     - [ ] Add NOP for a NOP free loop.
->     - [ ] Add internal registers for the 65816.
+>     - [ ] Create PINOUT for the CPU
+>     - [ ] Understand status register and how it changed between Emulation and Native
+>       - [ ] Implement Status Register
+>     - [ ] Understand remaining processor registeers
+>       - [ ] Implement remaining registers.
 >     - [ ] Timing and bus behavior. I need to implement the BankAddress.
+>     - [ ] Initially, only advance the PC each cycle.
+>     - [ ] Understand procesor cycle
+>     - [ ] Implement OPCODES
+>       - [ ] Add NOP for a NOP free loop.

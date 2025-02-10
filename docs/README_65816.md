@@ -23,7 +23,42 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 2. Definition of Data Structures and Pins
+## 2. 65c816 inner working
+
+### 2.1. Operation modes
+
+Emulation vs Native
+
+### 2.2. Processor registers
+
+#### 2.2.1. (P) Processor status register
+
+The Processor status register (P) is an 8-bit register that holds information about the current status of the CPU. In a 6502/65c02 the 8 bits are :
+
+- N: Negative Flag. 1 = negative
+- V: oVerflow Flag. 1 = overflow
+- 1: Always reads back as 1
+- B: BRK Command. 1 = BRK / 0 = IRQ
+- D: Decimal Mode. 1 = true
+- I: IRQB Disable. 1 = disable
+- Z: Zero. 1 = True
+- C: Carry. 1 = Trye
+
+In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads the same, When in native mode however there are some changes
+
+- N: Negative Flag. 1 = negative
+- V: oVerflow Flag. 1 = overflow
+- M: Memory Select. 1 = 8bit 0 = 16bit. Controls the size of the Accumulator
+- X: Index Register Select. 1 = 8bit 0 = 16bit. Controls the size of X and Y registers, only in emulation mode.
+- D: Decimal Mode. 1 = true
+- I: IRQB Disable. 1 = disable
+- Z: Zero. 1 = True
+- C: Carry. 1 = Trye
+
+(E)mulation flag. This flag indicates if the CPU is in emulation (1) or native (0) modes. This flag is hidden and can be exchanged with the Carry bit with the instruction XCE.
+---
+
+## 3. Definition of Data Structures and Pins
 
 - **Internal Structure:**  
   Create a structure similar to `Cpu6502_private` but extended to include all registers of the 65816. For example:
@@ -44,7 +79,7 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 3. Implementation of Memory Access and Cycle Management Functions
+## 4. Implementation of Memory Access and Cycle Management Functions
 
 - **Fetch and Store Functions:**  
   Reuse the idea of functions like `fetch_memory()` and `store_memory()`, adapting them for 24-bit addressing and new addressing modes.
@@ -60,7 +95,7 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 4. Instruction Decoder Design
+## 5. Instruction Decoder Design
 
 - **Separation by Instructions and Addressing Modes:**  
   Follow the same approach as in `cpu_6502.c`:
@@ -75,7 +110,7 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 5. Interrupt Handling and CPU States
+## 6. Interrupt Handling and CPU States
 
 - **Interrupts and Reset:**  
   Adapt the interrupt sequence (IRQ, NMI, and BRK) for the 65816, considering interrupt vectors and possible mode switches (emulation vs. native).
@@ -85,7 +120,7 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 6. Integration into the Simulator
+## 7. Integration into the Simulator
 
 - **Interface Functions:**  
   As with the 6502, define creation, destruction, and processing functions, such as:
@@ -98,13 +133,13 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 7. Example Skeleton
+## 8. Example Skeleton
 
 (A simplified example of code to start implementing the 65816 emulator.)
 
 ---
 
-## 8. Testing and Validation
+## 9. Testing and Validation
 
 - **Documentation:**
   Refer to the official 65816 documentation and specialized tutorials.
