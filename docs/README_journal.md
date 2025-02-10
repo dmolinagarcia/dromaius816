@@ -56,14 +56,11 @@
 > **Dev Glue Logic**
 > GLUE Logic for a device is a chip that handles internal control signals. It's like a PLA. PINs are defined within the device, along it's behaviour (process). Soft Reset calls a device_reset function. In the Minimal device, this toggles a variable (in_reset) that is connectd to the RESET_BTN_B signal. This triggers the device to reset. Signals are assigned in order to the GLUELOGIC chip, so any defined signal must be connected.
 
+> **Signals**
+> In the dev create function. Signals are created and defined. Calls to `SIGNAL_GROUP_NEW_N`, `SIGNAL_DEFINE_DEFAULT`, `SIGNAL_DEFINE` etc, create and assign the functions. Signal values can be accesed via device->simualtor->signal_pool. In here, signals_value is a 64bit integer that maps to each of the signals. So... is 64 the maximum number of signals I can use? The PET seems to have 100+. Maybe blocks and layers play a role I do not understand yet. No reference to layer or blocks exists on the device. Is it transparent?
+
 ## ✅ **Pending Tasks**
 
-> - [ ] **Signals:**
->   - [ ] Understand how signals work
->   - [ ] Understand how a device creates and defines signals
->   - [ ] Obtain signal list for the device. 
->   - [ ] Create signal map -> Precursor for schematic
->
 > - [ ] **GUI:**
 >   - [ ] Avoid opening duplicate panels
 >   - [ ] Add modifiers to panels. Oscillator and reset are good choices
