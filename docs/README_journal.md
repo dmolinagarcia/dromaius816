@@ -54,7 +54,7 @@
 
 ### ✅ **10 / FEB / 2025**
 > **Dev Glue Logic**
-> GLUE Logic for a device is a chip that handles internal control signals. It's like a PLA. PINs are defined within the device, along it's behaviour (process)
+> GLUE Logic for a device is a chip that handles internal control signals. It's like a PLA. PINs are defined within the device, along it's behaviour (process). Soft Reset calls a device_reset function. In the Minimal device, this toggles a variable (in_reset) that is connectd to the RESET_BTN_B signal. This triggers the device to reset. Signals are assigned in order to the GLUELOGIC chip, so any defined signal must be connected.
 
 ## ✅ **Pending Tasks**
 
