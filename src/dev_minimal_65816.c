@@ -69,57 +69,57 @@ typedef struct ChipGlueLogic {
 	SignalGroup		sg_address;
 } ChipGlueLogic;
 
-//> static uint8_t ChipGlueLogic_PinTypes[CHIP_GLUE_LOGIC_PIN_COUNT] = {0};
-//> 
-//> static void glue_logic_process(ChipGlueLogic *chip);
-//> static void glue_logic_destroy(ChipGlueLogic *chip);
+static uint8_t ChipGlueLogic_PinTypes[CHIP_GLUE_LOGIC_PIN_COUNT] = {0};
+
+static void glue_logic_process(ChipGlueLogic *chip);
+static void glue_logic_destroy(ChipGlueLogic *chip);
 
 #define GLUE_PIN(s,t)					\
 	chip->signals[pin] = s;				\
 	chip->pin_types[pin] = (t);			\
 	++pin;
 
-//> static ChipGlueLogic *glue_logic_create(DevMinimal65816 *device) {
-//> 	ChipGlueLogic *chip = (ChipGlueLogic *) dms_calloc(1, sizeof(ChipGlueLogic));
-//> 	chip->device = device;
-//> 	chip->signal_pool = device->signal_pool;
-//> 
-//> 	CHIP_SET_FUNCTIONS(chip, glue_logic_process, glue_logic_destroy);
-//> 	CHIP_SET_VARIABLES(chip, device->simulator, chip->signals, ChipGlueLogic_PinTypes, CHIP_GLUE_LOGIC_PIN_COUNT);
-//> 
-//> 	int pin = 0;
-//> 
-//> 	for (int i = 0; i < 16; ++i) {
-//> 		GLUE_PIN(*device->sg_address[i], CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
-//> 	}
-//> 	SIGNAL_GROUP(address) = signal_group_create_from_array(16, chip->signals);
-//> 
-//> 	GLUE_PIN(device->signals[SIG_M65816_CPU_RW],      CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
-//> 	GLUE_PIN(device->signals[SIG_M65816_CLOCK],	     CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
-//> 	GLUE_PIN(device->signals[SIG_M65816_RESET_BTN_B], CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_RAM_OE_B],    CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_RAM_WE_B],    CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_ROM_CE_B],    CHIP_PIN_OUTPUT);
-//> 	GLUE_PIN(device->signals[SIG_M65816_PIA_CS2_B],   CHIP_PIN_OUTPUT);
-//> 
-//> 	assert(pin == CHIP_GLUE_LOGIC_PIN_COUNT);
-//> 
-//> 	return chip;
-//> }
+static ChipGlueLogic *glue_logic_create(DevMinimal65816 *device) {
+	ChipGlueLogic *chip = (ChipGlueLogic *) dms_calloc(1, sizeof(ChipGlueLogic));
+	chip->device = device;
+	chip->signal_pool = device->signal_pool;
 
-//> static void glue_logic_destroy(ChipGlueLogic *chip) {
-//> 	assert(chip);
-//> 	signal_group_destroy(chip->sg_address);
-//> 	dms_free(chip);
-//> }
-//> 
-//> static void glue_logic_process(ChipGlueLogic *chip) {
-//> 	assert(chip);
-//> 	DevMinimal65816 *device = chip->device;
-//> 
-//> 	// >> reset logic
-//> 	SIGNAL_WRITE(RESET_BTN_B, !device->in_reset);
-//> 	device->in_reset = false;
+	CHIP_SET_FUNCTIONS(chip, glue_logic_process, glue_logic_destroy);
+	CHIP_SET_VARIABLES(chip, device->simulator, chip->signals, ChipGlueLogic_PinTypes, CHIP_GLUE_LOGIC_PIN_COUNT);
+
+	int pin = 0;
+
+	for (int i = 0; i < 16; ++i) {
+		GLUE_PIN(*device->sg_address[i], CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
+	}
+	SIGNAL_GROUP(address) = signal_group_create_from_array(16, chip->signals);
+
+	GLUE_PIN(device->signals[SIG_M65816_CPU_RW],      CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
+	GLUE_PIN(device->signals[SIG_M65816_CLOCK],	     CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
+	GLUE_PIN(device->signals[SIG_M65816_RESET_BTN_B], CHIP_PIN_OUTPUT);
+	GLUE_PIN(device->signals[SIG_M65816_RAM_OE_B],    CHIP_PIN_OUTPUT);
+	GLUE_PIN(device->signals[SIG_M65816_RAM_WE_B],    CHIP_PIN_OUTPUT);
+	GLUE_PIN(device->signals[SIG_M65816_ROM_CE_B],    CHIP_PIN_OUTPUT);
+	GLUE_PIN(device->signals[SIG_M65816_PIA_CS2_B],   CHIP_PIN_OUTPUT);
+
+	assert(pin == CHIP_GLUE_LOGIC_PIN_COUNT);
+
+	return chip;
+}
+
+static void glue_logic_destroy(ChipGlueLogic *chip) {
+	assert(chip);
+	signal_group_destroy(chip->sg_address);
+	dms_free(chip);
+}
+
+static void glue_logic_process(ChipGlueLogic *chip) {
+	assert(chip);
+	DevMinimal65816 *device = chip->device;
+
+	// >> reset logic
+	SIGNAL_WRITE(RESET_BTN_B, !device->in_reset);
+	device->in_reset = false;
 //> 
 //> 	// >> ram logic
 //> 	//  - ce_b: assert when top bit of address isn't set (copy of a15)
@@ -140,7 +140,7 @@ typedef struct ChipGlueLogic {
 //> 	//  - cs2_b: assert when bits 4-14 are zero
 //> 	uint16_t bus_address =  SIGNAL_GROUP_READ_U16(address);
 //> 	SIGNAL_WRITE(PIA_CS2_B, (bus_address & 0x7ff0) != 0x0000);
-//> }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -361,8 +361,8 @@ if (rom_data) {
 //>	DEVICE_REGISTER_CHIP("KEYPAD", device->keypad);
 //>	signal_group_defaults(SIGNAL_POOL, device->keypad->sg_rows, 0x00);
 //>
-//>	// custom chip for the glue logic
-//>	DEVICE_REGISTER_CHIP("LOGIC", glue_logic_create(device));
+// custom chip for the glue logic
+DEVICE_REGISTER_CHIP("LOGIC", glue_logic_create(device));
 //>
 //>
 	// let the simulator know no more chips will be added

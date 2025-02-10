@@ -50,15 +50,24 @@
 > **Panel for the power on reset**
 > I've managed to create a new panel for the poweronreset. The soft reset button on the control panel signals the reset function within the device. In the minimal 65816 this toggles the in_reset attribute for the device. Then, the glue logic signals de TRIGGER_B pin in the power on reset circuit. Righit now this is not working as the glue logic is not implemented. I am creating a new task to investigate how the glue logic works.
 
+---
+
+### ✅ **10 / FEB / 2025**
+> **Dev Glue Logic**
+> GLUE Logic for a device is a chip that handles internal control signals. It's like a PLA. PINs are defined within the device, along it's behaviour (process)
+
 ## ✅ **Pending Tasks**
 
-> - [ ] **Glue Logic:**
->   - [ ] What is it, how does it work?
->   - [ ] Reconnect reset in the Minimal65816
+> - [ ] **Signals:**
+>   - [ ] Understand how signals work
+>   - [ ] Understand how a device creates and defines signals
+>   - [ ] Obtain signal list.
+>   - [ ] Create signal map -> Precursor for schematic
 >
 > - [ ] **GUI:**
 >   - [ ] Avoid opening duplicate panels
 >   - [ ] Add modifiers to panels. Oscillator and reset are good choices
+>   - [ ] Add total simulation time display to control panel
 > 
 > - [ ] Add **Logic Analyzer**
 >   - [ ] Only `PET` currently has it. Add it and verify that it works.
