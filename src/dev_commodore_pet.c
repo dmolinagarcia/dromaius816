@@ -1558,7 +1558,7 @@ static void circuit_create_01(DevCommodorePet *device) {
 void circuit_create_06(DevCommodorePet *device) {
 
 	// >> y1 - oscillator
-	device->oscillator_y1 = oscillator_create(16000000, device->simulator, (OscillatorSignals) {
+	device->oscillator_y1 = oscillator_create(2000000, device->simulator, (OscillatorSignals) {
 										[CHIP_OSCILLATOR_CLK_OUT] = SIGNAL(CLK16)
 	});
 	DEVICE_REGISTER_CHIP("Y1", device->oscillator_y1);

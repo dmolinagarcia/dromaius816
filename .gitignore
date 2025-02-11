@@ -42,3 +42,5 @@ imgui.ini
 # temps
 .profiling*
 profiling*
+perf.data
+perf.data.old

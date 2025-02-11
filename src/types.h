@@ -79,6 +79,9 @@
 #define PS_TO_MS(t) ((t) / 1000000000ll)
 #define PS_TO_S(t)  ((t) / 1000000000000ll)
 
+#define NS_TO_S(t)  ((t) / 1000000000ll)
+#define NS_TO_MS(t) ((t) / 1000000ll)
+
 #define FREQUENCY_TO_PS(f)	(1000000000000ll / (f)) // frequency (in hertz) to interval in picoseconds
 
 #endif // DROMAIUS_TYPES_H

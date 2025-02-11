@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -152,6 +153,9 @@ public:
 			ImGui::Spacing();
 
 		// simulation frequency
+
+
+
 			if (ImGui::BeginTable("table_freq", 2)) {
 
 				// header
@@ -181,19 +185,36 @@ public:
 				ImGui::TableSetColumnIndex(1);
 
 				int freq = (int) ((float) oscillator->frequency * speed_ratio);
-				int new_freq = freq / FREQUENCY_SCALE[ui_freq_unit_idx];
+//>				int new_freq = freq / FREQUENCY_SCALE[ui_freq_unit_idx];
 
-				ImGui::SetNextItemWidth(-freq_combo_width);
-				ImGui::DragInt("##freq", &new_freq, 1, 1, 2000);
+				float frequency_float = (float)freq;
+
+//>				ImGui::SetNextItemWidth(-freq_combo_width);
+//>				ImGui::DragInt("##freq", &new_freq, 1, 1, 2000);
+//>				ImGui::SameLine();
+//>				ImGui::SetNextItemWidth(-FLT_MIN);
+//>				ImGui::Combo("##target", &ui_freq_unit_idx, FREQUENCY_UNITS, sizeof(FREQUENCY_UNITS) / sizeof(FREQUENCY_UNITS[0]));
+
+				ImGui::SliderFloat(" ", &frequency_float, 10, 10000000, "%.2f", ImGuiSliderFlags_Logarithmic);
 				ImGui::SameLine();
-				ImGui::SetNextItemWidth(-FLT_MIN);
-				ImGui::Combo("##target", &ui_freq_unit_idx, FREQUENCY_UNITS, sizeof(FREQUENCY_UNITS) / sizeof(FREQUENCY_UNITS[0]));
+				ui_text_frequency((int64_t) frequency_float);
 
-				new_freq *= FREQUENCY_SCALE[ui_freq_unit_idx];
+//>				new_freq *= FREQUENCY_SCALE[ui_freq_unit_idx];
+				int new_freq = (int)frequency_float;
+
 				if (new_freq != freq) {
 					speed_ratio = (float) new_freq / (float) oscillator->frequency;
 					dms_change_simulation_speed_ratio(ui_context->dms_ctx, speed_ratio);
 				}
+
+
+				// Simulation time
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Sim Time");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%lld ms", PS_TO_MS(dms_get_device(ui_context->dms_ctx)->simulator->current_tick *
+										dms_get_device(ui_context->dms_ctx)->simulator->tick_duration_ps));
 
 				ImGui::EndTable();
 
@@ -204,9 +225,9 @@ public:
 
 	void ui_text_frequency(int64_t freq) {
 		if (freq > 1000000) {
-			ImGui::Text("%3.3f MHz", static_cast<float>(freq) / 1000000.0f);
+			ImGui::Text("%3.2f MHz", static_cast<float>(freq) / 1000000.0f);
 		} else if (freq > 1000) {
-			ImGui::Text("%3.3f KHz", static_cast<float>(freq) / 1000.0f);
+			ImGui::Text("%3.0f KHz", static_cast<float>(freq) / 1000.0f);
 		} else {
 			ImGui::Text("%" PRId64 " Hz", freq);
 		}

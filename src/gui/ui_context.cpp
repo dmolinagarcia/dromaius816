@@ -184,6 +184,8 @@ void UIContext::create_minimal_65816() {
  								  {device_65816->signals[SIG_M65816_CPU_SYNC], true, false},
  								  {{device_65816->signals[SIG_M65816_CLOCK], true, true}}
 	));
+
+
 	panel_add(panel_dev_minimal_65816_create(this, {0, 240}, device_65816));
 }
 
