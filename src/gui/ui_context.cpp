@@ -89,6 +89,18 @@ void UIContext::draw_ui() {
 		}
 	}
 
+	// Get open panels IDs
+	std::set<std::string> existing_panel_ids;
+	for (const auto &panel : panels) {
+		existing_panel_ids.insert(panel->panel_id);
+	}
+
+	// Remove duplicates
+	new_panels.erase(std::remove_if(new_panels.begin(), new_panels.end(), [&](const std::unique_ptr<Panel> &panel) {
+		return existing_panel_ids.find(panel->panel_id) != existing_panel_ids.end();
+	}), new_panels.end());
+
+	// Open new panels
 	if (!new_panels.empty()) {
 		std::move(std::begin(new_panels), std::end(new_panels), std::back_inserter(panels));
 		new_panels.clear();

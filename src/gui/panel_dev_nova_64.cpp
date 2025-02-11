@@ -42,6 +42,9 @@ public:
 		position(pos),
 		device(dev) {
 
+						panel_id = "Nova64";
+
+
 //> 		// load default rom image
 //> 		auto roms = rom_selection->construct_directory_listing();
 //> 		if (!roms.empty()) {

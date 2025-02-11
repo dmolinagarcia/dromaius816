@@ -20,14 +20,15 @@ public:
 		Panel(ctx),
 		position(pos),
 		cpu(cpu) {
-		title = ui_context->unique_panel_id("CPU - WDC 65c816");
+		panel_title = ui_context->unique_panel_id("CPU - WDC 65c816");
+		panel_id="CPU65816";
 	}
 
 	void display() override {
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin(title.c_str(), &stay_open)) {
+		if (ImGui::Begin(panel_title.c_str(), &stay_open)) {
 
 			if (ImGui::CollapsingHeader(txt_header_registers, ImGuiTreeNodeFlags_DefaultOpen)) {
 				ui_register_8bit(8, "Accumulator", cpu->reg_a);
@@ -156,7 +157,7 @@ private:
 
 private:
 	ImVec2				position;
-	std::string			title;
+	std::string			panel_title;
 
 	Cpu65816	*			cpu;
 };

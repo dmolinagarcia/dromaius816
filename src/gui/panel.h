@@ -6,6 +6,7 @@
 #include "types.h"
 
 #include <memory>
+#include <string>
 
 class Panel {
 public:
@@ -30,6 +31,9 @@ public:
 	constexpr bool want_close() const noexcept {
 		return !stay_open;
 	}
+
+public:
+    std::string panel_id = "Default ID";
 
 protected:
 	virtual void init() {}

@@ -18,11 +18,12 @@
 
 class PanelChipPowerOnReset : public Panel {
 public:
-	PanelChipPowerOnReset(UIContext *ctx, ImVec2 pos, PowerOnReset *por) :
+	PanelChipPowerOnReset(UIContext *ctx, ImVec2 pos, PowerOnReset *por, std::string id) :
 		Panel(ctx),
 		position(pos),
 		por(por) {
-		title = ui_context->unique_panel_id("PowerOnReset");
+		panel_title = ui_context->unique_panel_id("PowerOnReset");
+		panel_id = "PowerOnReset " + id;
 	}
 
 	void display() override {
@@ -30,7 +31,7 @@ public:
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin(title.c_str(), &stay_open)) {
+		if (ImGui::Begin(panel_title.c_str(), &stay_open)) {
 
 			if (ImGui::BeginTable("signals", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingFixedFit)) {
 					ImGui::TableSetupColumn("Signal");
@@ -56,13 +57,13 @@ private:
 
 private:
 	ImVec2				position;
-	std::string			title;
+	std::string			panel_title;
 
 	PowerOnReset *		por;
 };
 
 
-Panel::uptr_t panel_chip_poweronreset_create(UIContext *ctx, struct ImVec2 pos, struct PowerOnReset *por) {
-	return std::make_unique<PanelChipPowerOnReset>(ctx, pos, por);
+Panel::uptr_t panel_chip_poweronreset_create(UIContext *ctx, struct ImVec2 pos, struct PowerOnReset *por, std::string id) {
+	return std::make_unique<PanelChipPowerOnReset>(ctx, pos, por, id);
 }
 

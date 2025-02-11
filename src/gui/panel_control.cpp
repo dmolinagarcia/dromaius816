@@ -42,6 +42,7 @@ public:
 			oscillator(oscillator),
 			step_next_instruction(step_next_instruction),
 			step_clocks(step_clocks) {
+		panel_id="EmulatorControl";
 		if (oscillator->frequency >= 1000000) {
 			ui_freq_unit_idx = 2;
 		} else if (oscillator->frequency >= 1000) {
@@ -69,7 +70,7 @@ public:
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
-		ImGui::Begin(title);
+		ImGui::Begin(panel_title);
 
 			ImGui::AlignTextToFramePadding();
 
@@ -246,7 +247,7 @@ private:
 	static constexpr const char *FREQUENCY_UNITS[] = {"Hz", "KHz", "MHz"};
 	static constexpr int FREQUENCY_SCALE[] = {1, 1000, 1000000};
 
-	static constexpr const char *title = "Emulator Control";
+	static constexpr const char *panel_title = "Emulator Control";
 	float						speed_ratio = 1.0f;
 };
 

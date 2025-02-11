@@ -42,6 +42,8 @@ public:
 		position(pos),
 		device(dev) {
 
+		panel_id="Minimal65816";
+
 //> 		// load default rom image
 //> 		auto roms = rom_selection->construct_directory_listing();
 //> 		if (!roms.empty()) {
@@ -69,11 +71,11 @@ public:
 		auto &cat_tmr = hardware_list.add_category("TIMER & CONTROL");
 		cat_tmr.add_leaf("Main Clock")
 					.add_action("View", [&]() {
-						ui_context->panel_add(panel_chip_oscillator_create(ui_context, {2, 342}, device->oscillator));
+						ui_context->panel_add(panel_chip_oscillator_create(ui_context, {2, 342}, device->oscillator, "Y1"));
 					});
 		cat_tmr.add_leaf("Power on Reset")
 					.add_action("View", [&]() {
-						ui_context->panel_add(panel_chip_poweronreset_create(ui_context, {2, 342}, device->poweronreset));
+						ui_context->panel_add(panel_chip_poweronreset_create(ui_context, {2, 342}, device->poweronreset, "R1"));
 					});
 
 

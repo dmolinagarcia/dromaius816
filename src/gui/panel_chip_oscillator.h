@@ -8,6 +8,6 @@
 #include "panel.h"
 
 // functions
-Panel::uptr_t panel_chip_oscillator_create(class UIContext *ctx, struct ImVec2 pos, struct Oscillator *tmr);
+Panel::uptr_t panel_chip_oscillator_create(class UIContext *ctx, struct ImVec2 pos, struct Oscillator *tmr, std::string id);
 
 #endif // DROMAIUS_GUI_PANEL_CHIP_OSCILLATOR_H

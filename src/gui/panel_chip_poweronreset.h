@@ -8,6 +8,6 @@
 #include "panel.h"
 
 // functions
-Panel::uptr_t panel_chip_poweronreset_create(class UIContext *ctx, struct ImVec2 pos, struct PowerOnReset *por);
+Panel::uptr_t panel_chip_poweronreset_create(class UIContext *ctx, struct ImVec2 pos, struct PowerOnReset *por, std::string id);
 
 #endif // DROMAIUS_GUI_PANEL_CHIP_POWERONRESET_H

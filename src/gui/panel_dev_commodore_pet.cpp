@@ -28,6 +28,8 @@ public:
 		position(pos),
 		device(dev) {
 
+			panel_id = "CommodorePet";
+
 //> 		auto &cat_memory = pet_hardware.add_category("Memory");
 //> 		cat_memory.add_leaf("Main Ram")
 //> 					.add_action("View", [&]() {
@@ -103,7 +105,7 @@ public:
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin(title)) {
+		if (ImGui::Begin(panel_title)) {
 
 			pet_hardware.display();
 
@@ -125,7 +127,7 @@ private:
 	UITree			pet_hardware;
 	bool			diag_mode = false;
 
-	constexpr static const char *title = "Device - Commodore PET 2001N";
+	constexpr static const char *panel_title = "Device - Commodore PET 2001N";
 };
 
 Panel::uptr_t panel_dev_commodore_pet_create(UIContext *ctx, ImVec2 pos, DevCommodorePet *device) {
