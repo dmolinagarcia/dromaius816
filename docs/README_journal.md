@@ -59,17 +59,22 @@
 > **Signals**
 > In the dev create function. Signals are created and defined. Calls to `SIGNAL_GROUP_NEW_N`, `SIGNAL_DEFINE_DEFAULT`, `SIGNAL_DEFINE` etc, create and assign the functions. Signal values can be accesed via device->simualtor->signal_pool. In here, signals_value is a 64bit integer that maps to each of the signals. So... is 64 the maximum number of signals I can use? The PET seems to have 100+. Maybe blocks and layers play a role I do not understand yet. No reference to layer or blocks exists on the device. Is it transparent?
 
+---
+
+### ✅ **11 / FEB / 2025**
+> **GUI**
+> Added `panel_id` attribute to panels, to avoid opening duplicated panels.
+
 ## ✅ **Pending Tasks**
 
 > - [ ] **GUI:**
->   - [ ] Avoid opening duplicate panels
 >   - [ ] Add modifiers to panels. Oscillator and reset are good choices
 >   - [ ] Add total simulation time display to control panel
 > 
 > - [ ] Add **Logic Analyzer**
 >   - [ ] Only `PET` currently has it. Add it and verify that it works.
->   - [ ] Understand its functioning and document it.
->   - [ ] Add it to the other devices and document the process.
+>   - [ ] Understand how does it work and document it.
+>   - [ ] Add it to the other devices and document the process. Make it as universal as possible
 > 
 > - [ ] **Schematic:**
 >   - [ ] Create a panel for the `schematic` (*dependent on the device*).
