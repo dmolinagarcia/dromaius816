@@ -184,30 +184,17 @@ public:
 				ImGui::Text(txt_freq_target);
 				ImGui::TableSetColumnIndex(1);
 
-				int freq = (int) ((float) oscillator->frequency * speed_ratio);
-//>				int new_freq = freq / FREQUENCY_SCALE[ui_freq_unit_idx];
-
-				float frequency_float = (float)freq;
-
-//>				ImGui::SetNextItemWidth(-freq_combo_width);
-//>				ImGui::DragInt("##freq", &new_freq, 1, 1, 2000);
-//>				ImGui::SameLine();
-//>				ImGui::SetNextItemWidth(-FLT_MIN);
-//>				ImGui::Combo("##target", &ui_freq_unit_idx, FREQUENCY_UNITS, sizeof(FREQUENCY_UNITS) / sizeof(FREQUENCY_UNITS[0]));
-
-				ImGui::SliderFloat(" ", &frequency_float, 10, 10000000, "%.2f", ImGuiSliderFlags_Logarithmic);
-				ImGui::SameLine();
-				ui_text_frequency((int64_t) frequency_float);
-
-//>				new_freq *= FREQUENCY_SCALE[ui_freq_unit_idx];
-				int new_freq = (int)frequency_float;
-
-				if (new_freq != freq) {
+				double freq = ((float) oscillator->frequency * speed_ratio);
+				double min = 10;				// 10 hz
+				double max = 20000000;		// 20 Mhz
+				static double new_freq = freq;
+			
+				if (SliderFrequency(&new_freq, min, max)) {
+				    // Se ha modificado la frecuencia; puedes realizar las acciones necesarias
 					speed_ratio = (float) new_freq / (float) oscillator->frequency;
 					dms_change_simulation_speed_ratio(ui_context->dms_ctx, speed_ratio);
 				}
-
-
+				
 				// Simulation time
 				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
@@ -233,17 +220,57 @@ public:
 		}
 	}
 
+	////////////////////////////////////////////////////////////////////////////
+	// Custom Slider Bar for the speed ratio. Added by Daniel Molina
+	//
+
+	void FormatFrequency(double value, char* buf, size_t buf_size) {
+	    if (value < 1000.0f) {
+	        // Menor a 1 kHz
+	        std::snprintf(buf, buf_size, "%.0f Hz", value);
+	    } else if (value < 1e6f) {
+	        // Entre 1 kHz y 1 MHz: usar kHz
+	        std::snprintf(buf, buf_size, "%.1f kHz", value / 1000.0f);
+	    } else {
+	        // Más de 1 MHz: usar MHz
+	        std::snprintf(buf, buf_size, "%.2f MHz", value / 1e6f);
+	    }
+	}	
+
+	bool SliderFrequency(double* value, double min, double max) {
+	    // Create the slider, full width, no numeric label
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+	    bool changed = ImGui::SliderScalar("##frequency", ImGuiDataType_Double, value, &min, &max, "", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
+		ImGui::PopItemWidth();
+
+	    // Get slider position to place label inside
+		ImVec2 rect_min = ImGui::GetItemRectMin();
+		ImVec2 rect_max = ImGui::GetItemRectMax();
+		ImVec2 center = ImVec2((rect_min.x + rect_max.x) * 0.5f, (rect_min.y + rect_max.y) * 0.5f);
+	
+	    // Format the frequency value
+	    char buf[32];
+	    FormatFrequency(*value, buf, sizeof(buf));
+
+	    // Calculate text size to center it in the slider
+	    ImVec2 textSize = ImGui::CalcTextSize(buf);
+	    ImVec2 textPos = ImVec2(center.x - textSize.x * 0.5f, center.y - textSize.y * 0.5f);
+
+	    // Add text over the slider.
+	    ImGui::GetWindowDrawList()->AddText(textPos, ImGui::GetColorU32(ImGuiCol_Text), buf);
+
+		// Return if the slider has changed
+	    return changed;
+	}	
+
 private:
 	static constexpr const char *txt_machine = "Machine";
-
 	static constexpr const char *txt_sim_run = "Run Simulation";
 	static constexpr const char *txt_sim_pause = "Pause Simulation";
 	static constexpr const char *txt_reset_soft = "Soft Reset";
-
 	static constexpr const char *txt_step_single = "Single Step";
 	static constexpr const char *txt_step_clock  = "Step Clock";
 	static constexpr const char *txt_step_instruction  = "Run Until Next Instruction";
-
 	static constexpr const char *txt_freq_header_type = "Type";
 	static constexpr const char *txt_freq_header_freq = "Frequency";
 	static constexpr const char *txt_freq_normal = "Normal";

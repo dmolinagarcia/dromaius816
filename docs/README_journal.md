@@ -66,12 +66,10 @@
 > Added `panel_id` attribute to panels, to avoid opening duplicated panels. Added SliderFloat to control target simulation speed. SliderScalar allows to customize inner text, but I haven't managed to make it work. Added to tasks.
 > Also, total simulation time has been added to Control panel. As a bonus, I've learnt that the speed modifier does not affect the base speed of the clock, it is just a speed ratio, or simulation ratio. 
 > Also, I've found out why the Full Pet2001 runs 4x faster than everything else. PHI2 is not connected, so the CPU is not running. Actually, nothing is running in this device. Mystery solved
+> On next day, SliderFloat has been changed to a SliderScalar with custom label. Done! 
 
 ## ✅ **Pending Tasks**
 
-> - [ ] **GUI:**
->   - [ ] Customize SliderScalar with speed bumps.
-> 
 > - [ ] Add **Logic Analyzer**
 >   - [ ] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
 >   - [ ] Understand how does it work and document it.
