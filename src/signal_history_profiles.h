@@ -10,6 +10,7 @@ extern "C" {
 // forward declaration of private types
 struct SignalHistory;
 
+struct DevMinimal65816;
 struct DevCommodorePet;
 struct Cpu6502;
 struct Chip6520;
@@ -18,6 +19,7 @@ struct Chip63xxRom;
 struct PerifDatassette;
 struct PerifDisk2031;
 
+void dev_minimal_65816_history_profiles(struct DevMinimal65816 *device, const char *chip_name, struct SignalHistory *history);
 void dev_commodore_pet_history_profiles(struct DevCommodorePet *pet, const char *chip_name, struct SignalHistory *history);
 void cpu_6502_signal_history_profiles(struct Cpu6502 *cpu, const char *chip_name, struct SignalHistory *history);
 void chip_6520_signal_history_profiles(struct Chip6520 *pia, const char *chip_name, struct SignalHistory *history);

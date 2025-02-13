@@ -68,12 +68,23 @@
 > Also, I've found out why the Full Pet2001 runs 4x faster than everything else. PHI2 is not connected, so the CPU is not running. Actually, nothing is running in this device. Mystery solved
 > On next day, SliderFloat has been changed to a SliderScalar with custom label. Done! 
 
+
+---
+
+### ✅ **11 / FEB / 2025**
+> **Logic Analyzer**
+> Added to PET and it is working. I had an issue with `assert(signal < history->signal_count);` as signal went from 199 to 256. I don't know why. This assert is there to prevent a buffer overflow. I added a condition so the function where the assert is is not called if the index is exceeded. 
+> To use it, each device must have, and call, its create_history function in signal_history. 
+>
+> I have added logic analyzer to Minimal 65816, seems to work. Biggest next achievement is to add buses as a single line in the analyzer.
+
 ## ✅ **Pending Tasks**
 
 > - [ ] Add **Logic Analyzer**
->   - [ ] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
->   - [ ] Understand how does it work and document it.
->   - [ ] Add it to the other devices and document the process. Make it as universal as possible
+>   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
+>   - [x] Understand how does it work and document it.
+>   - [x] Add it to the other devices and document the process. Make it as universal as possible
+>   - [ ] Add buses.
 > 
 > - [ ] **Schematic:**
 >   - [ ] Create a panel for the `schematic` (*dependent on the device*).

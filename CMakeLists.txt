@@ -225,6 +225,8 @@ target_sources(${GUI_TARGET}
 		src/gui/panel_dev_minimal_65816.h
 		src/gui/panel_dev_nova_64.cpp
 		src/gui/panel_dev_nova_64.h
+		src/gui/panel_logic_analyzer.cpp
+		src/gui/panel_logic_analyzer.h
 		src/gui/popup_file_selector.cpp
 		src/gui/popup_file_selector.h
 		src/gui/std_helper.h	

@@ -13,11 +13,11 @@
 #include "panel_cpu_65816.h"
 #include "panel_chip_oscillator.h"
 #include "panel_chip_poweronreset.h"
+#include "panel_logic_analyzer.h"
 //> #include "panel_input_keypad.h"
 //> #include "panel_memory.h"
 //> #include "panel_monitor.h"
 //> #include "panel_signals.h"
-
 #include "popup_file_selector.h"
 
 namespace {
@@ -90,8 +90,13 @@ public:
 //> 					.add_action("View", [&]() {
 //> 						ui_context->panel_add(panel_chip_6520_create(ui_context, {420, 342}, device->pia));
 //> 					});
-//> 
-//> 		auto &cat_tools = hardware_list.add_category("Tools");
+
+		auto &cat_tools = hardware_list.add_category("Tools");
+		cat_tools.add_leaf("Logic Analyzer")
+					.add_action("Open", [&]() {
+ 						ui_context->panel_add(panel_logic_analyzer_create(ui_context, {340, 310}));
+					});
+
 //> 		cat_tools.add_leaf("Monitor")
 //> 					.add_action("Open", [&]() {
 //> 						ui_context->panel_add(panel_monitor_create(ui_context, {340, 310}));

@@ -402,7 +402,9 @@ bool signal_history_process_incoming_single(SignalHistory *history) {
 		for (uint64_t changed = in->signals_changed[blk]; changed; changed &= changed - 1) {
 			int32_t idx = bit_lowest_set(changed);
 			size_t signal = (blk << 6) + (size_t) idx;
-			signal_history_store_data(history, signal, in->time, FLAG_IS_SET(in->signals_value[blk], 1ull << idx));
+			//> Fix para el overflow?
+			if (!(signal > history->signal_count))
+				signal_history_store_data(history, signal, in->time, FLAG_IS_SET(in->signals_value[blk], 1ull << idx));
 		}
 	}
 

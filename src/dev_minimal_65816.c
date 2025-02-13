@@ -19,6 +19,8 @@
 //> #include "ram_8d_16a.h"
 //> #include "rom_8d_16a.h"
 
+#include "signal_history_profiles.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // internal - glue logic
@@ -367,6 +369,9 @@ DEVICE_REGISTER_CHIP("LOGIC", glue_logic_create(device));
 //>
 	// let the simulator know no more chips will be added
 	simulator_device_complete(device->simulator);
+
+	// Add history profiles
+	dev_minimal_65816_history_profiles(device, "M65816", device->simulator->signal_history);
 
 	return device;
 }

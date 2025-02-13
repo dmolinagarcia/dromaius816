@@ -4,6 +4,7 @@
 #include "signal_history.h"
 
 #include "dev_commodore_pet.h"
+#include "dev_minimal_65816.h"
 
 #include "cpu_6502.h"
 //> #include "chip_6520.h"
@@ -12,6 +13,15 @@
 //> 
 //> #include "perif_datassette_1530.h"
 //> #include "perif_disk_2031.h"
+
+void dev_minimal_65816_history_profiles(struct DevMinimal65816 *device, const char *chip_name, struct SignalHistory *history) {
+
+	uint32_t prof_data = signal_history_profile_create(history, chip_name, "Data Bus");
+	for (size_t i = 0; i < arrlenu(device->sg_data); ++i) {
+		signal_history_profile_add_signal(history, prof_data, *device->sg_data[i], NULL);
+	}
+
+}
 
 void dev_commodore_pet_history_profiles(struct DevCommodorePet *pet, const char *chip_name, struct SignalHistory *history) {
 

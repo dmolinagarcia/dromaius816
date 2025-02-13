@@ -17,7 +17,7 @@
 //> #include "panel_input_pet.h"
 //> #include "panel_display_rgba.h"
 //> #include "panel_signals.h"
-//> #include "panel_logic_analyzer.h"
+#include "panel_logic_analyzer.h"
 //> #include "panel_datassette.h"
 //> #include "panel_disk_2031.h"
 
@@ -55,7 +55,7 @@ public:
 		auto &cat_cpu = pet_hardware.add_category("CPU");
 		cat_cpu.add_leaf("MOS Technology 6502")
 					.add_action("View", [&]() {
-						ui_context->panel_add(panel_cpu_6502_create(ui_context, {220, 342}, device->cpu));
+						ui_context->panel_add(panel_cpu_6502_create(ui_context, {220, 360}, device->cpu));
 					});
 
 //> 		auto &cat_support = pet_hardware.add_category("Support Chips");
@@ -90,7 +90,7 @@ public:
 //> 					});
 		cat_tools.add_leaf("Logic Analyzer")
 					.add_action("Open", [&]() {
-//>  						ui_context->panel_add(panel_logic_analyzer_create(ui_context, {340, 310}));
+ 						ui_context->panel_add(panel_logic_analyzer_create(ui_context, {340, 310}));
 					});
 //> 		cat_tools.add_leaf("Signal Debugger")
 //> 					.add_action("Open", [&]() {
