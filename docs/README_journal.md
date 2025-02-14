@@ -83,7 +83,9 @@
 
 ### ✅ **14 / FEB / 2025**
 > **Logic Analyzer**
-> This took a while!. Buses are added to the logic analyzer. If all signals of a bus (DB0:7 or AB0:15) are added into the LA, they get compacted into a single bus. On each transition, the value of the bus in hexadecimal is plotted. Right now, busses are hardcoded. This could be enhanced in the future.
+> This took a while!. Buses are added to the logic analyzer. If all signals of a bus (DB0:7 or AB0:15) are added into the LA, they get compacted into a single bus. On each transition, the value of the bus in hexadecimal is plotted. Right now, busses are hardcoded. This could be enhanced in the future. 
+>
+> Zooming has been fixed, so smaller adjusts are possible. A first try at scrolling has failed. Will dig further.
 
 ## ✅ **Pending Tasks**
 
