@@ -203,6 +203,13 @@ public:
 				ImGui::Text("%lld ms", PS_TO_MS(dms_get_device(ui_context->dms_ctx)->simulator->current_tick *
 										dms_get_device(ui_context->dms_ctx)->simulator->tick_duration_ps));
 
+				// Simulation ticks
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Sim Time");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%" PRId64 " tick", dms_get_device(ui_context->dms_ctx)->simulator->current_tick );
+
 				ImGui::EndTable();
 
 			}

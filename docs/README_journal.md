@@ -77,6 +77,13 @@
 > To use it, each device must have, and call, its create_history function in signal_history. 
 >
 > I have added logic analyzer to Minimal 65816, seems to work. Biggest next achievement is to add buses as a single line in the analyzer.
+>
+
+---
+
+### ✅ **14 / FEB / 2025**
+> **Logic Analyzer**
+> This took a while!. Buses are added to the logic analyzer. If all signals of a bus (DB0:7 or AB0:15) are added into the LA, they get compacted into a single bus. On each transition, the value of the bus in hexadecimal is plotted. Right now, busses are hardcoded. This could be enhanced in the future.
 
 ## ✅ **Pending Tasks**
 
@@ -84,7 +91,9 @@
 >   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
 >   - [x] Understand how does it work and document it.
 >   - [x] Add it to the other devices and document the process. Make it as universal as possible
->   - [ ] Add buses.
+>   - [x] Add buses.
+>   - [ ] Add scrolling.
+>   - [ ] Custom buses. 
 > 
 > - [ ] **Schematic:**
 >   - [ ] Create a panel for the `schematic` (*dependent on the device*).

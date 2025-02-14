@@ -21,6 +21,11 @@ void dev_minimal_65816_history_profiles(struct DevMinimal65816 *device, const ch
 		signal_history_profile_add_signal(history, prof_data, *device->sg_data[i], NULL);
 	}
 
+	uint32_t prof_address = signal_history_profile_create(history, chip_name, "Address Bus");
+	for (size_t i = 0; i < arrlenu(device->sg_address); ++i) {
+		signal_history_profile_add_signal(history, prof_address, *device->sg_address[i], NULL);
+	}
+
 }
 
 void dev_commodore_pet_history_profiles(struct DevCommodorePet *pet, const char *chip_name, struct SignalHistory *history) {
