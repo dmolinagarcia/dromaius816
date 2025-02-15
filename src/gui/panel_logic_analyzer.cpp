@@ -34,7 +34,12 @@ public:
 		ImGui::SetNextWindowPos(position, ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin(title.c_str(), &stay_open)) {
+		if (ImGui::Begin(title.c_str(), &stay_open,ImGuiWindowFlags_NoMove)) {
+
+			// Move panel only if dragging the title
+		    if (ImGui::IsItemActive()) {
+    		    ImGui::GetCurrentContext()->MovingWindow = ImGui::GetCurrentWindow();
+    		}
 
 			auto sim = ui_context->device->simulator;
 
@@ -166,6 +171,12 @@ public:
 				diagram_data.time_begin = 0;
 				diagram_data.time_end = available_time;
 			}
+
+			handle_horizontal_drag();
+
+			// Apply selected offset
+			diagram_data.time_begin += time_offset_accumulated;
+			diagram_data.time_end += time_offset_accumulated;
 
 			// >> fetch data
 			signal_history_diagram_data(ui_context->device->simulator->signal_history, &diagram_data);
@@ -430,6 +441,42 @@ private:
 	    }
 	}
 
+
+	void handle_horizontal_drag() {
+	    static bool is_dragging = false;
+	    static float last_mouse_x = 0.0f;
+
+	    // Get Mouse position
+	    ImVec2 mouse_pos = ImGui::GetMousePos();
+	    ImVec2 window_pos = ImGui::GetCursorScreenPos(); // Inicio de "display"
+	    ImVec2 region = ImGui::GetContentRegionAvail(); // Tamaño del panel visible
+
+	    // Check zone limits
+	    bool mouse_inside_panel =
+	        (mouse_pos.x >= window_pos.x && mouse_pos.x <= window_pos.x + region.x &&
+	         mouse_pos.y >= window_pos.y && mouse_pos.y <= window_pos.y + region.y);
+
+	    // If left button is pressed, we're draggin
+	    if (mouse_inside_panel && ImGui::IsMouseDragging(0)) {
+	        if (!is_dragging) {
+	            is_dragging = true;
+	            last_mouse_x = mouse_pos.x;
+	        }
+
+	        // Get x movement
+	        float delta_x = last_mouse_x - mouse_pos.x;
+	        last_mouse_x = mouse_pos.x;  // Actualizar la posición del mouse
+
+	        // Convert x movement into time
+	        int64_t time_offset = (int64_t)(delta_x * time_scale);
+
+	        // Apply the displacement
+	        time_offset_accumulated += time_offset;
+	    } else {
+	        is_dragging = false;
+	    }
+	}
+
 	void context_menu() {
 		if (!ImGui::IsPopupOpen("signal_context")) {
 			auto origin = ImGui::GetCursorScreenPos();
@@ -525,6 +572,8 @@ private:
 	std::vector<std::string>	signal_names;
 	SignalHistoryDiagramData	diagram_data = {};
 	char						input[256];
+
+	int64_t time_offset_accumulated = 0;
 };
 
 Panel::uptr_t panel_logic_analyzer_create(UIContext *ctx, struct ImVec2 pos) {

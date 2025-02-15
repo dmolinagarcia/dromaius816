@@ -87,16 +87,14 @@
 >
 > Zooming has been fixed, so smaller adjusts are possible. A first try at scrolling has failed. Will dig further.
 
+---
+
+### ✅ **15 / FEB / 2025**
+> **Logic Analyzer**
+> Horizontal movement has been implemented as click and drag. Zooming needs to be perfected, but is good enough as is. Time to move on. Next week, we'll work on the schematic
+
 ## ✅ **Pending Tasks**
 
-> - [ ] Add **Logic Analyzer**
->   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
->   - [x] Understand how does it work and document it.
->   - [x] Add it to the other devices and document the process. Make it as universal as possible
->   - [x] Add buses.
->   - [ ] Add scrolling.
->   - [ ] Custom buses. 
-> 
 > - [ ] **Schematic:**
 >   - [ ] Create a panel for the `schematic` (*dependent on the device*).
 >     - [ ] How to draw a fixed `schematic`
@@ -144,3 +142,13 @@
 >     - [ ] Understand procesor cycle
 >     - [ ] Implement OPCODES
 >       - [ ] Add NOP for a NOP free loop.
+>
+> - [ ] Add **Logic Analyzer**
+>   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
+>   - [x] Understand how does it work and document it.
+>   - [x] Add it to the other devices and document the process. Make it as universal as possible
+>   - [x] Add buses.
+>   - [x] Add scrolling.
+>     -  [ ] Zooming while scrolled. Keep point under mouse pointer static
+>   - [ ] Custom buses. 
+> 

@@ -33,6 +33,7 @@
 
 # Build Dir
 _build/
+_build_windows/
 
 # .leftovers
 *.leftovers
