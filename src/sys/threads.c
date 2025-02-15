@@ -65,7 +65,11 @@ bool thread_join(thread_t thread, int* thread_res) {
 		if (!GetExitCodeThread(thread, &result)) {
 			return false;
 		}
-		*thread_res = result;
+#ifdef _WIN32
+	    *thread_res = static_cast<int>(result); // Conversión segura solo en Windows
+#else
+	    *thread_res = result; // Código original para Linux
+#endif
 	}
 
 	CloseHandle(thread);

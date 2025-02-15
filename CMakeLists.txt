@@ -3,6 +3,20 @@ cmake_minimum_required(VERSION 3.12)
 #> project(dromaius) lo cambio por lo de abajo
 project(dromaius816)
 
+if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    message(STATUS "Target is Windows. Using MinGW")
+    set(IS_WINDOWS TRUE)
+else()
+    message(STATUS "Target is Linux")
+    set(IS_LINUX TRUE)
+endif()
+
+if(IS_WINDOWS)
+    set_target_properties(${GUI_TARGET} PROPERTIES OUTPUT_NAME "dromaius816_gui_windows.exe")
+else()
+    set_target_properties(${GUI_TARGET} PROPERTIES OUTPUT_NAME "dromaius816_gui_linux")
+endif()
+
 # options
 option (ENABLE_THREADING "Enable multithreading in the Dromaius context" ON)
 option (ENABLE_GTKWAVE_EXPORT "Enable dumping of signals to GTKWave" OFF)

@@ -14,6 +14,8 @@ sudo apt install libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev
 sudo apt install wayland-protocols libwayland-dev
 sudo apt install pkg-config
 sudo apt install libxkbcommon-dev
+sudo apt install mingw-w64
+sudo apt intsall wine
 ```
 
 ## Trying the original Dromaius Project
