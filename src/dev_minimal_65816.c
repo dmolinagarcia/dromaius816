@@ -187,7 +187,6 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	SIGNAL_DEFINE_DEFAULT(CPU_RW, true);
 	SIGNAL_DEFINE_DEFAULT(CPU_IRQ_B, ACTLO_DEASSERT);
 	SIGNAL_DEFINE_DEFAULT(CPU_NMI_B, ACTLO_DEASSERT);
-	SIGNAL_DEFINE(CPU_SYNC);
 	SIGNAL_DEFINE_DEFAULT(CPU_RDY, ACTHI_ASSERT);
 
 	SIGNAL_DEFINE(RAM_OE_B);
@@ -229,12 +228,11 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
  										[PIN_65816_DB6]  = SIGNAL(DB6),
  										[PIN_65816_DB7]  = SIGNAL(DB7),
  
- 										[PIN_65816_CLK]   = SIGNAL(CLOCK),
+ 										[PIN_65816_PHI2]   = SIGNAL(CLOCK),
  										[PIN_65816_RES_B] = SIGNAL(RESET_B),
- 										[PIN_65816_RW]	 = SIGNAL(CPU_RW),
+ 										[PIN_65816_RWB]	 = SIGNAL(CPU_RW),
  										[PIN_65816_IRQ_B] = SIGNAL(CPU_IRQ_B),
  										[PIN_65816_NMI_B] = SIGNAL(CPU_NMI_B),
- 										[PIN_65816_SYNC]  = SIGNAL(CPU_SYNC),
  										[PIN_65816_RDY]   = SIGNAL(CPU_RDY)
  	});
  	DEVICE_REGISTER_CHIP("CPU", device->cpu);

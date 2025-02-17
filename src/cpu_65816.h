@@ -1,8 +1,10 @@
-// cpu_65816.h - Daniel - BSD-3-Clause (see LICENSE)
+// cpu_65816.h - Daniel Molina - BSD-3-Clause (see LICENSE)
 // Based on
 // cpu_6502.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // Emulation of the MOS 6502
+
+// WDC DataSheet: https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf
 
 #ifndef DROMAIUS_CPU_65816_H
 #define DROMAIUS_CPU_65816_H
@@ -16,11 +18,13 @@ extern "C" {
 
 // types
 enum Cpu65816SignalAssignments {
-	PIN_65816_RDY   = CHIP_PIN_02,		// ready signal - cpu only runs when asserted
-	PIN_65816_PHI1O = CHIP_PIN_03,		// phase-1 clock output (NOT IMPLEMENTED)
-	PIN_65816_IRQ_B = CHIP_PIN_04,		// interrupt request line
-	PIN_65816_NMI_B = CHIP_PIN_06,		// non-maskable interrupt line
-	PIN_65816_SYNC  = CHIP_PIN_07,		// indicates opcode fetch cycle (output)
+    PIN_65816_VPB   = CHIP_PIN_01, 
+	PIN_65816_RDY   = CHIP_PIN_02,
+	PIN_65816_ABORT = CHIP_PIN_03,
+	PIN_65816_IRQ_B = CHIP_PIN_04,
+	PIN_65816_MLB   = CHIP_PIN_05,
+	PIN_65816_NMI_B = CHIP_PIN_06,
+	PIN_65816_VPA   = CHIP_PIN_07,
 	PIN_65816_AB0   = CHIP_PIN_09,
 	PIN_65816_AB1   = CHIP_PIN_10,
 	PIN_65816_AB2   = CHIP_PIN_11,
@@ -45,16 +49,20 @@ enum Cpu65816SignalAssignments {
 	PIN_65816_DB2   = CHIP_PIN_31,
 	PIN_65816_DB1   = CHIP_PIN_32,
 	PIN_65816_DB0   = CHIP_PIN_33,
-	PIN_65816_RW	   = CHIP_PIN_34,		// read-write line (high == reading, low == writing)
-	PIN_65816_CLK   = CHIP_PIN_37,		// phase-2 clock/system clock input
-	PIN_65816_SO	   = CHIP_PIN_38,		// set overflow flag (NOT IMPLEMENTED)
-	PIN_65816_PHI2O = CHIP_PIN_39,		// phase-1 clock output (NOT IMPLEMENTED)
-	PIN_65816_RES_B = CHIP_PIN_40		// reset line (input)
+	PIN_65816_RWB	= CHIP_PIN_34,
+	PIN_65816_E     = CHIP_PIN_35,
+	PIN_65816_BE    = CHIP_PIN_36,
+	PIN_65816_PHI2  = CHIP_PIN_37,
+	PIN_65816_MX	= CHIP_PIN_38,
+	PIN_65816_VDA   = CHIP_PIN_39,
+	PIN_65816_RES_B = CHIP_PIN_40
 };
 
 #define CHIP_65816_PIN_COUNT 40
 typedef Signal Cpu65816Signals[CHIP_65816_PIN_COUNT];
 
+
+//>TODO Flags need to be adapted to the 65c816
 typedef enum Cpu65816Flags {
 	FLAG_65816_CARRY				= 0b00000001,
 	FLAG_65816_ZERO_RESULT		= 0b00000010,

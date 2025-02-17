@@ -1,10 +1,39 @@
 # Guide for Emulating the 65816 Processor
 
-This document outlines the steps and recommendations for creating a file similar to `cpu_6502.c` but designed to emulate a 65816 processor. It follows the same philosophy of cycle-based emulation, adapting it to the specific features and improvements of the 65816 architecture.
+This document outlines the steps and recommendations for creating a file similar to `cpu_6502.c` but designed to emulate a 65816 processor. It follows the same philosophy of cycle-based emulation, adapting it to the specific features and improvements of the 65816 architecture. A task list is also provided to managed the upgrade from the 6502 to the 65817
 
 ---
 
-## 1. Analyze the Differences and Similarities
+## Task List
+
+  - [ ] Dissect the `CPU65816` completely. Remove any functionality and everything from its panel.
+  - [ ] Study the 65816 and identify diferences with the 6502
+  - [ ] Create PINOUT for the CPU
+  - [ ] Understand procesor cycle
+    - [ ] Timing and bus behavior. I need to implement the BankAddress.
+    - [ ] Should I change process phases?. I may need new steps
+  - [ ] CPU Registers
+    - [ ] Understand status register and how it changed between Emulation and Native
+      - [ ] Implement Status Register
+    - [ ] Understand remaining processor registers
+      - [ ] Implement remaining registers.
+    - [ ] Implement OPCODES Phase 1
+      - [ ] Understand processor phases
+      - [ ] Initially, everything is a NOP. Advance PC and continue
+      - [ ] Add a catch all that triggers some warning (Illegal Opcode)
+      - [ ] Add NOP. Run a free NOP
+    - [ ] Understand addresing modes
+    - [ ] Implement OPCODES Phase 2
+      - [ ] XCE. Switch emulation/native
+      - [ ] Implement decoding logic. How to?
+    - [ ] IRQ/NMI behaviour
+    - [ ] Special PINS.
+      - [ ] VDA / VPA
+      - [ ] ABORT
+      - [ ] E / MX
+      - [ ] OThers
+
+## Analyze the Differences and Similarities
 
 - **Compatibility and Operating Modes:**  
   The 65816 is an extension of the 6502 and includes:
@@ -23,15 +52,15 @@ This document outlines the steps and recommendations for creating a file similar
 
 ---
 
-## 2. 65c816 inner working
+## 65c816 inner working
 
-### 2.1. Operation modes
+### Operation modes
 
 Emulation vs Native
 
-### 2.2. Processor registers
+### Processor registers
 
-#### 2.2.1. (P) Processor status register
+#### (P) Processor status register
 
 The Processor status register (P) is an 8-bit register that holds information about the current status of the CPU. In a 6502/65c02 the 8 bits are :
 
@@ -58,11 +87,16 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 (E)mulation flag. This flag indicates if the CPU is in emulation (1) or native (0) modes. This flag is hidden and can be exchanged with the Carry bit with the instruction XCE.
 ---
 
-## 3. Reset sequence
+## Reset sequence
 
 http://forum.6502.org/download/file.php?id=21142&mode=view
 
-## 4. Definition of Data Structures and Pins
+
+## Bus Timing
+
+
+
+## Definition of Data Structures and Pins
 
 - **Internal Structure:**  
   Create a structure similar to `Cpu6502_private` but extended to include all registers of the 65816. For example:
@@ -83,7 +117,7 @@ http://forum.6502.org/download/file.php?id=21142&mode=view
 
 ---
 
-## 5. Implementation of Memory Access and Cycle Management Functions
+## Implementation of Memory Access and Cycle Management Functions
 
 - **Fetch and Store Functions:**  
   Reuse the idea of functions like `fetch_memory()` and `store_memory()`, adapting them for 24-bit addressing and new addressing modes.
@@ -99,7 +133,7 @@ http://forum.6502.org/download/file.php?id=21142&mode=view
 
 ---
 
-## 6. Instruction Decoder Design
+## Instruction Decoder Design
 
 - **Separation by Instructions and Addressing Modes:**  
   Follow the same approach as in `cpu_6502.c`:
@@ -114,7 +148,7 @@ http://forum.6502.org/download/file.php?id=21142&mode=view
 
 ---
 
-## 7. Interrupt Handling and CPU States
+## Interrupt Handling and CPU States
 
 - **Interrupts and Reset:**  
   Adapt the interrupt sequence (IRQ, NMI, and BRK) for the 65816, considering interrupt vectors and possible mode switches (emulation vs. native).
@@ -124,7 +158,7 @@ http://forum.6502.org/download/file.php?id=21142&mode=view
 
 ---
 
-## 8. Integration into the Simulator
+## Integration into the Simulator
 
 - **Interface Functions:**  
   As with the 6502, define creation, destruction, and processing functions, such as:
@@ -137,13 +171,13 @@ http://forum.6502.org/download/file.php?id=21142&mode=view
 
 ---
 
-## 9. Example Skeleton
+## Example Skeleton
 
 (A simplified example of code to start implementing the 65816 emulator.)
 
 ---
 
-## 10. Testing and Validation
+## Testing and Validation
 
 - **Documentation:**
   Refer to the official 65816 documentation and specialized tutorials.

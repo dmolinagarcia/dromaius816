@@ -93,8 +93,20 @@
 > **Logic Analyzer**
 > Horizontal movement has been implemented as click and drag. Zooming needs to be perfected, but is good enough as is. Time to move on. Next week, we'll work on the schematic
 
+
+---
+
+### ✅ **W08 / 2025**
+> Moved to a Wnn / YYYY format for the journal. Bigger tasks now, so slower progress. (Week Number and Year)
+> **CPU**
+> cpu_65816 has been striped out of all functions. Just the minimun to run the simulation are still there. PINs have been renamed, and an empty process is implemented. Now it's time to investigate the inner workings of the CPU.
+
 ## ✅ **Pending Tasks**
 
+> - [ ] **Development:**
+>   - [ ] Configure a build task within vscode
+>   - [ ] Configure a debug setup within vscode
+> 
 > - [ ] **Schematic:**
 >   - [ ] Create a panel for the `schematic` (*dependent on the device*).
 >     - [ ] How to draw a fixed `schematic`
@@ -135,13 +147,16 @@
 >     - [ ] Create PINOUT for the CPU
 >     - [ ] Understand status register and how it changed between Emulation and Native
 >       - [ ] Implement Status Register
->     - [ ] Understand remaining processor registeers
+>     - [ ] Understand remaining processor registers
 >       - [ ] Implement remaining registers.
 >     - [ ] Timing and bus behavior. I need to implement the BankAddress.
+>       - [ ] Should I change process phases?
 >     - [ ] Initially, only advance the PC each cycle.
 >     - [ ] Understand procesor cycle
 >     - [ ] Implement OPCODES
 >       - [ ] Add NOP for a NOP free loop.
+>     - [ ] Understand addresing modes
+>     - [ ] IRQ/NMI behaviour
 >
 > - [ ] Add **Logic Analyzer**
 >   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
