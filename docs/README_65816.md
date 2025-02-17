@@ -58,7 +58,11 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 (E)mulation flag. This flag indicates if the CPU is in emulation (1) or native (0) modes. This flag is hidden and can be exchanged with the Carry bit with the instruction XCE.
 ---
 
-## 3. Definition of Data Structures and Pins
+## 3. Reset sequence
+
+http://forum.6502.org/download/file.php?id=21142&mode=view
+
+## 4. Definition of Data Structures and Pins
 
 - **Internal Structure:**  
   Create a structure similar to `Cpu6502_private` but extended to include all registers of the 65816. For example:
@@ -79,7 +83,7 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 ---
 
-## 4. Implementation of Memory Access and Cycle Management Functions
+## 5. Implementation of Memory Access and Cycle Management Functions
 
 - **Fetch and Store Functions:**  
   Reuse the idea of functions like `fetch_memory()` and `store_memory()`, adapting them for 24-bit addressing and new addressing modes.
@@ -95,7 +99,7 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 ---
 
-## 5. Instruction Decoder Design
+## 6. Instruction Decoder Design
 
 - **Separation by Instructions and Addressing Modes:**  
   Follow the same approach as in `cpu_6502.c`:
@@ -110,7 +114,7 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 ---
 
-## 6. Interrupt Handling and CPU States
+## 7. Interrupt Handling and CPU States
 
 - **Interrupts and Reset:**  
   Adapt the interrupt sequence (IRQ, NMI, and BRK) for the 65816, considering interrupt vectors and possible mode switches (emulation vs. native).
@@ -120,7 +124,7 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 ---
 
-## 7. Integration into the Simulator
+## 8. Integration into the Simulator
 
 - **Interface Functions:**  
   As with the 6502, define creation, destruction, and processing functions, such as:
@@ -133,13 +137,13 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 ---
 
-## 8. Example Skeleton
+## 9. Example Skeleton
 
 (A simplified example of code to start implementing the 65816 emulator.)
 
 ---
 
-## 9. Testing and Validation
+## 10. Testing and Validation
 
 - **Documentation:**
   Refer to the official 65816 documentation and specialized tutorials.
@@ -152,4 +156,3 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 ---
 
-**Created with the help of ChatGPT-4o**

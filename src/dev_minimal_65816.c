@@ -199,6 +199,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	SIGNAL_DEFINE_DEFAULT(HIGH, true);
 
 	signal_set_name(SIGNAL_POOL, SIGNAL(CLOCK), "CLK");
+	signal_set_name(SIGNAL_POOL, SIGNAL(RESET_B), "RESB");
 
  	// cpu
  	device->cpu = cpu_65816_create(device->simulator, (Cpu65816Signals) {
@@ -245,7 +246,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	DEVICE_REGISTER_CHIP("OSC", device->oscillator);
 
 // power-on-reset
-	device->poweronreset = poweronreset_create(1000000, device->simulator, (PowerOnResetSignals) {
+	device->poweronreset = poweronreset_create(1500000, device->simulator, (PowerOnResetSignals) {
 									[CHIP_POR_TRIGGER_B] = SIGNAL(RESET_BTN_B),
 									[CHIP_POR_RESET_B] = SIGNAL(RESET_B)
 	});
