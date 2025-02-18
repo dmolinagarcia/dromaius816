@@ -1,21 +1,23 @@
 # Guide for Emulating the 65816 Processor
 
-This document outlines the steps and recommendations for creating a file similar to `cpu_6502.c` but designed to emulate a 65816 processor. It follows the same philosophy of cycle-based emulation, adapting it to the specific features and improvements of the 65816 architecture. A task list is also provided to managed the upgrade from the 6502 to the 65817
+This document outlines the steps and recommendations for creating a file similar to `cpu_6502.c` but designed to emulate a 65816 processor. It follows the same philosophy of cycle-based emulation, adapting it to the specific features and improvements of the 65816 architecture. A task list is also provided to managed the upgrade from the 6502 to the 65816.
 
 ---
 
 ## Task List
 
   - [ ] Dissect the `CPU65816` completely. Remove any functionality and everything from its panel.
-  - [ ] Study the 65816 and identify diferences with the 6502
-  - [ ] Create PINOUT for the CPU
-  - [ ] Understand procesor cycle
+  - [ ] Study the 65816 and identify differences with the 6502
+  - [x] Create PINOUT for the CPU
+  - [x] Understand procesor cycle
     - [ ] Timing and bus behavior. I need to implement the BankAddress.
     - [ ] Should I change process phases?. I may need new steps
   - [ ] CPU Registers
     - [ ] Understand status register and how it changed between Emulation and Native
       - [ ] Implement Status Register
     - [ ] Understand remaining processor registers
+      - [ ] When and how registers change size?
+      - [ ] How does changing size affect the values stored¿?
       - [ ] Implement remaining registers.
     - [ ] Implement OPCODES Phase 1
       - [ ] Understand processor phases
@@ -32,6 +34,82 @@ This document outlines the steps and recommendations for creating a file similar
       - [ ] ABORT
       - [ ] E / MX
       - [ ] OThers
+
+## Execution Cycle
+
+Execution cycle is divided in 3 steps. Right after PHI2 falls, the cycle begins with phase CYCLE_BEGIN. Here, AB is prepared and outputs the proper value. Then, CYCLE_MIDDLE starts when PHI2 rises. CPU starts outputting data on the data bus. Then, at PHI2 negative edge, CYCLE_END happends. Instruction is fetched into IR at decode_cycle 0, or any necesary stepts are executed afterwards.
+
+As PHI2 negative edge happens only once, after CYCLE_END a scheduled events is prepared for the next simulation tick, so CYCLE_BEGIN is executed 1 tick after PHI2 negative edge.
+
+Each instruction increments PC, or the decode_cycle as needed. When an instruction ends, decode_cycle is set to -1. During CYCLE_BEGIN it is incremented so next opcode will be fetched here.
+
+As of 02/18/2025 bank address output is not implemented!
+ 
+## Instruction decoder
+
+Although there seems to be some kind of logic built withing the instruction set (There has to be!) the original Dromaius barely manages to group instructions, and the decode opcode is a massive switch case based on the opcode. I am trying to find some logic within the instruction set, but I can't seem to find any.
+
+ChatGPT suggests building an opcode function matrix. Sounds good but it is untested. Different addresing modes can still call same function, with further decoding within the function.
+
+    ```c
+    #include <iostream>
+    #include <cstdint>
+
+    // Define the array
+    typedef void (*OpcodeHandler)();
+
+    // Function table for each opcode
+    OpcodeHandler opcodeTable[256];  
+
+    // Function to process each opcode
+    void op_ADC() { std::cout << "Ejecutando ADC\n"; }
+    void op_LDA() { std::cout << "Ejecutando LDA\n"; }
+    void op_STA() { std::cout << "Ejecutando STA\n"; }
+    void op_JMP() { std::cout << "Ejecutando JMP\n"; }
+    void op_BEQ() { std::cout << "Ejecutando BEQ\n"; }
+    void op_BNE() { std::cout << "Ejecutando BNE\n"; }
+    void op_NOP() { std::cout << "Ejecutando NOP\n"; }
+    void op_UNK() { std::cout << "Opcode desconocido\n"; }
+
+    // Init opcode table
+    void initOpcodeTable() {
+        for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
+        // Default call for unknown opcodes
+
+        // Load the opcodes
+        opcodeTable[0b01101001] = op_ADC;  // ADC #imm
+        opcodeTable[0b10101001] = op_LDA;  // LDA #imm
+        opcodeTable[0b10001001] = op_STA;  // STA $addr
+        opcodeTable[0b01001100] = op_JMP;  // JMP $addr
+        opcodeTable[0b11110000] = op_BEQ;  // BEQ (Branch if Equal)
+        opcodeTable[0b11010000] = op_BNE;  // BNE (Branch if Not Equal)
+        opcodeTable[0b11101010] = op_NOP;  // NOP (No Operation)
+    }
+
+    // Execure opcode call
+    void executeOpcode(uint8_t opcode) {
+        opcodeTable[opcode]();  
+        // Llama a la función correspondiente en O(1)
+    }
+
+    // Test  
+    int main() {
+        initOpcodeTable();  
+        return 0;
+    }
+    ```
+
+---
+
+## Docs
+
+http://6502.org/tutorials/65c816opcodes.html
+https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf
+https://the-dreams.de/aay64.txt
+
+--- 
+
+## CHATGPT Docs start here!
 
 ## Analyze the Differences and Similarities
 

@@ -100,6 +100,8 @@
 > Moved to a Wnn / YYYY format for the journal. Bigger tasks now, so slower progress. (Week Number and Year)
 > **CPU**
 > cpu_65816 has been striped out of all functions. Just the minimun to run the simulation are still there. PINs have been renamed, and an empty process is implemented. Now it's time to investigate the inner workings of the CPU.
+>
+> Startup sequence seems correct, and, as all decode logic has been removed, any opcode is treatad as a NOP. A NOP free loop is running, apparently OK. No addressing modes, no decoding, no nothing. 
 
 ## ✅ **Pending Tasks**
 
@@ -136,28 +138,11 @@
 > - [ ] **CPU:**
 >   - [ ] Understand the internal workings of the CPU.
 >     - [ ] Differences between the 65c02 and 65c816 Processor Status Register
->   - [ ] Connect memory to the `minimal65816`.
+>   - [x] Connect memory to the `minimal65816`.
 >   - [ ] Get something basic running (even though it’s still a `6502` despite the name).
 >     - [ ] `NOP` test.
 >     - [ ] Basic instructions such as `LDA`.
 > 
-> - [ ] **CPU65816 Development:**
->   - [ ] Dissect the `CPU65816` completely. Remove any functionality and everything from its pannel
->   - [ ] Begin adding functionalities gradually.
->     - [ ] Create PINOUT for the CPU
->     - [ ] Understand status register and how it changed between Emulation and Native
->       - [ ] Implement Status Register
->     - [ ] Understand remaining processor registers
->       - [ ] Implement remaining registers.
->     - [ ] Timing and bus behavior. I need to implement the BankAddress.
->       - [ ] Should I change process phases?
->     - [ ] Initially, only advance the PC each cycle.
->     - [ ] Understand procesor cycle
->     - [ ] Implement OPCODES
->       - [ ] Add NOP for a NOP free loop.
->     - [ ] Understand addresing modes
->     - [ ] IRQ/NMI behaviour
->
 > - [ ] Add **Logic Analyzer**
 >   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
 >   - [x] Understand how does it work and document it.
