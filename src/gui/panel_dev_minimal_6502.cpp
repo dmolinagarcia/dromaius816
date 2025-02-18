@@ -10,7 +10,7 @@
 //> #include "panel_chip_hd44780.h"
 #include "panel_cpu_6502.h"
 //> #include "panel_input_keypad.h"
-//> #include "panel_memory.h"
+#include "panel_memory.h"
 //> #include "panel_monitor.h"
 //> #include "panel_signals.h"
 
@@ -48,15 +48,15 @@ public:
 //> 			dev_minimal_6502_rom_from_file(device, path_for_binary(roms[0]).c_str());
 //> 		}
 //> 
-//> 		// construct hardware list
-//> 		auto &cat_memory = hardware_list.add_category("Memory");
-//> 		cat_memory.add_leaf("RAM (32k)")
-//> 					.add_action("View", [&]() {
-//> 						ui_context->panel_add(panel_memory_create(ui_context, {2, 120}, ui_context->unique_panel_id("RAM").c_str(), 0x0000, 0x8000));
-//> 					})
-//> 					.add_action("Load", [&]() {
-//> 						load_ram = true;
-//> 					});
+		// construct hardware list
+		auto &cat_memory = hardware_list.add_category("Memory");
+		cat_memory.add_leaf("RAM (32k)")
+					.add_action("View", [&]() {
+						ui_context->panel_add(panel_memory_create(ui_context, {2, 120}, ui_context->unique_panel_id("RAM").c_str(), 0x0000, 0x8000));
+					})
+					.add_action("Load", [&]() {
+						load_ram = true;
+					});
 //> 		cat_memory.add_leaf("ROM (16k)")
 //> 					.add_action("View", [&]() {
 //> 						ui_context->panel_add(panel_memory_create(ui_context, {442, 120}, ui_context->unique_panel_id("ROM").c_str(), 0xc000, 0x4000));
