@@ -246,7 +246,8 @@ DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (Pow
 									[CHIP_POR_RESET_B] = SIGNAL(RESET_B)
 }));
 // ram 0x0000 - 0x7fff
-device->ram = ram_8d16a_create(15, device->simulator, (Ram8d16aSignals) {
+//> Changed from 15 to 16 lines to get 64kb of ram
+device->ram = ram_8d16a_create(16, device->simulator, (Ram8d16aSignals) {
 									[CHIP_RAM8D16A_A0]  = SIGNAL(AB0),
 									[CHIP_RAM8D16A_A1]  = SIGNAL(AB1),
 									[CHIP_RAM8D16A_A2]  = SIGNAL(AB2),
@@ -271,7 +272,9 @@ device->ram = ram_8d16a_create(15, device->simulator, (Ram8d16aSignals) {
 									[CHIP_RAM8D16A_D5] = SIGNAL(DB5),
 									[CHIP_RAM8D16A_D6] = SIGNAL(DB6),
 									[CHIP_RAM8D16A_D7] = SIGNAL(DB7),
-									[CHIP_RAM8D16A_CE_B] = SIGNAL(AB15),
+									[CHIP_RAM8D16A_CE_B] = SIGNAL(LOW),
+							//> Changed from AB15 to HIGH. Ram is always selected
+							//> It is an active low signal
 									[CHIP_RAM8D16A_OE_B] = SIGNAL(RAM_OE_B),
 									[CHIP_RAM8D16A_WE_B] = SIGNAL(RAM_WE_B)
 });
@@ -384,8 +387,13 @@ void dev_minimal_6502_read_memory(DevMinimal6502 *device, size_t start_address, 
 	assert(device);
 	assert(output);
 
-	static const size_t	REGION_START[] = {0x0000, 0x8000, 0xc000};
-	static const size_t REGION_SIZE[]  = {0x8000, 0x4000, 0x4000};
+//>	static const size_t	REGION_START[] = {0x0000, 0x8000, 0xc000};
+//>	static const size_t REGION_SIZE[]  = {0x8000, 0x4000, 0x4000};
+
+//> Change device setup. 64KB of PURE RAM
+	static const size_t	REGION_START[] = {0x0000};
+	static const size_t REGION_SIZE[]  = {0x10000};
+
 	static const int NUM_REGIONS = sizeof(REGION_START) / sizeof(REGION_START[0]);
 
 	if (start_address > 0xffff) {
@@ -433,25 +441,18 @@ void dev_minimal_6502_write_memory(DevMinimal6502 *device, size_t start_address,
 	assert(device);
 	assert(input);
 
-	if (input) {
-			//> dummy if to avoid warning due to unused device
-	}
-
-	if (device->get_cpu(device)) {
-			//> dummy if to avoid warning due to unused device
-	}
-
-	// only allow writes to the RAM area
-	if (start_address > 0x7fff) {
-		return;
-	}
+//>	// only allow writes to the RAM area
+//>	if (start_address > 0x7fff) {
+//>		return;
+//>	}
+//> Changed to full ram
 
 	size_t real_size = size;
-	if (start_address + size > 0x8000) {
-		real_size -= start_address + size - 0x8000;
-	}
+//>	if (start_address + size > 0x8000) {
+//>		real_size -= start_address + size - 0x8000;
+//>	}
 
-//>	dms_memcpy(device->ram->data_array + start_address, input, real_size);
+	dms_memcpy(device->ram->data_array + start_address, input, real_size);
 }
 
 size_t dev_minimal_6502_get_irq_signals(DevMinimal6502 *device, SignalBreakpoint **irq_signals) {

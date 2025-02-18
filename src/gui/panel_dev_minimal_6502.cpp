@@ -50,9 +50,9 @@ public:
 //> 
 		// construct hardware list
 		auto &cat_memory = hardware_list.add_category("Memory");
-		cat_memory.add_leaf("RAM (32k)")
+		cat_memory.add_leaf("RAM (64k)")
 					.add_action("View", [&]() {
-						ui_context->panel_add(panel_memory_create(ui_context, {2, 120}, ui_context->unique_panel_id("RAM").c_str(), 0x0000, 0x8000));
+						ui_context->panel_add(panel_memory_create(ui_context, {2, 120}, ui_context->unique_panel_id("RAM").c_str(), 0x0000, 0xFFFF));
 					})
 					.add_action("Load", [&]() {
 						load_ram = true;
