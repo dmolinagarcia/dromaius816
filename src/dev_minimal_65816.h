@@ -69,6 +69,7 @@ enum DevMinimal65816SignalAssignment {
 
 	SIG_M65816_RAM_OE_B,
 	SIG_M65816_RAM_WE_B,
+	SIG_M65816_RAM_CE_B,
 
 	SIG_M65816_ROM_CE_B,
 

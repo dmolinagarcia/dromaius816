@@ -26,6 +26,11 @@ void dev_minimal_65816_history_profiles(struct DevMinimal65816 *device, const ch
 		signal_history_profile_add_signal(history, prof_address, *device->sg_address[i], NULL);
 	}
 
+	uint32_t prof_ram = signal_history_profile_create(history, chip_name, "RAM");
+	signal_history_profile_add_signal(history, prof_ram, device->signals[SIG_M65816_RAM_CE_B], NULL);
+	signal_history_profile_add_signal(history, prof_ram, device->signals[SIG_M65816_RAM_OE_B], NULL);
+	signal_history_profile_add_signal(history, prof_ram, device->signals[SIG_M65816_RAM_WE_B], NULL);
+
 }
 
 void dev_commodore_pet_history_profiles(struct DevCommodorePet *pet, const char *chip_name, struct SignalHistory *history) {

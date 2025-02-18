@@ -53,6 +53,8 @@ typedef enum {
 
 	CHIP_GLUE_LOGIC_RAM_OE_B,
 	CHIP_GLUE_LOGIC_RAM_WE_B,
+	CHIP_GLUE_LOGIC_RAM_CE_B,
+
 	CHIP_GLUE_LOGIC_ROM_CE_B,
 
 	CHIP_GLUE_LOGIC_PIA_CS2_B,
@@ -101,6 +103,7 @@ static ChipGlueLogic *glue_logic_create(DevMinimal65816 *device) {
 	GLUE_PIN(device->signals[SIG_M65816_RESET_BTN_B], CHIP_PIN_OUTPUT);
 	GLUE_PIN(device->signals[SIG_M65816_RAM_OE_B],    CHIP_PIN_OUTPUT);
 	GLUE_PIN(device->signals[SIG_M65816_RAM_WE_B],    CHIP_PIN_OUTPUT);
+	GLUE_PIN(device->signals[SIG_M65816_RAM_CE_B],    CHIP_PIN_OUTPUT);
 	GLUE_PIN(device->signals[SIG_M65816_ROM_CE_B],    CHIP_PIN_OUTPUT);
 	GLUE_PIN(device->signals[SIG_M65816_PIA_CS2_B],   CHIP_PIN_OUTPUT);
 
@@ -124,10 +127,11 @@ static void glue_logic_process(ChipGlueLogic *chip) {
 	device->in_reset = false;
 
 	// >> ram logic
-	//  - ce_b: assert always. 64KB of RAM
+	//  - ce_b: assert when PHI2 is high. 64KB of RAM
 	//	- oe_b: assert when cpu_rw is high
 	//	- we_b: assert when cpu_rw is low and clock is high
 	bool next_rw = SIGNAL_READ(CPU_RW);
+	SIGNAL_WRITE(RAM_CE_B, !SIGNAL_READ(CLOCK));
 	SIGNAL_WRITE(RAM_OE_B, !next_rw);
 	SIGNAL_WRITE(RAM_WE_B, next_rw || !SIGNAL_READ(CLOCK));
 
@@ -190,8 +194,18 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	SIGNAL_DEFINE_DEFAULT(CPU_NMI_B, ACTLO_DEASSERT);
 	SIGNAL_DEFINE_DEFAULT(CPU_RDY, ACTHI_ASSERT);
 
+	SIGNAL_DEFINE_DEFAULT(DB0, 2);
+	SIGNAL_DEFINE_DEFAULT(DB1, 2);
+	SIGNAL_DEFINE_DEFAULT(DB2, 2);
+	SIGNAL_DEFINE_DEFAULT(DB3, 1);
+	SIGNAL_DEFINE_DEFAULT(DB4, 1);
+	SIGNAL_DEFINE_DEFAULT(DB5, 1);
+	SIGNAL_DEFINE_DEFAULT(DB6, 0);
+	SIGNAL_DEFINE_DEFAULT(DB7, 0);
+
 	SIGNAL_DEFINE(RAM_OE_B);
 	SIGNAL_DEFINE(RAM_WE_B);
+	SIGNAL_DEFINE(RAM_CE_B);
 	SIGNAL_DEFINE(ROM_CE_B);
 	SIGNAL_DEFINE(PIA_CS2_B);
 
@@ -200,6 +214,10 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 
 	signal_set_name(SIGNAL_POOL, SIGNAL(CLOCK), "CLK");
 	signal_set_name(SIGNAL_POOL, SIGNAL(RESET_B), "RESB");
+
+	signal_set_name(SIGNAL_POOL, SIGNAL(RAM_CE_B), "RAM_CEB");
+	signal_set_name(SIGNAL_POOL, SIGNAL(RAM_OE_B), "RAM_OEB");
+	signal_set_name(SIGNAL_POOL, SIGNAL(RAM_WE_B), "RAM_WEB");
 
  	// cpu
  	device->cpu = cpu_65816_create(device->simulator, (Cpu65816Signals) {
@@ -279,7 +297,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 										[CHIP_RAM8D16A_D6] = SIGNAL(DB6),
 										[CHIP_RAM8D16A_D7] = SIGNAL(DB7),
 
-										[CHIP_RAM8D16A_CE_B] = SIGNAL(LOW),
+										[CHIP_RAM8D16A_CE_B] = SIGNAL(RAM_CE_B),
 											//> Always enabled, ACTlo
 										[CHIP_RAM8D16A_OE_B] = SIGNAL(RAM_OE_B),
 										[CHIP_RAM8D16A_WE_B] = SIGNAL(RAM_WE_B)
