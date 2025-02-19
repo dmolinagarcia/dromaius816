@@ -355,7 +355,22 @@ private:
 
 			// Value label
             ImVec2 text_pos = {signal_x+10.0f, signal_y - 15.0f};
-            draw_list->AddText(text_pos, COLOR_WHITE, hex_value);
+
+			// Calculate the size of the text and define a padding
+			ImVec2 text_size = ImGui::CalcTextSize(hex_value);
+			float padding = 4.0f;
+
+			// Define the coordinates of the background rectangle
+			ImVec2 rect_min = { text_pos.x - padding, text_pos.y - padding };
+			ImVec2 rect_max = { text_pos.x + text_size.x + padding, text_pos.y + text_size.y + padding };
+
+			// Draw the opaque background (for example, black with some transparency)
+			// You can adjust the RGBA values as needed
+			draw_list->AddRectFilled(rect_min, rect_max, COLOR_BACKGROUND[signal_pos % 2]);
+
+			// Draw the text over the background
+			draw_list->AddText(text_pos, COLOR_WHITE, hex_value);
+			
     
             // Plot line
             draw_list->AddLine({plot_x_start, signal_y + TRUE_OFFSET}, {signal_x-2, signal_y  + TRUE_OFFSET}, COLOR_SIGNAL, 2.0f);
