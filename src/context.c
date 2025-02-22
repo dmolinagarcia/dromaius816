@@ -59,11 +59,12 @@ typedef struct DmsContext {
 	int64_t			sync_tick_interval;			// sync sim & real-time at this interval
 
 #ifndef DMS_NO_THREADING
-	thread_t		thread;
+
+    thread_t		thread;
 	mutex_t			mtx_wait;
 	cond_t			cnd_wait;
-
 	mutex_t			mtx_config;
+
 #endif // DMS_NO_THREADING
 
 	// user-side variables

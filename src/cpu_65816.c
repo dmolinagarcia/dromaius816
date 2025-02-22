@@ -12,6 +12,16 @@
 #define SIGNAL_OWNER		cpu
 #define SIGNAL_PREFIX		PIN_65816_
 
+// #define DEBUG
+
+#ifdef DEBUG
+    #define DBG_PRINT(fmt, ...) printf("[DEBUG] %s:%d:%s(): " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+	#define DBG_TRACE(fmt, ...) printf("[TRACE] %s:%d:%s(): " "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+#else
+    #define DBG_PRINT(fmt, ...)
+    #define DBG_TRACE(fmt, ...)
+#endif
+
 //>TODO Include timing diagram here
 
 //////////////////////////////////////////////////////////////////////////////

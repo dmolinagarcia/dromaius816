@@ -4,8 +4,6 @@
 //
 // UI panel to control the emulator
 
-#include "gui/debug.h"
-
 #include "panel_control.h"
 #include "gui/imgui_ex.h"
 #include "ui_context.h"

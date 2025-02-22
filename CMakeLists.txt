@@ -176,6 +176,8 @@ endif()
 			src/dev_minimal_65816.h
 			src/dev_nova_64.c
 			src/dev_nova_64.h 
+			src/log.c
+			src/log.h
 			src/ram_8d_16a.c
 			src/ram_8d_16a.h
 			src/signal_history.c
@@ -216,7 +218,6 @@ set (GUI_TARGET dromaius816_gui)
 add_executable(${GUI_TARGET} WIN32)
 target_sources(${GUI_TARGET}
 	PRIVATE
-	    src/gui/debug.h
 		src/gui/config.cpp
 		src/gui/config.h
 		src/gui/imgui_ex.cpp
