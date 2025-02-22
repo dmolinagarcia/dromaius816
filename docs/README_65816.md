@@ -6,7 +6,7 @@ This document outlines the steps and recommendations for creating a file similar
 
 ## Task List
 
-  - [ ] Dissect the `CPU65816` completely. Remove any functionality and everything from its panel.
+  - [x] Dissect the `CPU65816` completely. Remove any functionality and everything from its panel.
   - [ ] Study the 65816 and identify differences with the 6502
   - [x] Create PINOUT for the CPU
   - [x] Understand procesor cycle
@@ -47,7 +47,7 @@ As of 02/18/2025 bank address output is not implemented!
  
 ## Instruction decoder
 
-Although there seems to be some kind of logic built withing the instruction set (There has to be!) the original Dromaius barely manages to group instructions, and the decode opcode is a massive switch case based on the opcode. I am trying to find some logic within the instruction set, but I can't seem to find any.
+Although there seems to be some kind of logic built withing the instruction set (There has to be!) the original Dromaius barely manages to group instructions, and the decode function is a massive switch case based on the opcode. I am trying to find some logic within the instruction set, but I can't seem to find any.
 
 ChatGPT suggests building an opcode function matrix. Sounds good but it is untested. Different addresing modes can still call same function, with further decoding within the function.
 
