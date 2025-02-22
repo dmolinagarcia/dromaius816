@@ -298,8 +298,6 @@ static inline void change_state(DmsContext *context, DMS_STATE new_state) {
 //
 
 DmsContext *dms_create_context() {
-	DBG_TRACE();
-
 	DmsContext *ctx = (DmsContext *) dms_calloc(1, sizeof(DmsContext));
 	ctx->simulator = NULL;
 	ctx->device = NULL;
@@ -323,14 +321,12 @@ DmsContext *dms_create_context() {
 }
 
 void dms_release_context(DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 	stopwatch_destroy(dms->stopwatch);
 	dms_free(dms);
 }
 
 void dms_set_device(DmsContext *dms, Device *device) {
-	DBG_TRACE();
 	assert(dms);
 	dms->device = device;
 	dms->simulator = device->simulator;
@@ -339,13 +335,11 @@ void dms_set_device(DmsContext *dms, Device *device) {
 }
 
 struct Device *dms_get_device(struct DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 	return dms->device;
 }
 
 DMS_STATE dms_get_state(DmsContext *dms) {
-	DBG_TRACE();
 	MUTEX_CONFIG_LOCK(dms);
 		DMS_STATE result = dms->config_usr.state;
 	MUTEX_CONFIG_UNLOCK(dms);
@@ -355,7 +349,6 @@ DMS_STATE dms_get_state(DmsContext *dms) {
 #ifndef DMS_NO_THREADING
 
 void dms_start_execution(DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 	assert(dms->device);
 
@@ -367,7 +360,6 @@ void dms_start_execution(DmsContext *dms) {
 }
 
 void dms_stop_execution(DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 	change_state(dms, DS_EXIT);
 
@@ -378,7 +370,6 @@ void dms_stop_execution(DmsContext *dms) {
 #else
 
 void dms_execute(DmsContext *dms) {
-	DBG_TRACE();
 	context_execute(dms);
 	sync_simulation_with_real_time(dms);
 }
@@ -386,14 +377,12 @@ void dms_execute(DmsContext *dms) {
 #endif // DMS_NO_THREADING
 
 void dms_execute_no_sync(DmsContext *dms) {
-	DBG_TRACE();
 	dms->config.state = DS_RUN;
 	dms->config_usr.state = DS_RUN;
 	context_execute(dms);
 }
 
 void dms_single_step(DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 
 	if (dms->config_usr.state == DS_WAIT) {
@@ -402,27 +391,20 @@ void dms_single_step(DmsContext *dms) {
 }
 
 void dms_step_signal(struct DmsContext *dms, Signal signal, bool pos_edge, bool neg_edge) {
-	DBG_TRACE();
-	DBG_PRINT("Calling assert(dms)");
 	assert(dms);
-	DBG_PRINT("End of assert(dms)");
 
 	if (dms->config_usr.state == DS_WAIT) {
-		DBG_PRINT("1");
 		dms->config_usr.step_signal = (SignalBreakpoint) {
 			.signal = signal,
 			.pos_edge = pos_edge,
 			.neg_edge = neg_edge
 		};
-		DBG_PRINT("2");
 		change_state(dms, DS_STEP_SIGNAL);
-		DBG_PRINT("3");
 	}
 }
 
 
 void dms_run(DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 
 	if (dms->config_usr.state == DS_WAIT) {
@@ -431,7 +413,6 @@ void dms_run(DmsContext *dms) {
 }
 
 void dms_pause(DmsContext *dms) {
-	DBG_TRACE();
 	assert(dms);
 
 	if (dms->config_usr.state == DS_RUN) {
