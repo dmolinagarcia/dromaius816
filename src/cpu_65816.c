@@ -242,15 +242,15 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 0 :		// finish previous operation
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = cpu->reg_pc;
+				//>TODO Emulation is set to TRUE on startup
+				//>     Is this ok here???
+				CPU_CHANGE_EFLAG(E, true);
 			}
 			break;
 		case 1 :		// force a BRK instruction
 			if (phase == CYCLE_BEGIN) {
 				cpu->reg_ir = OP_65816_BRK;
 			}
-			//>TODO Emulation is set to TRUE on startup
-			//>     Is this ok here???
-			CPU_CHANGE_EFLAG(E, true);
 			break;
 		case 2 :		// push high byte of PC
 			switch (phase) {
@@ -322,12 +322,10 @@ static void execute_init(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	interrupt_sequence(cpu, phase, INTR_RESET);
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
-// internal fetch functions
+// internal memory functions
 //
-
 
 static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE phase) {
 	// Fetch operation
@@ -351,11 +349,18 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 	}
 }
 
-static inline void decode_instruction(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
-	// Decode adn execute
-	//>TODO Everything!
-	//> Added NOP execution as a catch all. Let's try
+//////////////////////////////////////////////////////////////////////////////
+//
+// Instruction decoding
+//
 
+// Define the decode array
+typedef void (*OpcodeHandler)();
+
+// Function table for each opcode
+OpcodeHandler opcodeTable[256];  
+
+void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
@@ -364,11 +369,25 @@ static inline void decode_instruction(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			break;
 		case CYCLE_END :
 			PRIVATE(cpu)->decode_cycle = -1;
+			printf ("NOP Opcode %d executed \n", cpu->reg_ir);
 			break;
-	}	
-
+	}
 }
 
+void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
+	//>TODO all unknowns are treated as NOPs
+	switch (phase) {
+		case CYCLE_BEGIN:
+			PRIVATE(cpu)->output.address = cpu->reg_pc;
+			break;
+		case CYCLE_MIDDLE:
+			break;
+		case CYCLE_END :
+			PRIVATE(cpu)->decode_cycle = -1;
+			printf ("UNK Opcode %d executed \n", cpu->reg_ir);
+			break;
+	}
+}
 
 static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	//>TODO Function copied as-is. I may need some changes!
@@ -416,23 +435,15 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 	if (PRIVATE(cpu)->decode_cycle == 0) {
 		fetch_pc_memory(cpu, &cpu->reg_ir, phase);
 	} else {
-		decode_instruction(cpu, phase);
+		opcodeTable[cpu->reg_ir](cpu, phase);
 	}
-
 }
-
 
 void CPU_65816_override_next_instruction_address(Cpu65816 *cpu, uint16_t pc) {
 	//>TODO Function copied as-is. I may need some changes!
-
 	assert(cpu);
 	PRIVATE(cpu)->override_pc = pc;
 }
-
-
-
-
-
 
 bool CPU_65816_at_start_of_instruction(Cpu65816 *cpu) {
 	//>TODO Function copied as-is. I may need some changes!
@@ -526,6 +537,13 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	priv->state = CS_INIT;
 	priv->nmi_triggered = false;
 	priv->override_pc = 0;
+
+	// Init opcode table
+	for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
+		// Default call for unknown opcodes
+
+	// Load the opcodes
+	opcodeTable[0xEA] = op_NOP;
 
 	return cpu;
 }

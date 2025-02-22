@@ -88,7 +88,7 @@ ChatGPT suggests building an opcode function matrix. Sounds good but it is untes
 
     // Execure opcode call
     void executeOpcode(uint8_t opcode) {
-        opcodeTable[opcode]();  
+        opcodeTable[cpu->reg_ir]();  
         // Llama a la función correspondiente en O(1)
     }
 
