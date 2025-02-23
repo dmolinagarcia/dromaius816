@@ -14,6 +14,7 @@ extern "C" {
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
+#include <stdarg.h>
 
 // Get timestamp for logging
 static inline void get_timestamp(char *buffer, size_t len) {
@@ -31,13 +32,21 @@ static inline void get_timestamp(char *buffer, size_t len) {
 // Global extern variable to store log status
 extern int LOG_STATUS;
 
+static inline void log_message(const char *file, const char *func, int line, const char *format, ...) {
+    if (LOG_STATUS) {
+        char timestamp[24];
+        get_timestamp(timestamp, sizeof(timestamp));
+        char log_buffer[512];
+        va_list args;
+        va_start(args, format);
+        vsnprintf(log_buffer, sizeof(log_buffer), format, args);
+        va_end(args);
+        printf("[ %s ] [ %s:%s:%d ] - %s\n", timestamp, file, func, line, log_buffer);
+    }
+}
+
 // MACRO for printing log, if status is enabled
-#define LOG(msg, ...) \
-    do { if (LOG_STATUS) { \
-		char timestamp[24]; \
-        get_timestamp(timestamp, sizeof(timestamp)); \
-        printf("[ %s ] [ %s:%s:%d ] - " msg "\n", timestamp, __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
- 	} } while (0)
+#define LOG(format, ...) log_message(__FILE__, __FUNCTION__, __LINE__, format, ##__VA_ARGS__)
 
 // Enable and disable functions
 void enable_log_state();
