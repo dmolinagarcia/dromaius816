@@ -13,21 +13,31 @@ This document outlines the steps and recommendations for creating a file similar
     - [ ] Timing and bus behavior. I need to implement the BankAddress.
     - [ ] Should I change process phases?. I may need new steps
   - [ ] CPU Registers
-    - [ ] Understand status register and how it changed between Emulation and Native
+    - [ ] Understand status register and how it changes between Emulation and Native
       - [ ] Implement Status Register
     - [ ] Understand remaining processor registers
       - [ ] When and how registers change size?
-      - [ ] How does changing size affect the values stored¿?
+      - [ ] How does changing size affect the values stored?
       - [ ] Implement remaining registers.
     - [ ] Implement OPCODES Phase 1
       - [ ] Understand processor phases
       - [ ] Initially, everything is a NOP. Advance PC and continue
       - [ ] Add a catch all that triggers some warning (Illegal Opcode)
       - [ ] Add NOP. Run a free NOP
-    - [ ] Understand addresing modes
     - [ ] Implement OPCODES Phase 2
-      - [ ] XCE. Switch emulation/native
-      - [ ] Implement decoding logic. How to?
+      - [ ] XCE. CLC. SEC. Switch emulation/native
+      - [ ] Test status register change on switch
+      - [ ] Implement decoding logic. How to? Two tables?
+    - [ ] Implement OPCODES Phase 3
+      - [ ] Implement instructions that change M/X
+      - [ ] Implement register size changes and how their values change
+    - [ ] Understand addresing modes
+    - [ ] Implement OPCODES Phase 4
+      - [ ] Implement all Inmediate OPCODES
+      - [ ] Test Emulation and Native modes
+    - [ ] Implement OPCODES Phase 5
+      - [ ] Everything else
+    - [ ] Automate testing. https://github.com/SingleStepTests/ProcessorTests/tree/main/65816
     - [ ] IRQ/NMI behaviour
     - [ ] Special PINS.
       - [ ] VDA / VPA
