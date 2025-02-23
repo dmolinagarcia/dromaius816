@@ -1,22 +1,31 @@
+// log.c - Daniel Molina - BSD-3-Clause (see LICENSE)
+// based on
 // log.c - Johan Smet - BSD-3-Clause (see LICENSE)
 
 #include "log.h"
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <inttypes.h>
+// Default status is disabled
+int LOG_STATUS = false;
 
-void log_printf(int64_t tick, const char *fmt, ...) {
-	va_list args;
+// Enable log
+void enable_log_state()  { LOG_STATUS = true; }
+void disable_log_state() { LOG_STATUS = false; }
 
-	printf("%"PRId64": ", tick);
-
-	va_start(args, fmt);
-    vprintf(fmt, args);
-    va_end(args);
-
-	printf("\n");
-}
+//> #include <stdarg.h>
+//> #include <stdio.h>
+//> #include <inttypes.h>
+//> 
+//> void log_printf(int64_t tick, const char *fmt, ...) {
+//> 	va_list args;
+//> 
+//> 	printf("%"PRId64": ", tick);
+//> 
+//> 	va_start(args, fmt);
+//>     vprintf(fmt, args);
+//>     va_end(args);
+//> 
+//> 	printf("\n");
+//> }
 
 /*
 
@@ -24,27 +33,8 @@ void log_printf(int64_t tick, const char *fmt, ...) {
 //> DEBUG:h // Debugging functions for development
 //> DEBUG:h 
 //> DEBUG:h // DEBUG
-//> DEBUG:h #include <iostream>
-//> DEBUG:h #include <chrono>
-//> DEBUG:h #include <ctime>
-//> DEBUG:h #include <iomanip>
-//> DEBUG:h 
 //> DEBUG:h #define DEBUG
 //> DEBUG:h 
-//> DEBUG:h // Get Current Timestamp
-//> DEBUG:h inline std::string get_timestamp() {
-//> DEBUG:h     using namespace std::chrono;
-//> DEBUG:h 
-//> DEBUG:h     auto now = system_clock::now();
-//> DEBUG:h     auto now_time_t = system_clock::to_time_t(now);
-//> DEBUG:h     auto now_ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
-//> DEBUG:h 
-//> DEBUG:h     std::tm now_tm = *std::localtime(&now_time_t);
-//> DEBUG:h 
-//> DEBUG:h     std::ostringstream oss;
-//> DEBUG:h     oss << std::put_time(&now_tm, "%H:%M:%S") << '.' << std::setw(3) << std::setfill('0') << now_ms.count();
-//> DEBUG:h     return oss.str();
-//> DEBUG:h }
 //> DEBUG:h 
 //> DEBUG:h // DEBUG Macro
 //> DEBUG:h #ifdef DEBUG
@@ -53,5 +43,27 @@ void log_printf(int64_t tick, const char *fmt, ...) {
 //> DEBUG:h #else
 //> DEBUG:h     #define DBG_PRINT(fmt, ...)
 //> DEBUG:h #endif
+
+
+#include <iostream>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+
+// Get Current Timestamp
+inline std::string get_timestamp() {
+    using namespace std::chrono;
+
+    auto now = system_clock::now();
+    auto now_time_t = system_clock::to_time_t(now);
+    auto now_ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
+
+    std::tm now_tm = *std::localtime(&now_time_t);
+
+    std::ostringstream oss;
+    oss << std::put_time(&now_tm, "%H:%M:%S") << '.' << std::setw(3) << std::setfill('0') << now_ms.count();
+    return oss.str();
+}
+
 
 */

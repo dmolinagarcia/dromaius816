@@ -1,6 +1,10 @@
 // main application entry point (native + wasm), based upon
 // dear imgui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
 
+// Logging
+
+#include "log.h"
+
 // Graphic libs for window manager
 
 #include "imgui.h"
@@ -47,6 +51,7 @@ namespace {
     using argh_list_t = std::initializer_list < const char * const > ;
     static constexpr argh_list_t ARG_MACHINE = {"-m", "--machine" };
     static constexpr argh_list_t ARG_HELP = {"-h", "--help" };
+    static constexpr argh_list_t ARG_LOG = {"-l", "--log" };
 
     // Print help if requested or wrong arguments
     void print_help() {
@@ -70,7 +75,9 @@ namespace {
             format_argh_list(ARG_MACHINE).c_str());
         printf(" %-25s display this help message and stop execution.\n",
             format_argh_list(ARG_HELP).c_str());
-    }
+		printf(" %-25s Enable log output.\n",
+			format_argh_list(ARG_LOG).c_str());
+	}
 
 } // unnamed namespace
 
@@ -90,12 +97,18 @@ int main(int argc, char ** argv) {
     argh::parser cmd_line;
     cmd_line.add_params(ARG_MACHINE);
     cmd_line.add_params(ARG_HELP);
+    cmd_line.add_params(ARG_LOG);
     cmd_line.parse(argc, argv);
 
     if (cmd_line[ARG_HELP]) {
         print_help();
         exit(EXIT_FAILURE);
     }
+
+	if (cmd_line[ARG_LOG]) {
+		// Enable logging
+		enable_log_state();
+	}
 
 		// fill-out configuration structure
 		Config ui_config;
@@ -222,6 +235,7 @@ int main(int argc, char ** argv) {
 	emscripten_set_main_loop_arg(main_loop, nullptr, 0, 1);
 #else
 	// Main loop
+	LOG ("Entering main loop.");
 	while (!glfwWindowShouldClose(g_window)) {
 		main_loop(nullptr);
 	}
