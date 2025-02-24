@@ -41,7 +41,14 @@ static inline void log_message(const char *file, const char *func, int line, con
         va_start(args, format);
         vsnprintf(log_buffer, sizeof(log_buffer), format, args);
         va_end(args);
-        printf("[ %s ] [ %s:%s:%d ] - %s\n", timestamp, file, func, line, log_buffer);
+        switch (LOG_STATUS) {
+            case 1:
+                printf("[ %s ] - %s\n", timestamp, log_buffer);
+            break;
+            case 2:
+                printf("[ %s ] [ %s:%s:%d ] - %s\n", timestamp, file, func, line, log_buffer);
+                break;    
+        }
     }
 }
 
@@ -49,7 +56,7 @@ static inline void log_message(const char *file, const char *func, int line, con
 #define LOG(format, ...) log_message(__FILE__, __FUNCTION__, __LINE__, format, ##__VA_ARGS__)
 
 // Enable and disable functions
-void enable_log_state();
+void enable_log_state(int level);
 void disable_log_state();
 
 #ifdef __cplusplus

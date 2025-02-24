@@ -8,8 +8,8 @@
 int LOG_STATUS = false;
 
 // Enable log
-void enable_log_state()  { LOG_STATUS = true; }
-void disable_log_state() { LOG_STATUS = false; }
+void enable_log_state(int level)  { LOG_STATUS = level; }
+void disable_log_state() { LOG_STATUS = 0; }
 
 //> #include <stdarg.h>
 //> #include <stdio.h>

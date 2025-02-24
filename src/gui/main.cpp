@@ -105,10 +105,11 @@ int main(int argc, char ** argv) {
         exit(EXIT_FAILURE);
     }
 
-	if (cmd_line[ARG_LOG]) {
-		// Enable logging
-		enable_log_state();
-	}
+	
+		std::string loglevel;
+		cmd_line(ARG_LOG, "0" ) >> loglevel;
+		printf ("LOGLEVEL : %s \n", loglevel.c_str());
+		enable_log_state(std::stoi(loglevel));
 
 		// fill-out configuration structure
 		Config ui_config;
