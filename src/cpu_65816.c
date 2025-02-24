@@ -164,10 +164,10 @@ typedef struct Cpu65816_private {
 	PRIVATE(cpu)->output.drv_data = true;
 
 #define CPU_CHANGE_FLAG(flag, cond)			\
-	FLAG_SET_CLEAR_U8(cpu->reg_p, FLAG_65816_##flag, (cond))
+	FLAG_SET_CLEAR_U32(cpu->reg_p, FLAG_65816_##flag, (cond))
 
-#define CPU_CHANGE_EFLAG(flag, cond)			\
-	FLAG_SET_CLEAR_U8(cpu->reg_ep, FLAG_65816_##flag, (cond))
+#define CPU_REG_P \
+	((cpu->reg_p >> (8*!(FLAG_IS_SET(cpu->reg_p, FLAG_65816_E))) ) & 0xFF)
 
 	// Update CPU outputs at process end
 static void process_end(Cpu65816 *cpu) {
@@ -253,7 +253,9 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 				LOG ("Address bus: %04x", cpu->reg_pc);
 				//>TODO Emulation is set to TRUE on startup
 				//>     Is this ok here???
-				CPU_CHANGE_EFLAG(E, true);
+				CPU_CHANGE_FLAG(E, true);	
+				//>TODO Also, unused flag in emulation mode is always set
+				CPU_CHANGE_FLAG(U, true);
 			}
 			break;
 		case 1 :		// force a BRK instruction
@@ -302,7 +304,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 					break;
 				case CYCLE_MIDDLE:
 					//>TODO reg_p, reg_ep, how to handle this!
-					OUTPUT_DATA(cpu->reg_p);
+					OUTPUT_DATA(CPU_REG_P);
 					break;
 				case CYCLE_END:
 					cpu->reg_sp--;

@@ -64,15 +64,17 @@ typedef Signal Cpu65816Signals[CHIP_65816_PIN_COUNT];
 
 //>TODO Flags need to be adapted to the 65c816
 typedef enum Cpu65816Flags {
-	FLAG_65816_CARRY			 = 0b00000001,
-	FLAG_65816_ZERO_RESULT		 = 0b00000010,
-	FLAG_65816_INTERRUPT_DISABLE = 0b00000100,
-	FLAG_65816_DECIMAL_MODE		 = 0b00001000,
-	FLAG_65816_BREAK_COMMAND	 = 0b00010000,
-	FLAG_65816_UNUSED			 = 0b00100000,
-	FLAG_65816_OVERFLOW			 = 0b01000000,
-	FLAG_65816_NEGATIVE_RESULT	 = 0b10000000,
-	FLAG_65816_EMULATION         = 0b00000001,
+	FLAG_65816_CARRY			 = ((uint32_t) 0b00000000100000001),
+	FLAG_65816_ZERO_RESULT		 = ((uint32_t) 0b00000001000000010),
+	FLAG_65816_INTERRUPT_DISABLE = ((uint32_t) 0b00000010000000100),
+	FLAG_65816_DECIMAL_MODE		 = ((uint32_t) 0b00000100000001000),
+	FLAG_65816_BREAK_COMMAND	 = ((uint32_t) 0b00000000000010000),
+	FLAG_65816_INDEX             = ((uint32_t) 0b00001000000000000),
+	FLAG_65816_UNUSED			 = ((uint32_t) 0b00000000000100000),
+	FLAG_65816_MEMORY            = ((uint32_t) 0b00010000000000000),
+	FLAG_65816_OVERFLOW			 = ((uint32_t) 0b00100000001000000),
+	FLAG_65816_NEGATIVE_RESULT	 = ((uint32_t) 0b01000000010000000),
+	FLAG_65816_EMULATION         = ((uint32_t) 0b10000000000000000),
 
 	// abbreviations
 	FLAG_65816_C = FLAG_65816_CARRY,
@@ -83,6 +85,8 @@ typedef enum Cpu65816Flags {
 	FLAG_65816_U = FLAG_65816_UNUSED,
 	FLAG_65816_V = FLAG_65816_OVERFLOW,
 	FLAG_65816_N = FLAG_65816_NEGATIVE_RESULT,
+	FLAG_65816_M = FLAG_65816_MEMORY,
+	FLAG_65816_X = FLAG_65816_INDEX,
 	FLAG_65816_E = FLAG_65816_EMULATION
 } Cpu65816Flags;
 
@@ -108,8 +112,7 @@ typedef struct Cpu65816 {
 	uint16_t	reg_sp;				// stack-register
 	uint8_t		reg_ir;				// instruction register
 	uint16_t	reg_pc;				// program counter
-	uint8_t		reg_p;				// processor status register
-	uint8_t     reg_ep;             // Extended processor status register
+	uint32_t	reg_p;				// processor status register
 } Cpu65816;
 
 // functions

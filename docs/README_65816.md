@@ -121,6 +121,10 @@ In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads 
 
 (E)mulation flag. This flag indicates if the CPU is in emulation (1) or native (0) modes. This flag is hidden and can be exchanged with the Carry bit with the instruction XCE.
 
+In the emulator, the status register is implemented as a 17 bits register
+
+Bits 0-7 represent the status register in emulation mode. Bits 8-15 represent the status register in native mode. Bit 16 is the emulation flag. Bits present in "both" status register, have a mask with both bits active like `FLAG_65816_CARRY = ((uint32_t) 0b00000000100000001)`, while bits present only on one register have only their correponding bit set like `FLAG_65816_MEMORY = ((uint32_t) 0b00010000000000000)`. As flag test are a boolean check against the flag values, they keep working as before. To get the current (P) register value, a macro is defined: `#define CPU_REG_P ((cpu->reg_p >> (8*!(FLAG_IS_SET(cpu->reg_p, FLAG_65816_E))) ) & 0xFF)`. Anywhere in the cpu emulation code where status register is needed, such on JSR opcodes, when status register is pushed into the stak, this macro has to be invoked.
+
 ## Docs
 
 http://6502.org/tutorials/65c816opcodes.html

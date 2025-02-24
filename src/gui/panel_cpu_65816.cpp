@@ -50,7 +50,7 @@ public:
 				if (ImGui::BeginTable("flags", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingFixedFit)) {
 
 					// header
-					ImGui::TableSetupColumn(ImGuiEx::string_format("$%.2x", cpu->reg_p).c_str());
+					ImGui::TableSetupColumn(ImGuiEx::string_format("$%.2x", (cpu->reg_p) & 0xFF).c_str());
 					ImGui::TableSetupColumn("N");
 					ImGui::TableSetupColumn("V");
 					ImGui::TableSetupColumn("-");
@@ -75,20 +75,25 @@ public:
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_Z));
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_C));
 					ImGui::TableNextColumn();	ImGui::Text("|");
-					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_ep, FLAG_65816_E));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_E));
 
 					ImGui::EndTable();
 				}
+
+
+				// cpu->reg_p * ((bool) ((cpu->reg_p) & (FLAG_65816_E))) * 8
+				// (cpu->reg_p >> (8*(((bool) ((cpu->reg_p) & (FLAG_65816_E))))) ) & 0xFF
+				// (cpu->reg_p >> (8*(((bool) ((cpu->reg_p) & (FLAG_65816_E))))) )               
 
 				// Native Mode
 				if (ImGui::BeginTable("flags", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingFixedFit)) {
 
 					// header
-					ImGui::TableSetupColumn(ImGuiEx::string_format("$%.2x", cpu->reg_p).c_str());
+					ImGui::TableSetupColumn(ImGuiEx::string_format("$%.2x", (cpu->reg_p >> 8 ) & 0xFF).c_str());
 					ImGui::TableSetupColumn("N");
 					ImGui::TableSetupColumn("V");
-					ImGui::TableSetupColumn("-");
-					ImGui::TableSetupColumn("B");
+					ImGui::TableSetupColumn("M");
+					ImGui::TableSetupColumn("X");
 					ImGui::TableSetupColumn("D");
 					ImGui::TableSetupColumn("I");
 					ImGui::TableSetupColumn("Z");
@@ -102,17 +107,50 @@ public:
 					ImGui::TableNextColumn();
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_N));
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_V));
-					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_U));
-					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_B));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_M));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_X));
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_D));
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_I));
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_Z));
 					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_C));
 					ImGui::TableNextColumn();	ImGui::Text("|");
-					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_ep, FLAG_65816_E));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_E));
 
 					ImGui::EndTable();
 				}
+
+				// Current Mode
+				if (ImGui::BeginTable("flags", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingFixedFit)) {
+					// header
+					ImGui::TableSetupColumn(ImGuiEx::string_format("$%.2x", (cpu->reg_p >> (8*!(FLAG_IS_SET(cpu->reg_p, FLAG_65816_E))) ) & 0xFF).c_str());
+					ImGui::TableSetupColumn("N");
+					ImGui::TableSetupColumn("V");
+					ImGui::TableSetupColumn(FLAG_IS_SET(cpu->reg_p, FLAG_65816_E) ? "-" : "M");
+					ImGui::TableSetupColumn(FLAG_IS_SET(cpu->reg_p, FLAG_65816_E) ? "B" : "X");
+					ImGui::TableSetupColumn("D");
+					ImGui::TableSetupColumn("I");
+					ImGui::TableSetupColumn("Z");
+					ImGui::TableSetupColumn("C");
+					ImGui::TableSetupColumn("|");
+					ImGui::TableSetupColumn("E");
+					ImGui::TableHeadersRow();
+						// values
+					ImGui::TableNextRow();
+					ImGui::TableNextColumn();
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_N));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_V));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_E) ? (FLAG_IS_SET(cpu->reg_p, FLAG_65816_U)) : (FLAG_IS_SET(cpu->reg_p, FLAG_65816_M)));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_E) ? (FLAG_IS_SET(cpu->reg_p, FLAG_65816_B)) : (FLAG_IS_SET(cpu->reg_p, FLAG_65816_X)));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_D));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_I));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_Z));
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_C));
+					ImGui::TableNextColumn();	ImGui::Text("|");
+					ImGui::TableNextColumn();	ImGui::Text("%d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_E));
+					ImGui::EndTable();
+				}
+				
+
 			}
 
 			if (ImGui::CollapsingHeader(txt_header_signals, ImGuiTreeNodeFlags_DefaultOpen)) {
