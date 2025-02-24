@@ -21,7 +21,7 @@
 //
 
 //>TODO PinTypes Declaration
-//>TODO Know pins ported directly from the 6502
+//>TODO Known pins ported directly from the 6502
 //>TODO Unknown pins commented as such. Pending review
 
 static uint8_t Cpu65816_PinTypes[CHIP_65816_PIN_COUNT] = {
@@ -86,9 +86,9 @@ typedef enum CPU_65816_CYCLE {
 } CPU_65816_CYCLE;
 
 const char* CPU_65816_PHASE_NAMES[] = {
-    "CYCLE_BEGIN",
-    "CYCLE_MIDDLE",
-    "CYCLE_END"
+    "CYCLE_BEGIN ---- ",
+    "CYCLE_MIDDLE     ",
+    "CYCLE_END        "
 };
 	
 //>TODO. I may need more steps to emulate the CPU
@@ -169,9 +169,8 @@ typedef struct Cpu65816_private {
 #define CPU_CHANGE_EFLAG(flag, cond)			\
 	FLAG_SET_CLEAR_U8(cpu->reg_ep, FLAG_65816_##flag, (cond))
 
-
-static void process_end(Cpu65816 *cpu) {
 	// Update CPU outputs at process end
+static void process_end(Cpu65816 *cpu) {
 	output_t *output = &PRIVATE(cpu)->output;
 	output_t *last_output = &PRIVATE(cpu)->last_output;
 
@@ -215,6 +214,7 @@ static void process_end(Cpu65816 *cpu) {
 //>TODO VDA and VPA should be here
 }
 
+	// Handle interrupt sequence
 static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_INTERRUPT_TYPE irq_type) {
 
 	//>TODO New interrupt types and vectors
@@ -250,6 +250,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 0 :		// finish previous operation
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = cpu->reg_pc;
+				LOG ("Address bus: %04x", cpu->reg_pc);
 				//>TODO Emulation is set to TRUE on startup
 				//>     Is this ok here???
 				CPU_CHANGE_EFLAG(E, true);
@@ -264,6 +265,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			switch (phase) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
+					LOG ("Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
@@ -279,6 +281,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			switch (phase) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
+					LOG ("Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
@@ -294,6 +297,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			switch (phase) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
+					LOG ("Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));					
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
@@ -309,6 +313,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 5 :		// read low byte of the reset vector
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = VECTOR_LOW[irq_type];
+				LOG ("Address bus: %04x", VECTOR_LOW[irq_type]);				
 			} else if (phase == CYCLE_END) {
 				cpu->reg_pc = SET_LO_BYTE(cpu->reg_pc, PRIVATE(cpu)->in_data);
 			}
@@ -316,7 +321,8 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 6 :		// read high byte of the reset vector
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = VECTOR_HIGH[irq_type];
-			} else if (phase == CYCLE_END) {
+				LOG ("Address bus: %04x", VECTOR_HIGH[irq_type]);				
+				} else if (phase == CYCLE_END) {
 				cpu->reg_pc = SET_HI_BYTE(cpu->reg_pc, PRIVATE(cpu)->in_data);
 				CPU_CHANGE_FLAG(I, true);
 				PRIVATE(cpu)->state = CS_RUNNING;
@@ -335,6 +341,7 @@ static void execute_init(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 // internal memory functions
 //
 
+	// Fetch PC into *dst
 static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE phase) {
 	// Fetch operation
 	// CYCLE_BEGIN: PC as output address
@@ -348,11 +355,13 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 		case CYCLE_BEGIN :
 			LOG ("Fetching %04x", cpu->reg_pc);
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
+			OUTPUT_DATA(0xfe);
+				//>TODO BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
 			break;
 		case CYCLE_END :
-			LOG ("Fetched: %04x", PRIVATE(cpu)->in_data);
+			LOG ("Fetched: %02x", PRIVATE(cpu)->in_data);
 			*dst = PRIVATE(cpu)->in_data;
 			++cpu->reg_pc;
 			break;
@@ -366,8 +375,6 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 
 // Define the decode array
 typedef void (*OpcodeHandler)();
-
-// Function table for each opcode
 OpcodeHandler opcodeTable[256];  
 
 /* STATUS MATRIX
@@ -393,17 +400,20 @@ void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	// Opcodes EA - NOP [EN]
 	// Always two cycles. FETCH and EXECUTE
 	// FETCH is always handles in the execute phase functions
-	// SO only EXECUTE is here
+	// SO only EXECUTE is here (Decode Cycle 1)
 
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
+			LOG ("Address bus: %04x", cpu->reg_pc);
+			OUTPUT_DATA(0xff);
+				//>TODO BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
 			break;
 		case CYCLE_END :
 			PRIVATE(cpu)->decode_cycle = -1;
-			LOG ("NOP Opcode %d executed \n", cpu->reg_ir);
+			LOG ("NOP Opcode %02x executed", cpu->reg_ir);
 			break;
 	}
 }
@@ -413,12 +423,15 @@ void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
+			LOG ("Address bus: %04x", cpu->reg_pc);
+			OUTPUT_DATA(0xaa);
+				//>TODO BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
 			break;
 		case CYCLE_END :
 			PRIVATE(cpu)->decode_cycle = -1;
-			LOG ("UNK Opcode %d executed \n", cpu->reg_ir);
+			LOG ("UNK Opcode %02x executed", cpu->reg_ir);
 			break;
 	}
 }
@@ -438,6 +451,7 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 	}
 
 	// check for interrupts between instructions
+	//> How do interrupts work? When are they processed?
 	if (PRIVATE(cpu)->decode_cycle == 0 && phase == CYCLE_BEGIN) {
 		if (PRIVATE(cpu)->nmi_triggered) {
 			PRIVATE(cpu)->state = CS_IN_NMI;
@@ -577,7 +591,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 		for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
 
 		// Load the opcodes
-		opcodeTable[0xEA] = op_NOP;
+		opcodeTable[OP_65816_NOP] = op_NOP;
 
 	return cpu;
 }
@@ -592,7 +606,7 @@ static void CPU_65816_destroy(Cpu65816 *cpu) {
 
 //>TODO CPU process. 
 //>TODO We're assuming cycle is the same, but with bank register output
-//>     During PHI2 high?
+//>     During PHI2 low?
 
 static void CPU_65816_process(Cpu65816 *cpu) {
 	assert(cpu);
@@ -647,7 +661,6 @@ static void CPU_65816_process(Cpu65816 *cpu) {
 		priv->delayed_cycle = true;
 		cpu->schedule_timestamp = cpu->simulator->current_tick + 1;
 	}
-
 
 	// Update outputs
 		process_end(cpu);

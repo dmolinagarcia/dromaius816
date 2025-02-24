@@ -10,8 +10,8 @@ This document outlines the steps and recommendations for creating a file similar
   - [ ] Study the 65816 and identify differences with the 6502
   - [x] Create PINOUT for the CPU
   - [x] Understand procesor cycle
-    - [ ] Timing and bus behavior. I need to implement the BankAddress.
-    - [ ] Should I change process phases?. I may need new steps
+    - [x] Timing and bus behavior. I need to implement the BankAddress.
+    - [x] Should I change process phases?. I may need new steps
   - [ ] CPU Registers
     - [ ] Understand status register and how it changes between Emulation and Native
       - [ ] Implement Status Register
@@ -19,31 +19,32 @@ This document outlines the steps and recommendations for creating a file similar
       - [ ] When and how registers change size?
       - [ ] How does changing size affect the values stored?
       - [ ] Implement remaining registers.
-    - [ ] Implement OPCODES Phase 1
-      - [ ] Understand processor phases
-      - [ ] Initially, everything is a NOP. Advance PC and continue
-      - [ ] Add a catch all that triggers some warning (Illegal Opcode)
-      - [ ] Add NOP. Run a free NOP
-    - [ ] Implement OPCODES Phase 2
-      - [ ] XCE. CLC. SEC. Switch emulation/native
-      - [ ] Test status register change on switch
-      - [ ] Implement decoding logic. How to? Two tables?
-    - [ ] Implement OPCODES Phase 3
-      - [ ] Implement instructions that change M/X
-      - [ ] Implement register size changes and how their values change
-    - [ ] Understand addresing modes
-    - [ ] Implement OPCODES Phase 4
-      - [ ] Implement all Inmediate OPCODES
-      - [ ] Test Emulation and Native modes
-    - [ ] Implement OPCODES Phase 5
-      - [ ] Everything else
-    - [ ] Automate testing. https://github.com/SingleStepTests/ProcessorTests/tree/main/65816
-    - [ ] IRQ/NMI behaviour
-    - [ ] Special PINS.
-      - [ ] VDA / VPA
-      - [ ] ABORT
-      - [ ] E / MX
-      - [ ] OThers
+  - [ ] Implement OPCODES Phase 1
+    - [ ] Understand processor phases
+    - [ ] Initially, everything is a NOP. Advance PC and continue
+    - [ ] Add a catch all that triggers some warning (Illegal Opcode)
+    - [ ] Add NOP. Run a free NOP
+  - [ ] Implement OPCODES Phase 2
+    - [ ] XCE. CLC. SEC. Switch emulation/native
+    - [ ] Test status register change on switch
+    - [ ] Implement decoding logic. How to? Two tables?
+  - [ ] Implement OPCODES Phase 3
+    - [ ] Implement instructions that change M/X
+    - [ ] Implement register size changes and how their values change
+  - [ ] Understand addresing modes
+  - [ ] Implement OPCODES Phase 4
+    - [ ] Implement all implied OPCODES
+    - [ ] Test Emulation and Native modes
+  - [ ] Implement OPCODES Phase 5
+    - [ ] Implement all immediate OPCODES
+    - [ ] Everything else
+  - [ ] Automate testing. https://github.com/SingleStepTests/ProcessorTests/tree/main/65816
+  - [ ] IRQ/NMI behaviour
+  - [ ] Special PINS.
+    - [ ] VDA / VPA
+    - [ ] ABORT
+    - [ ] E / MX
+    - [ ] OThers
 
 ## Execution Cycle
 
@@ -67,49 +68,58 @@ ChatGPT suggests building an opcode function matrix. Sounds good but it is untes
 
     // Define the array
     typedef void (*OpcodeHandler)();
-
-    // Function table for each opcode
     OpcodeHandler opcodeTable[256];  
 
     // Function to process each opcode
-    void op_ADC() { std::cout << "Ejecutando ADC\n"; }
-    void op_LDA() { std::cout << "Ejecutando LDA\n"; }
-    void op_STA() { std::cout << "Ejecutando STA\n"; }
-    void op_JMP() { std::cout << "Ejecutando JMP\n"; }
-    void op_BEQ() { std::cout << "Ejecutando BEQ\n"; }
-    void op_BNE() { std::cout << "Ejecutando BNE\n"; }
+
     void op_NOP() { std::cout << "Ejecutando NOP\n"; }
     void op_UNK() { std::cout << "Opcode desconocido\n"; }
 
     // Init opcode table
     void initOpcodeTable() {
-        for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
         // Default call for unknown opcodes
+        for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
 
         // Load the opcodes
-        opcodeTable[0b01101001] = op_ADC;  // ADC #imm
-        opcodeTable[0b10101001] = op_LDA;  // LDA #imm
-        opcodeTable[0b10001001] = op_STA;  // STA $addr
-        opcodeTable[0b01001100] = op_JMP;  // JMP $addr
-        opcodeTable[0b11110000] = op_BEQ;  // BEQ (Branch if Equal)
-        opcodeTable[0b11010000] = op_BNE;  // BNE (Branch if Not Equal)
         opcodeTable[0b11101010] = op_NOP;  // NOP (No Operation)
     }
 
     // Execure opcode call
-    void executeOpcode(uint8_t opcode) {
-        opcodeTable[cpu->reg_ir]();  
-        // Llama a la función correspondiente en O(1)
-    }
-
-    // Test  
-    int main() {
-        initOpcodeTable();  
-        return 0;
-    }
+	  if (PRIVATE(cpu)->decode_cycle == 0) {
+  	  	fetch_pc_memory(cpu, &cpu->reg_ir, phase);
+	  } else {
+	    	opcodeTable[cpu->reg_ir](cpu, phase);
+	  }
     ```
 
 ---
+
+## Status Register
+
+The Processor status register (P) is an 8-bit register that holds information about the current status of the CPU. In a 6502/65c02 the 8 bits are :
+
+
+- N: Negative Flag. 1 = negative
+- V: oVerflow Flag. 1 = overflow
+- 1: Always reads back as 1
+- B: BRK Command. 1 = BRK / 0 = IRQ
+- D: Decimal Mode. 1 = true
+- I: IRQB Disable. 1 = disable
+- Z: Zero. 1 = True
+- C: Carry. 1 = Trye
+
+In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads the same, When in native mode however there are some changes
+
+- N: Negative Flag. 1 = negative
+- V: oVerflow Flag. 1 = overflow
+- M: Memory Select. 1 = 8bit 0 = 16bit. Controls the size of the Accumulator
+- X: Index Register Select. 1 = 8bit 0 = 16bit. Controls the size of X and Y registers, only in emulation mode.
+- D: Decimal Mode. 1 = true
+- I: IRQB Disable. 1 = disable
+- Z: Zero. 1 = True
+- C: Carry. 1 = Trye
+
+(E)mulation flag. This flag indicates if the CPU is in emulation (1) or native (0) modes. This flag is hidden and can be exchanged with the Carry bit with the instruction XCE.
 
 ## Docs
 
@@ -148,32 +158,7 @@ Emulation vs Native
 
 ### Processor registers
 
-#### (P) Processor status register
 
-The Processor status register (P) is an 8-bit register that holds information about the current status of the CPU. In a 6502/65c02 the 8 bits are :
-
-- N: Negative Flag. 1 = negative
-- V: oVerflow Flag. 1 = overflow
-- 1: Always reads back as 1
-- B: BRK Command. 1 = BRK / 0 = IRQ
-- D: Decimal Mode. 1 = true
-- I: IRQB Disable. 1 = disable
-- Z: Zero. 1 = True
-- C: Carry. 1 = Trye
-
-In a 65c816, when the CPU starts, it does so in emulation mode. Here, (P) reads the same, When in native mode however there are some changes
-
-- N: Negative Flag. 1 = negative
-- V: oVerflow Flag. 1 = overflow
-- M: Memory Select. 1 = 8bit 0 = 16bit. Controls the size of the Accumulator
-- X: Index Register Select. 1 = 8bit 0 = 16bit. Controls the size of X and Y registers, only in emulation mode.
-- D: Decimal Mode. 1 = true
-- I: IRQB Disable. 1 = disable
-- Z: Zero. 1 = True
-- C: Carry. 1 = Trye
-
-(E)mulation flag. This flag indicates if the CPU is in emulation (1) or native (0) modes. This flag is hidden and can be exchanged with the Carry bit with the instruction XCE.
----
 
 ## Reset sequence
 

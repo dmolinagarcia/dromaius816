@@ -8,57 +8,13 @@
 #define DROMAIUS_CPU_65816_OPCODES_H
 
 #include "types.h"
+// opcodes
+typedef enum OPCODES_65816_ {
+	OP_65816_BRK			= 0x00,
+	OP_65816_NOP			= 0xea,
+} OPCODES_65816;
 
-/* The 65816 instruction set is laid out according to a pattern "aaabbbcc".
-   Typically a and c denote the instruction type and b specifies the addressing mode.
-*/
-
-//                      aaabbbcc
-#define AC_65816_MASK  0b11100011
-#define AC_65816_ADC	  0b01100001
-#define AC_65816_AND	  0b00100001
-#define AC_65816_ASL	  0b00000010
-#define AC_65816_CMP	  0b11000001
-#define AC_65816_DEC   0b11000010
-#define AC_65816_EOR	  0b01000001
-#define AC_65816_INC   0b11100010
-#define AC_65816_LDA   0b10100001
-#define AC_65816_LDX   0b10100010
-#define AC_65816_LDY   0b10100000
-#define AC_65816_LSR	  0b01000010
-#define AC_65816_ORA	  0b00000001
-#define AC_65816_ROL	  0b00100010
-#define AC_65816_ROR	  0b01100010
-#define AC_65816_SBC	  0b11100001
-#define AC_65816_STA	  0b10000001
-
-//                          aaabbbcc
-#define ADDR_65816_MASK    0b00011100
-
-#define EXTRACT_65816_ADRESSING_MODE(op)	\
-	(((op) & ADDR_65816_MASK) >> 2)
-
-typedef enum ADDRESSING_MODE_65816_ {
-	
-	// the values of these first 8 modes correspond to the bbb-part of the opcodes for the "Group 1 instructions"
-	AM_65816_INDIRECT_X	= 0b0000,
-	AM_65816_ZEROPAGE	= 0b0001,
-	AM_65816_IMMEDIATE	= 0b0010,
-	AM_65816_ABSOLUTE	= 0b0011,
-	AM_65816_INDIRECT_Y	= 0b0100,
-	AM_65816_ZEROPAGE_X	= 0b0101,
-	AM_65816_ABSOLUTE_Y	= 0b0110,
-	AM_65816_ABSOLUTE_X	= 0b0111,
-
-	// other addressing modes not used for group-1 instructions
-	AM_65816_ZEROPAGE_Y	= 0b1000,
-	AM_65816_INDIRECT	= 0b1001,
-
-	AM_65816_UNDEFINED	= 0b1111
-
-} ADDRESSING_MODE_65816;
-
-
+/*
 // opcodes
 typedef enum OPCODES_65816_ {
 
@@ -91,7 +47,7 @@ typedef enum OPCODES_65816_ {
 	OP_65816_BIT_ZP		= 0x24,		
 	OP_65816_BIT_ABS		= 0x2c,
 	OP_65816_BEQ			= 0xf0,		// branch on result zero (Z = 1)
-	OP_65816_BRK			= 0x00,
+	
 	OP_65816_BMI			= 0x30,		// branch on result minus (N = 1)
 	OP_65816_BNE			= 0xd0,		// branch on result not zero (Z = 0)
 	OP_65816_BPL			= 0x10,		// branch on result plus (N = 0)
@@ -177,7 +133,6 @@ typedef enum OPCODES_65816_ {
 	OP_65816_LSR_ABS		= 0x4e,
 	OP_65816_LSR_ABSX	= 0x5e,
 
-	OP_65816_NOP			= 0xea,
 
 	OP_65816_ORA_IMM		= 0x09,
 	OP_65816_ORA_ZP		= 0x05,
@@ -244,6 +199,56 @@ typedef enum OPCODES_65816_ {
 	OP_65816_TXS			= 0x9a,
 	OP_65816_TYA			= 0x98,
 } OPCODES_65816;
+
+  The 65816 instruction set is laid out according to a pattern "aaabbbcc".
+   Typically a and c denote the instruction type and b specifies the addressing mode.
+
+//                      aaabbbcc
+#define AC_65816_MASK  0b11100011
+#define AC_65816_ADC	  0b01100001
+#define AC_65816_AND	  0b00100001
+#define AC_65816_ASL	  0b00000010
+#define AC_65816_CMP	  0b11000001
+#define AC_65816_DEC   0b11000010
+#define AC_65816_EOR	  0b01000001
+#define AC_65816_INC   0b11100010
+#define AC_65816_LDA   0b10100001
+#define AC_65816_LDX   0b10100010
+#define AC_65816_LDY   0b10100000
+#define AC_65816_LSR	  0b01000010
+#define AC_65816_ORA	  0b00000001
+#define AC_65816_ROL	  0b00100010
+#define AC_65816_ROR	  0b01100010
+#define AC_65816_SBC	  0b11100001
+#define AC_65816_STA	  0b10000001
+
+//                          aaabbbcc
+#define ADDR_65816_MASK    0b00011100
+
+#define EXTRACT_65816_ADRESSING_MODE(op)	\
+	(((op) & ADDR_65816_MASK) >> 2)
+
+typedef enum ADDRESSING_MODE_65816_ {
+	
+	// the values of these first 8 modes correspond to the bbb-part of the opcodes for the "Group 1 instructions"
+	AM_65816_INDIRECT_X	= 0b0000,
+	AM_65816_ZEROPAGE	= 0b0001,
+	AM_65816_IMMEDIATE	= 0b0010,
+	AM_65816_ABSOLUTE	= 0b0011,
+	AM_65816_INDIRECT_Y	= 0b0100,
+	AM_65816_ZEROPAGE_X	= 0b0101,
+	AM_65816_ABSOLUTE_Y	= 0b0110,
+	AM_65816_ABSOLUTE_X	= 0b0111,
+
+	// other addressing modes not used for group-1 instructions
+	AM_65816_ZEROPAGE_Y	= 0b1000,
+	AM_65816_INDIRECT	= 0b1001,
+
+	AM_65816_UNDEFINED	= 0b1111
+
+} ADDRESSING_MODE_65816;
+
+*/
 
 
 #endif // DROMAIUS_CPU_65816_OPCODES_H
