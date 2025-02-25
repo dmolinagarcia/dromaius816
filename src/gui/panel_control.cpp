@@ -117,7 +117,7 @@ public:
 			ImGui::SameLine();
 
 			if (!step_clocks.empty()) {
-				if (ImGui::Button(txt_step_clock)) {
+				if (ImGui::Button(txt_step_clock) || ImGui::IsKeyPressed(ImGuiKey_Space, false)) {
 					auto &clk = step_clocks[step_clock_sel];
 					dms_step_signal(ui_context->dms_ctx, clk.signal, clk.pos_edge, clk.neg_edge);
 				}
