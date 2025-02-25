@@ -176,6 +176,8 @@ endif()
 			src/dev_minimal_65816.h
 			src/dev_nova_64.c
 			src/dev_nova_64.h 
+			src/filt_6502_asm.c
+			src/filt_6502_asm.h
 			src/log.c
 			src/log.h
 			src/ram_8d_16a.c

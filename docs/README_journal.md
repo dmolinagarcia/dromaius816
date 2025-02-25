@@ -93,7 +93,6 @@
 > **Logic Analyzer**
 > Horizontal movement has been implemented as click and drag. Zooming needs to be perfected, but is good enough as is. Time to move on. Next week, we'll work on the schematic
 
-
 ---
 
 ### ✅ **W08 / 2025**
@@ -102,6 +101,14 @@
 > cpu_65816 has been striped out of all functions. Just the minimun to run the simulation are still there. PINs have been renamed, and an empty process is implemented. Now it's time to investigate the inner workings of the CPU.
 >
 > Startup sequence seems correct, and, as all decode logic has been removed, any opcode is treatad as a NOP. A NOP free loop is running, apparently OK. No addressing modes, no decoding, no nothing. 
+
+---
+
+### ✅ **W09 / 2025**
+> **CPU**
+> Basic fetch and decode is in place. Only NOP is decoded, but the decoding routine is set up. CPU pins have been modified to reflect 65816. P Register is fully implemented. Memory is connected to all devices and running fine. 
+
+---
 
 ## ✅ **Pending Tasks**
 
@@ -135,14 +142,6 @@
 >   - [ ] PSRam.
 >   - [ ] SD Card.
 > 
-> - [ ] **CPU:**
->   - [ ] Understand the internal workings of the CPU.
->     - [ ] Differences between the 65c02 and 65c816 Processor Status Register
->   - [x] Connect memory to the `minimal65816`.
->   - [ ] Get something basic running (even though it’s still a `6502` despite the name).
->     - [ ] `NOP` test.
->     - [ ] Basic instructions such as `LDA`.
-> 
 > - [ ] Add **Logic Analyzer**
 >   - [x] Only `PET` currently has it. (Both lite and full). Add it and verify that it works.
 >   - [x] Understand how does it work and document it.
@@ -151,4 +150,6 @@
 >   - [x] Add scrolling.
 >     -  [ ] Zooming while scrolled. Keep point under mouse pointer static
 >   - [ ] Custom buses. 
-> 
+>
+>  - [ ] **Monitor**
+>   - [ ] Basic memory view has a 6502 disassembler. Build a 65816 one. E, M and X need to be taken into account.

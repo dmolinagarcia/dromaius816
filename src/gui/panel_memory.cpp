@@ -10,7 +10,7 @@
 #include <stb/stb_ds.h>
 #include <utils.h>
 
-//> #include "filt_6502_asm.h"
+#include "filt_6502_asm.h"
 #include "ui_context.h"
 #include "device.h"
 #include "imgui_ex.h"
@@ -56,9 +56,9 @@ public:
 				case DT_RAW:
 					memory_display_raw();
 					break;
-//>				case DT_DISASM:
-//>					memory_display_disasm_6502();
-//>					break;
+				case DT_DISASM:
+					memory_display_disasm_6502();
+					break;
 				case DT_PETSCREEN:
 					memory_display_petscreen();
 					break;
@@ -137,7 +137,7 @@ public:
 			uint8_t buffer[16];
 			ui_context->device->read_memory(ui_context->device, mem_offset + index, 16, buffer);
 
-//>			index += filt_6502_asm_line(buffer, 16, 0, mem_offset + index, &line);
+			index += filt_6502_asm_line(buffer, 16, 0, mem_offset + index, &line);
 
 			ImGui::TextColored(colors[is_current], "%s%s", symbols[is_current], line);
 			arrsetlen(line, 0);
@@ -210,7 +210,7 @@ public:
 private:
 	enum DISPLAY_TYPES {
 		DT_RAW = 0,
-//>		DT_DISASM = 1,
+		DT_DISASM = 1,
 		DT_PETSCREEN = 2
 	};
 
