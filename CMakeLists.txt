@@ -178,6 +178,8 @@ endif()
 			src/dev_nova_64.h 
 			src/filt_6502_asm.c
 			src/filt_6502_asm.h
+			src/filt_65816_asm.c
+			src/filt_65816_asm.h
 			src/log.c
 			src/log.h
 			src/ram_8d_16a.c
