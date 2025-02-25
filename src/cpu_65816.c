@@ -1,8 +1,8 @@
 // cpu_65816.c - Daniel Molina - BSD-3-Clause (see LICENSE)
-// bases on
+// based on
 // cpu_6502.c - Johan Smet - BSD-3-Clause (see LICENSE)
 //
-// Emulation of the MOS 65 02 >> soon to be 65816
+// Emulation of the WDC 65816
 
 #include "log.h"
 #include "cpu_65816.h"
@@ -178,6 +178,13 @@ static void process_end(Cpu65816 *cpu) {
 	//>TODO Is this correct?
 		cpu->reg_sp = cpu->reg_sp & 0x01FF;
 
+	//>TODO Also, if X is 1, high byte of X and Y must be cleared
+	//>     Is this a good place?
+	//>		Still pending.
+
+	//>TODO Also, if E=1, M and X should be 1 too. 
+	//>     Here?
+
 	// address bus
 	if (output->address != last_output->address) {
 		SIGNAL_GROUP_WRITE(address, output->address);
@@ -251,11 +258,14 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = cpu->reg_pc;
 				LOG ("Address bus: %04x", cpu->reg_pc);
-				//>TODO Emulation is set to TRUE on startup
+			}
+			if (phase == CYCLE_END && irq_type == INTR_RESET) {
+				//>TODO Emulation is set to TRUE on reset
+				//>     So are M and X
 				//>     Is this ok here???
 				CPU_CHANGE_FLAG(E, true);	
-				//>TODO Also, unused flag in emulation mode is always set
-				CPU_CHANGE_FLAG(U, true);
+				CPU_CHANGE_FLAG(M, true);	
+				CPU_CHANGE_FLAG(X, true);	
 			}
 			break;
 		case 1 :		// force a BRK instruction
@@ -304,6 +314,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 					break;
 				case CYCLE_MIDDLE:
 					//>TODO reg_p, reg_ep, how to handle this!
+					//>   I think it already is handled :)
 					OUTPUT_DATA(CPU_REG_P);
 					break;
 				case CYCLE_END:
@@ -518,6 +529,11 @@ int64_t CPU_65816_program_counter(Cpu65816 *cpu) {
 	return cpu->reg_pc;
 }
 
+uint32_t cpu_65816_model_number(void *cpu) {
+	assert(cpu);
+	return 65816;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // interface functions
@@ -544,6 +560,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	//>TODO These are commented out. Not yet implemented... what do they do?
 	//>TODO iasof and pc uncommented due to them being used in context ui
 	//>TODO pointes to functions? Common interface accross CPUS?
+	cpu->model_number = (CPU_MODEL_NUMBER) cpu_65816_model_number;
 
 	dms_memcpy(cpu->signals, signals, sizeof(Cpu65816Signals));
 
@@ -587,6 +604,10 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	priv->state = CS_INIT;
 	priv->nmi_triggered = false;
 	priv->override_pc = 0;
+
+	//>TODO Also, unused flag in emulation mode is always set
+	//>       so we SET it on CPU Creation
+	CPU_CHANGE_FLAG(U, true);
 
 	// Init opcode table
 		// Default call for unknown opcodes

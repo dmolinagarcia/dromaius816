@@ -61,7 +61,6 @@ enum Cpu65816SignalAssignments {
 #define CHIP_65816_PIN_COUNT 40
 typedef Signal Cpu65816Signals[CHIP_65816_PIN_COUNT];
 
-
 //>TODO Flags need to be adapted to the 65c816
 typedef enum Cpu65816Flags {
 	FLAG_65816_CARRY			 = ((uint32_t) 0b00000000100000001),
@@ -89,8 +88,6 @@ typedef enum Cpu65816Flags {
 	FLAG_65816_X = FLAG_65816_INDEX,
 	FLAG_65816_E = FLAG_65816_EMULATION
 } Cpu65816Flags;
-
-
 
 typedef struct Cpu65816 {
 

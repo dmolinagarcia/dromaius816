@@ -2187,6 +2187,11 @@ int64_t cpu_6502_program_counter(Cpu6502 *cpu) {
 	return cpu->reg_pc;
 }
 
+uint32_t cpu_6502_model_number(void *cpu) {
+	assert(cpu);
+	return 6502;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // interface functions
@@ -2208,6 +2213,7 @@ Cpu6502 *cpu_6502_create(Simulator *sim, Cpu6502Signals signals) {
 	cpu->is_at_start_of_instruction = (CPU_IS_AT_START_OF_INSTRUCTION) cpu_6502_at_start_of_instruction;
 	cpu->irq_is_asserted = (CPU_IRQ_IS_ASSERTED) cpu_6502_irq_is_asserted;
 	cpu->program_counter = (CPU_PROGRAM_COUNTER) cpu_6502_program_counter;
+	cpu->model_number = (CPU_MODEL_NUMBER) cpu_6502_model_number;
 
 	dms_memcpy(cpu->signals, signals, sizeof(Cpu6502Signals));
 
