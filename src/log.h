@@ -31,8 +31,9 @@ static inline void get_timestamp(char *buffer, size_t len) {
 
 // Global extern variable to store log status
 extern int LOG_STATUS;
+extern int LOG_DETAIL;
 
-static inline void log_message(const char *file, const char *func, int line, const char *format, ...) {
+static inline void log_message(const char *file, const char *func, int line, int level, const char *format, ...) {
     if (LOG_STATUS) {
         char timestamp[24];
         get_timestamp(timestamp, sizeof(timestamp));
@@ -41,47 +42,30 @@ static inline void log_message(const char *file, const char *func, int line, con
         va_start(args, format);
         vsnprintf(log_buffer, sizeof(log_buffer), format, args);
         va_end(args);
-        switch (LOG_STATUS) {
-            case 1:
-                printf("[ %s ] - %s\n", timestamp, log_buffer);
-            break;
-            case 2:
-                printf("[ %s ] [ %s:%s:%d ] - %s\n", timestamp, file, func, line, log_buffer);
+        if (level <= LOG_STATUS) {
+            switch (LOG_DETAIL) {
+                case 1:
+                    printf("%s\n", log_buffer);
+                break;
+                case 2:
+                    printf("[ %s ] - %s\n", timestamp, log_buffer);
+                break;
+                case 3:
+                    printf("[ %s ] [ %s:%s:%d ] - %s\n", timestamp, file, func, line, log_buffer);
                 break;    
+            }
         }
     }
 }
 
 // MACRO for printing log, if status is enabled
-#define LOG(format, ...) log_message(__FILE__, __FUNCTION__, __LINE__, format, ##__VA_ARGS__)
+#define LOG(level, format, ...) log_message(__FILE__, __FUNCTION__, __LINE__, level, format, ##__VA_ARGS__)
 
 // Enable and disable functions
-void enable_log_state(int level);
-void disable_log_state();
+void set_log_state(int level, int detail);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif // DROMAIUS_LOG_H
-
-//> 
-//> 
-//> 
-//> void log_printf(int64_t tick, const char *fmt, ...);
-//> 
-//> #ifdef DMS_LOG_TRACE
-//> 	#ifdef LOG_SIMULATOR
-//> 		#define LOG_TRACE(f, ...)	log_printf(LOG_SIMULATOR->current_tick, (f), __VA_ARGS__)
-//> 	#else
-//> 		#define LOG_TRACE(f, ...)	log_printf(-1, (f), __VA_ARGS__)
-//> 	#endif
-//> #else
-//> 	#define LOG_TRACE(f, ...)
-//> #endif
-//> 
-//> #ifdef __cplusplus
-//> }
-//> #endif
-//> 
-

@@ -257,7 +257,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 0 :		// finish previous operation
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = cpu->reg_pc;
-				LOG ("Address bus: %04x", cpu->reg_pc);
+				LOG (2, "Address bus: %04x", cpu->reg_pc);
 			}
 			if (phase == CYCLE_END && irq_type == INTR_RESET) {
 				//>TODO Emulation is set to TRUE on reset
@@ -277,7 +277,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			switch (phase) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
-					LOG ("Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));
+					LOG (2, "Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
@@ -293,7 +293,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			switch (phase) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
-					LOG ("Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));
+					LOG (2, "Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
@@ -309,7 +309,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 			switch (phase) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
-					LOG ("Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));					
+					LOG (2, "Address bus: %04x", MAKE_WORD(0x01, cpu->reg_sp));					
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
@@ -326,7 +326,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 5 :		// read low byte of the reset vector
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = VECTOR_LOW[irq_type];
-				LOG ("Address bus: %04x", VECTOR_LOW[irq_type]);				
+				LOG (2, "Address bus: %04x", VECTOR_LOW[irq_type]);				
 			} else if (phase == CYCLE_END) {
 				cpu->reg_pc = SET_LO_BYTE(cpu->reg_pc, PRIVATE(cpu)->in_data);
 			}
@@ -334,7 +334,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		case 6 :		// read high byte of the reset vector
 			if (phase == CYCLE_BEGIN) {
 				PRIVATE(cpu)->output.address = VECTOR_HIGH[irq_type];
-				LOG ("Address bus: %04x", VECTOR_HIGH[irq_type]);				
+				LOG (2, "Address bus: %04x", VECTOR_HIGH[irq_type]);				
 				} else if (phase == CYCLE_END) {
 				cpu->reg_pc = SET_HI_BYTE(cpu->reg_pc, PRIVATE(cpu)->in_data);
 				CPU_CHANGE_FLAG(I, true);
@@ -366,7 +366,7 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 
 	switch (phase) {
 		case CYCLE_BEGIN :
-			LOG ("Fetching %04x", cpu->reg_pc);
+			LOG (2, "Fetching %04x", cpu->reg_pc);
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			OUTPUT_DATA(0xfe);
 				//>TODO BANK ADDRESS?
@@ -374,7 +374,7 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 		case CYCLE_MIDDLE:
 			break;
 		case CYCLE_END :
-			LOG ("Fetched: %02x", PRIVATE(cpu)->in_data);
+			LOG (2, "Fetched: %02x", PRIVATE(cpu)->in_data);
 			*dst = PRIVATE(cpu)->in_data;
 			++cpu->reg_pc;
 			break;
@@ -418,7 +418,7 @@ void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
-			LOG ("Address bus: %04x", cpu->reg_pc);
+			LOG (2, "Address bus: %04x", cpu->reg_pc);
 			OUTPUT_DATA(0xff);
 				//>TODO BANK ADDRESS?
 			break;
@@ -426,7 +426,7 @@ void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			break;
 		case CYCLE_END :
 			PRIVATE(cpu)->decode_cycle = -1;
-			LOG ("NOP Opcode %02x executed", cpu->reg_ir);
+			LOG (2, "NOP Opcode %02x executed", cpu->reg_ir);
 			break;
 	}
 }
@@ -436,7 +436,7 @@ void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
-			LOG ("Address bus: %04x", cpu->reg_pc);
+			LOG (2,"Address bus: %04x", cpu->reg_pc);
 			OUTPUT_DATA(0xaa);
 				//>TODO BANK ADDRESS?
 			break;
@@ -444,14 +444,14 @@ void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			break;
 		case CYCLE_END :
 			PRIVATE(cpu)->decode_cycle = -1;
-			LOG ("UNK Opcode %02x executed", cpu->reg_ir);
+			LOG (2,"UNK Opcode %02x executed", cpu->reg_ir);
 			break;
 	}
 }
 
 static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	//>TODO Function copied as-is. I may need some changes!
-	LOG ("%s Decode_cycle: %d IR: %x" , CPU_65816_PHASE_NAMES[phase], PRIVATE(cpu)->decode_cycle, cpu->reg_ir);
+	LOG (3, "%s Decode_cycle: %d IR: %x" , CPU_65816_PHASE_NAMES[phase], PRIVATE(cpu)->decode_cycle, cpu->reg_ir);
 
 	// data-bus
 	PRIVATE(cpu)->output.drv_data = false;
@@ -494,8 +494,9 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 	// IF cycle = 0 (SYNC on 6502 is true) we fetch PC memory into IR
 	// Otherwise, we are executing
 	if (PRIVATE(cpu)->decode_cycle == 0) {
-		LOG ("Fetching into IR");
+		LOG (3, "Fetching into IR");
 		fetch_pc_memory(cpu, &cpu->reg_ir, phase);
+		LOG (1, "%02x:%04x" , cpu->reg_pbr, cpu->reg_pc );
 	} else {
 		opcodeTable[cpu->reg_ir](cpu, phase);
 	}

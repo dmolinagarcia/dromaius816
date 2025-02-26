@@ -51,7 +51,8 @@ namespace {
     using argh_list_t = std::initializer_list < const char * const > ;
     static constexpr argh_list_t ARG_MACHINE = {"-m", "--machine" };
     static constexpr argh_list_t ARG_HELP = {"-h", "--help" };
-    static constexpr argh_list_t ARG_LOG = {"-l", "--log" };
+    static constexpr argh_list_t ARG_LOG_LEVEL = {"-l", "--log" };
+    static constexpr argh_list_t ARG_LOG_DETAIL = {"-d", "--detail" };
 
     // Print help if requested or wrong arguments
     void print_help() {
@@ -76,8 +77,10 @@ namespace {
         printf(" %-25s display this help message and stop execution.\n",
             format_argh_list(ARG_HELP).c_str());
 		printf(" %-25s Enable log output.\n",
-			format_argh_list(ARG_LOG).c_str());
-	}
+			format_argh_list(ARG_LOG_LEVEL).c_str());
+		printf(" %-25s Set log detail.\n",
+			format_argh_list(ARG_LOG_DETAIL).c_str());
+		}
 
 } // unnamed namespace
 
@@ -97,7 +100,8 @@ int main(int argc, char ** argv) {
     argh::parser cmd_line;
     cmd_line.add_params(ARG_MACHINE);
     cmd_line.add_params(ARG_HELP);
-    cmd_line.add_params(ARG_LOG);
+    cmd_line.add_params(ARG_LOG_LEVEL);
+    cmd_line.add_params(ARG_LOG_DETAIL);
     cmd_line.parse(argc, argv);
 
     if (cmd_line[ARG_HELP]) {
@@ -107,9 +111,10 @@ int main(int argc, char ** argv) {
 
 	
 		std::string loglevel;
-		cmd_line(ARG_LOG, "0" ) >> loglevel;
-		printf ("LOGLEVEL : %s \n", loglevel.c_str());
-		enable_log_state(std::stoi(loglevel));
+		std::string logdetail;
+		cmd_line(ARG_LOG_LEVEL, "0" ) >> loglevel;
+		cmd_line(ARG_LOG_DETAIL, "1" ) >> logdetail;
+		set_log_state(std::stoi(loglevel), std::stoi(logdetail));
 
 		// fill-out configuration structure
 		Config ui_config;
@@ -236,7 +241,6 @@ int main(int argc, char ** argv) {
 	emscripten_set_main_loop_arg(main_loop, nullptr, 0, 1);
 #else
 	// Main loop
-	LOG ("Entering main loop.");
 	while (!glfwWindowShouldClose(g_window)) {
 		main_loop(nullptr);
 	}
