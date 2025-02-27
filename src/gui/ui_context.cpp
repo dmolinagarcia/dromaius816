@@ -181,7 +181,7 @@ void UIContext::create_minimal_65816() {
 
 	// create UI panels
  	panel_add(panel_control_create(this, {0, 0}, device_65816->oscillator,
- 								  {device_65816->signals[SIG_M65816_CPU_SYNC], true, false},
+ 								  {device_65816->signals[SIG_M65816_CPU_VPA], true, false},
  								  {{device_65816->signals[SIG_M65816_CLOCK], true, true}}
 	));
 

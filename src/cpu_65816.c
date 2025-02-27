@@ -124,10 +124,13 @@ typedef struct output_t {
 	uint16_t		address;			// data to be written to the addressbus
 	bool			rwb;				// rw pin
 
-	//>TODO. Here we remove SYNC
-	//>TODO. VDA and VPA Perform similar function
+	bool 			vpa;				// vpa PIN
+
+	//>TODO. Here we remove SYNC and replace it with VPA
+	//>TODO. VDA and VPA Perform similar function to sync
 	//>TODO. On the original code this output is implemented in the
 	//>      process_end function
+	//>    . Only VPA for now to provide for step instruction!
 
 } output_t;
 
@@ -219,6 +222,15 @@ static void process_end(Cpu65816 *cpu) {
 //> 	}
 //>TODO SYNC pinc does not exist on 65816.
 //>TODO VDA and VPA should be here
+
+	// VPA PIN
+	//>TODO. Temporary solution. VPA replicates SYNC on 6502
+	//>    . Used for step instruction in control panel.
+	output->vpa = PRIVATE(cpu)->decode_cycle == 0;
+	if (output->vpa != last_output->vpa) {
+		SIGNAL_WRITE(VPA, output->vpa);
+		last_output->vpa = output->vpa;
+	}		
 }
 
 	// Handle interrupt sequence
@@ -376,6 +388,7 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 		case CYCLE_END :
 			LOG (2, "Fetched: %02x", PRIVATE(cpu)->in_data);
 			*dst = PRIVATE(cpu)->in_data;
+			LOG (1, "%02x:%04x" , cpu->reg_pbr, cpu->reg_pc );
 			++cpu->reg_pc;
 			break;
 	}
@@ -496,7 +509,6 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 	if (PRIVATE(cpu)->decode_cycle == 0) {
 		LOG (3, "Fetching into IR");
 		fetch_pc_memory(cpu, &cpu->reg_ir, phase);
-		LOG (1, "%02x:%04x" , cpu->reg_pbr, cpu->reg_pc );
 	} else {
 		opcodeTable[cpu->reg_ir](cpu, phase);
 	}
@@ -512,10 +524,11 @@ bool CPU_65816_at_start_of_instruction(Cpu65816 *cpu) {
 	//>TODO Function copied as-is. I may need some changes!
 
 	assert(cpu);
-	return true;
+	return SIGNAL_READ_NEXT(VPA);
 	//>TODO SHould return a valid combination of VPA and VDA
 	//> //> 	return SIGNAL_READ_NEXT(SYNC);
-	//>TODO IDN Why this is needed in the UI. Something related to getting the PC
+	//>     This is temporary and mimics 6502 SYNC
+	//>     USed on the ui for stepping instructions
 }
 
 bool CPU_65816_irq_is_asserted(Cpu65816 *cpu) {
@@ -526,6 +539,7 @@ bool CPU_65816_irq_is_asserted(Cpu65816 *cpu) {
 int64_t CPU_65816_program_counter(Cpu65816 *cpu) {
 	//>TODO Function copied as IS. 
 	//>TODO IDN why this is needed.
+	//>TODO IDN Why this is needed in the UI. Something related to getting the PC
 	assert(cpu);
 	return cpu->reg_pc;
 }
@@ -597,6 +611,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	SIGNAL_DEFINE_DEFAULT(RDY, ACTHI_ASSERT);
 	SIGNAL_DEFINE_DEFAULT(IRQ_B, ACTLO_DEASSERT);
 	SIGNAL_DEFINE_DEFAULT(NMI_B, ACTLO_DEASSERT);
+	SIGNAL_DEFINE(VPA);
 	SIGNAL_DEFINE_DEFAULT(RWB, true);
 	SIGNAL_DEFINE(PHI2);
 	SIGNAL_DEFINE_DEFAULT(RES_B, ACTLO_DEASSERT);

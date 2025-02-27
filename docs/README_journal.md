@@ -106,7 +106,12 @@
 
 ### ✅ **W09 / 2025**
 > **CPU**
-> Basic fetch and decode is in place. Only NOP is decoded, but the decoding routine is set up. CPU pins have been modified to reflect 65816. P Register is fully implemented. Memory is connected to all devices and running fine. 
+> Basic fetch and decode is in place. Only NOP is decoded, but the decoding routine is set up. CPU pins have been modified to reflect 65816. P Register is fully implemented. Memory is connected to all devices and running fine. Bank address output is implemented, although it is a hardcoded value for now.
+>
+> `Execute instruction` depends on the CPU signaling the start of instruction. The 6502 uses its `SYNC`output for this. The 65816 uses `VPA` and `VDA`. `VPA` has been modified to mimic 6502's `SYNC` output and the single stepping now works.
+>
+> **Memory**
+> A basic structure for a 65816 disassembler is implemented. It will need E, M and X values. 
 
 ---
 
@@ -134,7 +139,7 @@
 > 
 > - [ ] **Simulator:**
 >   - [ ] Invetigate tick speed effects on simulation speed.
-> 
+>
 > - [ ] **New Chips:**
 >   - [ ] Create a new chip called **HELIUM** (*FPGA*):
 >     - [ ] It should take the **master clock** as input and output a **PHI** divided by `n` (4? 16?).
