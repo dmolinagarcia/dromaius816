@@ -6,6 +6,7 @@
 
 #include "dev_minimal_65816.h"
 
+#include "log.h"
 #include "crt.h"
 #include "utils.h"
 #include "stb/stb_ds.h"
@@ -165,6 +166,10 @@ Cpu65816* dev_minimal_65816_get_cpu(DevMinimal65816 *device) {
 	return device->cpu;
 }
 
+void dev_minimal_65816_cpu_logger() {
+	LOG (1, "HOLA");
+}
+
 size_t dev_minimal_65816_get_irq_signals(DevMinimal65816 *device, SignalBreakpoint **irq_signals);
 
 DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
@@ -177,6 +182,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	device->read_memory = (DEVICE_READ_MEMORY) dev_minimal_65816_read_memory;
 	device->write_memory = (DEVICE_WRITE_MEMORY) dev_minimal_65816_write_memory;
 	device->get_irq_signals = (DEVICE_GET_IRQ_SIGNALS) dev_minimal_65816_get_irq_signals;
+	device->cpu_logger = (DEVICE_CPU_LOGGER) dev_minimal_65816_cpu_logger;
 	
 	device->simulator = simulator_create(6250);
 	device->signal_pool = device->simulator->signal_pool;
@@ -221,7 +227,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	signal_set_name(SIGNAL_POOL, SIGNAL(RAM_WE_B), "RAM_WEB");
 
  	// cpu
- 	device->cpu = cpu_65816_create(device->simulator, (Cpu65816Signals) {
+ 	device->cpu = cpu_65816_create(dev_minimal_65816_cpu_logger, device->simulator, (Cpu65816Signals) {
  										[PIN_65816_AB0]  = SIGNAL(AB0),
  										[PIN_65816_AB1]  = SIGNAL(AB1),
  										[PIN_65816_AB2]  = SIGNAL(AB2),
@@ -493,3 +499,4 @@ void dev_minimal_65816_rom_from_file(DevMinimal65816 *device, const char *filena
 void dev_minimal_65816_ram_from_file(DevMinimal65816 *device, const char *filename) {
 	file_load_binary_fixed(filename, device->ram->data_array, device->ram->data_size);
 }
+

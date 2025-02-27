@@ -21,6 +21,7 @@ typedef void (*DEVICE_DESTROY)(void *device);
 typedef void (*DEVICE_READ_MEMORY)(void *device, size_t start_address, size_t size, uint8_t *output);
 typedef void (*DEVICE_WRITE_MEMORY)(void *device, size_t start_address, size_t size, uint8_t *input);
 typedef size_t (*DEVICE_GET_IRQ_SIGNALS)(void *device, SignalBreakpoint **irq_signals);
+typedef void (*DEVICE_CPU_LOGGER)();
 
 #define DEVICE_DECLARE_FUNCTIONS			\
 	DEVICE_GET_CPU get_cpu;					\
@@ -30,6 +31,7 @@ typedef size_t (*DEVICE_GET_IRQ_SIGNALS)(void *device, SignalBreakpoint **irq_si
 	DEVICE_READ_MEMORY read_memory;			\
 	DEVICE_WRITE_MEMORY write_memory;		\
 	DEVICE_GET_IRQ_SIGNALS get_irq_signals; \
+	DEVICE_CPU_LOGGER cpu_logger;           \
 											\
 	struct Simulator *simulator;
 

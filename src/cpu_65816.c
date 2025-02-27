@@ -557,16 +557,24 @@ uint32_t cpu_65816_model_number(void *cpu) {
 static void CPU_65816_destroy(Cpu65816 *cpu);
 static void CPU_65816_process(Cpu65816 *cpu);
 
-Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
+Cpu65816 *cpu_65816_create(void (*callback_function)(), Simulator *sim, Cpu65816Signals signals) {
+
+	//>TODO assert callback funtion
+	//>     is this forcing the function to be given?
+
+	assert (callback_function);
+
 
 	Cpu65816_private *priv = (Cpu65816_private *) dms_calloc(1, sizeof(Cpu65816_private));
 	Cpu65816 *cpu = &priv->intf;
 
+	cpu->cpu_logger = (CPU_LOGGER) callback_function;
+	cpu->cpu_logger();
+	
 	CHIP_SET_FUNCTIONS(cpu, CPU_65816_process, CPU_65816_destroy);
 	CHIP_SET_VARIABLES(cpu, sim, cpu->signals, Cpu65816_PinTypes, CHIP_65816_PIN_COUNT);
 
 	cpu->signal_pool = sim->signal_pool;
-	
 	
 	//> cpu->override_next_instruction_address = (CPU_OVERRIDE_NEXT_INSTRUCTION_ADDRESS) CPU_65816_override_next_instruction_address;
 	cpu->is_at_start_of_instruction = (CPU_IS_AT_START_OF_INSTRUCTION) CPU_65816_at_start_of_instruction;
@@ -576,7 +584,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	//>TODO iasof and pc uncommented due to them being used in context ui
 	//>TODO pointes to functions? Common interface accross CPUS?
 	cpu->model_number = (CPU_MODEL_NUMBER) cpu_65816_model_number;
-
+	
 	dms_memcpy(cpu->signals, signals, sizeof(Cpu65816Signals));
 
 	cpu->sg_address = signal_group_create();

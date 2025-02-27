@@ -113,7 +113,7 @@ typedef struct Cpu65816 {
 } Cpu65816;
 
 // functions
-Cpu65816 *cpu_65816_create(struct Simulator *sim, Cpu65816Signals signals);
+Cpu65816 *cpu_65816_create(void (*callback_function)(), struct Simulator *sim, Cpu65816Signals signals);
 
 #ifdef __cplusplus
 }

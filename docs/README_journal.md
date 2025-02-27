@@ -110,6 +110,8 @@
 >
 > `Execute instruction` depends on the CPU signaling the start of instruction. The 6502 uses its `SYNC`output for this. The 65816 uses `VPA` and `VDA`. `VPA` has been modified to mimic 6502's `SYNC` output and the single stepping now works.
 >
+> A device logger skel has been implemented. A function dev_xxx_cpu_logger is created on the device and passed as parameter to the CPU Create. Then, the CPU assigns it to an internal attribute `cpu_logger`. Further logic will be implemented here so the CPU can pass info to the device, and then the device can add more stuff of its own, like memory addreses, device signals, etc. The implementation is device dependant and only available on the 65816 cpu.
+> 
 > **Memory**
 > A basic structure for a 65816 disassembler is implemented. It will need E, M and X values. 
 

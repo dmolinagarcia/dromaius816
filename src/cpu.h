@@ -11,6 +11,7 @@ typedef void (*CPU_OVERRIDE_NEXT_INSTRUCTION_ADDRESS)(void *cpu, uint16_t addr);
 typedef bool (*CPU_IS_AT_START_OF_INSTRUCTION)(void *cpu);
 typedef bool (*CPU_IRQ_IS_ASSERTED)(void *cpu);
 typedef int64_t  (*CPU_PROGRAM_COUNTER)(void *cpu);
+typedef void (*CPU_LOGGER)();
 
 // Function to retrieve model number
 typedef uint32_t (*CPU_MODEL_NUMBER)(void *cpu);
@@ -21,7 +22,8 @@ typedef uint32_t (*CPU_MODEL_NUMBER)(void *cpu);
 	CPU_IS_AT_START_OF_INSTRUCTION is_at_start_of_instruction;					\
 	CPU_IRQ_IS_ASSERTED irq_is_asserted;										\
 	CPU_PROGRAM_COUNTER program_counter;                                        \
-	CPU_MODEL_NUMBER model_number;
+	CPU_MODEL_NUMBER model_number;												\
+	CPU_LOGGER cpu_logger;
 
 typedef struct Cpu {
 	CPU_DECLARE_FUNCTIONS
