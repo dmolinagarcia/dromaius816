@@ -178,8 +178,12 @@ static void process_end(Cpu65816 *cpu) {
 	output_t *last_output = &PRIVATE(cpu)->last_output;
 
 	//>TODO If we are in emulation mode, Stack Pointer HI BYTE is 1
-	//>TODO Is this correct?
+	//>     Also, PBR = 00
+	//>TODO Is this correct here?
+	if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_E)) {
 		cpu->reg_sp = cpu->reg_sp & 0x01FF;
+		cpu->reg_pbr = 0;
+	}
 
 	//>TODO Also, if X is 1, high byte of X and Y must be cleared
 	//>     Is this a good place?
@@ -265,6 +269,8 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		0			// non-maskable IRQ
 	}; */
 
+
+	//>TODO I need bank address here too!
 	switch(PRIVATE(cpu)->decode_cycle) {
 		case 0 :		// finish previous operation
 			if (phase == CYCLE_BEGIN) {
@@ -275,6 +281,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 				//>TODO Emulation is set to TRUE on reset
 				//>     So are M and X
 				//>     Is this ok here???
+				//>     Also, if E=1, always, PBR=0!!!!
 				CPU_CHANGE_FLAG(E, true);	
 				CPU_CHANGE_FLAG(M, true);	
 				CPU_CHANGE_FLAG(X, true);	
@@ -380,7 +387,7 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 		case CYCLE_BEGIN :
 			LOG (2, "Fetching %04x", cpu->reg_pc);
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
-			OUTPUT_DATA(0xfe);
+			OUTPUT_DATA(cpu->reg_pbr);
 				//>TODO BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
@@ -388,7 +395,7 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 		case CYCLE_END :
 			LOG (2, "Fetched: %02x", PRIVATE(cpu)->in_data);
 			*dst = PRIVATE(cpu)->in_data;
-			LOG (1, "%02x:%04x" , cpu->reg_pbr, cpu->reg_pc );
+			// LOG (1, "%02x:%04x" , cpu->reg_pbr, cpu->reg_pc );
 			++cpu->reg_pc;
 			break;
 	}
@@ -432,7 +439,7 @@ void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			LOG (2, "Address bus: %04x", cpu->reg_pc);
-			OUTPUT_DATA(0xff);
+			OUTPUT_DATA(cpu->reg_pbr);
 				//>TODO BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
@@ -450,7 +457,7 @@ void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			LOG (2,"Address bus: %04x", cpu->reg_pc);
-			OUTPUT_DATA(0xaa);
+			OUTPUT_DATA(cpu->reg_pbr);
 				//>TODO BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
@@ -507,7 +514,9 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 	// IF cycle = 0 (SYNC on 6502 is true) we fetch PC memory into IR
 	// Otherwise, we are executing
 	if (PRIVATE(cpu)->decode_cycle == 0) {
-		LOG (3, "Fetching into IR");
+		if (phase == CYCLE_BEGIN) {
+			LOG (3, "Fetching into IR");
+		}
 		fetch_pc_memory(cpu, &cpu->reg_ir, phase);
 	} else {
 		opcodeTable[cpu->reg_ir](cpu, phase);
@@ -557,19 +566,12 @@ uint32_t cpu_65816_model_number(void *cpu) {
 static void CPU_65816_destroy(Cpu65816 *cpu);
 static void CPU_65816_process(Cpu65816 *cpu);
 
-Cpu65816 *cpu_65816_create(void (*callback_function)(), Simulator *sim, Cpu65816Signals signals) {
-
-	//>TODO assert callback funtion
-	//>     is this forcing the function to be given?
-
-	assert (callback_function);
+Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 
 
 	Cpu65816_private *priv = (Cpu65816_private *) dms_calloc(1, sizeof(Cpu65816_private));
 	Cpu65816 *cpu = &priv->intf;
 
-	cpu->cpu_logger = (CPU_LOGGER) callback_function;
-	cpu->cpu_logger();
 	
 	CHIP_SET_FUNCTIONS(cpu, CPU_65816_process, CPU_65816_destroy);
 	CHIP_SET_VARIABLES(cpu, sim, cpu->signals, Cpu65816_PinTypes, CHIP_65816_PIN_COUNT);
@@ -640,6 +642,12 @@ Cpu65816 *cpu_65816_create(void (*callback_function)(), Simulator *sim, Cpu65816
 		// Load the opcodes
 		opcodeTable[OP_65816_NOP] = op_NOP;
 
+
+	//>TODO INit registers
+	// how is it done in the 6502?
+	
+	cpu->reg_pbr = 0;
+	
 	return cpu;
 }
 

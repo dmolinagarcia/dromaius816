@@ -201,7 +201,7 @@ DevNova64 *dev_nova_64_create(const uint8_t *rom_data) {
 
  	// cpu
 	//>TODO NULL as logger.
- 	device->cpu = cpu_65816_create(NULL, device->simulator, (Cpu65816Signals) {
+ 	device->cpu = cpu_65816_create(device->simulator, (Cpu65816Signals) {
  										[PIN_65816_AB0]  = SIGNAL(AB0),
  										[PIN_65816_AB1]  = SIGNAL(AB1),
  										[PIN_65816_AB2]  = SIGNAL(AB2),
