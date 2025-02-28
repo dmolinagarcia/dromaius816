@@ -15,7 +15,8 @@ sudo apt install wayland-protocols libwayland-dev
 sudo apt install pkg-config
 sudo apt install libxkbcommon-dev
 sudo apt install mingw-w64
-sudo apt intsall wine
+sudo apt install wine
+sudo apt install default-jre
 ```
 
 ## Trying the original Dromaius Project
@@ -57,3 +58,22 @@ git add libs/glfw libs/imgui
 git commit -m "GFLW and IMGUI updated to specific commits"
 git push
 ```
+
+## Install an emulator
+
+get Andrew Jacobs emu from https://github.com/andrew-jacobs/emu816
+
+unzip emu-master
+cd emu816-master
+
+The DEV65 assembler is included in the download :)
+
+Assembly: 
+java -cp ../Dev65.jar uk.co.demon.obelisk.w65xx.As65 simple.asm
+
+Link:
+java -cp ../Dev65.jar uk.co.demon.obelisk.w65xx.Lk65 -bss '$0000-$7FFF' -code '$F000-$FFFF' -s28 -output simple.s28 simple.obj
+
+
+
+
