@@ -111,13 +111,13 @@ public:
 			// debug - stepping
 			ImGui::BeginDisabled(!sim_paused);
 
-			if (ImGui::Button(txt_step_single)) {
+			if (ImGui::Button(txt_step_single) || ImGui::IsKeyPressed(ImGuiKey_F10, false)) {
 				dms_single_step(ui_context->dms_ctx);
 			}
 			ImGui::SameLine();
 
 			if (!step_clocks.empty()) {
-				if (ImGui::Button(txt_step_clock) || ImGui::IsKeyPressed(ImGuiKey_Space, false)) {
+				if (ImGui::Button(txt_step_clock) || ImGui::IsKeyPressed(ImGuiKey_F11, false)) {
 					auto &clk = step_clocks[step_clock_sel];
 					dms_step_signal(ui_context->dms_ctx, clk.signal, clk.pos_edge, clk.neg_edge);
 				}
@@ -140,7 +140,7 @@ public:
 				}
 			}
 
-			if (!signal_is_undefined(step_next_instruction.signal)  && ImGui::Button(txt_step_instruction, {-1.0f, 0.0f})) {
+			if (!signal_is_undefined(step_next_instruction.signal)  && (ImGui::Button(txt_step_instruction, {-1.0f, 0.0f}) || ImGui::IsKeyPressed(ImGuiKey_F12, false))) {
 				dms_step_signal(ui_context->dms_ctx, step_next_instruction.signal, step_next_instruction.pos_edge, step_next_instruction.neg_edge);
 			}
 
