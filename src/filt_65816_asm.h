@@ -13,8 +13,13 @@
 extern "C" {
 #endif
 
-size_t filt_65816_asm_line(const uint8_t *binary, size_t bin_size, size_t bin_index, size_t bin_offset, char **line);
-size_t filt_65816_asm_count_instruction(const uint8_t *binary, size_t bin_size, size_t from, size_t until);
+size_t  filt_65816_asm_line(const uint8_t *binary, size_t bin_size, size_t bin_index, size_t bin_offset, char **line);
+size_t  filt_65816_asm_count_instruction(const uint8_t *binary, size_t bin_size, size_t from, size_t until);
+uint8_t filt_65816_asm_instruction_length(uint8_t opcode, uint32_t reg_p);
+
+uint8_t filt_65816_asm_instruction_length(uint8_t opcode, uint32_t reg_p);
+const char* filt_65816_get_opcode(uint8_t opcode);
+
 
 #ifdef __cplusplus
 }
