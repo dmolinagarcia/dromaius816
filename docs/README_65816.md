@@ -7,23 +7,24 @@ This document outlines the steps and recommendations for creating a file similar
 ## Task List
 
   - [x] Dissect the `CPU65816` completely. Remove any functionality and everything from its panel.
-  - [ ] Study the 65816 and identify differences with the 6502
   - [x] Create PINOUT for the CPU
   - [x] Understand procesor cycle
     - [x] Timing and bus behavior. I need to implement the BankAddress.
     - [x] Should I change process phases?. I may need new steps
   - [ ] CPU Registers
-    - [ ] Understand status register and how it changes between Emulation and Native
-      - [ ] Implement Status Register
+    - [x] Understand status register and how it changes between Emulation and Native
+      - [x] Implement Status Register
     - [ ] Understand remaining processor registers
       - [ ] When and how registers change size?
       - [ ] How does changing size affect the values stored?
       - [ ] Implement remaining registers.
-  - [ ] Implement OPCODES Phase 1
-    - [ ] Understand processor phases
-    - [ ] Initially, everything is a NOP. Advance PC and continue
-    - [ ] Add a catch all that triggers some warning (Illegal Opcode)
-    - [ ] Add NOP. Run a free NOP
+      - [ ] When is an operation 16bit or 8bit? Check BDD's post!
+  - [x] Implement OPCODES Phase 1
+    - [x] Understand processor phases
+    - [x] Initially, everything is a NOP. Advance PC and continue
+    - [x] Add a catch all that triggers some warning (Illegal Opcode)
+    - [x] Add NOP. Run a free NOP
+    - [x] emu816-like logging needs to be implemented here
   - [ ] Implement OPCODES Phase 2
     - [ ] XCE. CLC. SEC. Switch emulation/native
     - [ ] Test status register change on switch
@@ -91,6 +92,12 @@ ChatGPT suggests building an opcode function matrix. Sounds good but it is untes
 	    	opcodeTable[cpu->reg_ir](cpu, phase);
 	  }
     ```
+
+### How to add a new opcode
+
+- Add the opcode in `cpu_65816_opcodes.h`
+- In `cpu_65816.c` add the opcode function to the opcode matrix: `opcodeTable[OP_65816_XCE] = op_XCE`
+- Add the decoding function, like `op_XCE`
 
 ---
 
