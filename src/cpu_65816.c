@@ -426,14 +426,15 @@ OpcodeHandler opcodeTable[256];
  [ ] C0 [ ] C1 [ ] C2 [ ] C3 [ ] C4 [ ] C5 [ ] C6 [ ] C7 [ ] C8 [ ] C9 [ ] CA [ ] CB [ ] CC [ ] CD [ ] CE [ ] CF
  [ ] D0 [ ] D1 [ ] D2 [ ] D3 [ ] D4 [ ] D5 [ ] D6 [ ] D7 [ ] D8 [ ] D9 [ ] DA [ ] DB [ ] DC [ ] DD [ ] DE [ ] DF
  [ ] E0 [ ] E1 [ ] E2 [ ] E3 [ ] E4 [ ] E5 [ ] E6 [ ] E7 [ ] E8 [ ] E9 [x] EA [ ] EB [ ] EC [ ] ED [ ] EE [ ] EF
- [ ] F0 [ ] F1 [ ] F2 [ ] F3 [ ] F4 [ ] F5 [ ] F6 [ ] F7 [ ] F8 [ ] F9 [ ] FA [ ] FB [ ] FC [ ] FD [ ] FE [ ] FF
+ [ ] F0 [ ] F1 [ ] F2 [ ] F3 [ ] F4 [ ] F5 [ ] F6 [ ] F7 [ ] F8 [ ] F9 [ ] FA [x] FB [ ] FC [ ] FD [ ] FE [ ] FF
 */
 
 void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
 	// Opcodes EA - NOP [EN]
 	// Always two cycles. FETCH and EXECUTE
-	// FETCH is always handles in the execute phase functions
+	// FETCH is always handlesd in the execute phase functions
 	// SO only EXECUTE is here (Decode Cycle 1)
+	// As it is a 2 cycle instruction, no decode cycle decoding is needed
 
 	switch (phase) {
 		case CYCLE_BEGIN:
@@ -441,12 +442,40 @@ void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			LOG (2, "Address bus: %04x", cpu->reg_pc);
 			OUTPUT_DATA(cpu->reg_pbr);
 				//>TODO BANK ADDRESS?
+				//>     According to data sheet, pbr seems correct here
 			break;
 		case CYCLE_MIDDLE:
 			break;
 		case CYCLE_END :
 			PRIVATE(cpu)->decode_cycle = -1;
 			LOG (2, "NOP Opcode %02x executed", cpu->reg_ir);
+			break;
+	}
+}
+
+void op_XCE(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
+	// Opcodes FB - XCE [EN]
+	// Always two cycles. FETCH and EXECUTE
+	// FETCH is always handled in the execute phase functions
+	// As it is a 2 cycle instruction, no decode cycle decoding is needed
+	// eXchanges Carry and Emulation
+
+	switch (phase) {
+		case CYCLE_BEGIN:
+			PRIVATE(cpu)->output.address = cpu->reg_pc;
+			LOG (2, "Address bus: %04x", cpu->reg_pc);
+			OUTPUT_DATA(cpu->reg_pbr);
+				//>TODO BANK ADDRESS?
+				//>     According to data sheet, pbr seems correct here
+			break;
+		case CYCLE_MIDDLE:
+			break;
+		case CYCLE_END :
+			PRIVATE(cpu)->decode_cycle = -1;
+			LOG (2, "XCE Opcode %02x executed", cpu->reg_ir);
+			bool keep_carry = FLAG_IS_SET(cpu->reg_p, FLAG_65816_C);
+			CPU_CHANGE_FLAG(C, FLAG_IS_SET(cpu->reg_p, FLAG_65816_E));
+			CPU_CHANGE_FLAG(E, keep_carry);
 			break;
 	}
 }
@@ -641,6 +670,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 
 		// Load the opcodes
 		opcodeTable[OP_65816_NOP] = op_NOP;
+		opcodeTable[OP_65816_XCE] = op_XCE;
 
 
 	//>TODO INit registers

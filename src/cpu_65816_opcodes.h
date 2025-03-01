@@ -12,6 +12,7 @@
 typedef enum OPCODES_65816_ {
 	OP_65816_BRK			= 0x00,
 	OP_65816_NOP			= 0xea,
+	OP_65816_XCE			= 0xfb
 } OPCODES_65816;
 
 /*
