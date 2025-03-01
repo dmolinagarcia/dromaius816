@@ -110,6 +110,7 @@ typedef struct Cpu65816 {
 	uint8_t		reg_ir;				// instruction register
 	uint16_t	reg_pc;				// program counter
 	uint32_t	reg_p;				// processor status register
+	uint16_t	reg_dp;				// direct page pointer
 } Cpu65816;
 
 // functions

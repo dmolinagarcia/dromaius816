@@ -284,7 +284,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 				//>     Also, if E=1, always, PBR=0!!!!
 				CPU_CHANGE_FLAG(E, true);	
 				CPU_CHANGE_FLAG(M, true);	
-				CPU_CHANGE_FLAG(X, true);	
+				CPU_CHANGE_FLAG(X, true);
 			}
 			break;
 		case 1 :		// force a BRK instruction
