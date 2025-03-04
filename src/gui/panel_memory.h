@@ -6,9 +6,10 @@
 #define DROMAIUS_GUI_PANEL_MEMORY_H
 
 #include "panel.h"
+#include "cpu_65816.h"
 
 Panel::uptr_t panel_memory_create(class UIContext *ctx, struct ImVec2 pos, const char *title,
-								  size_t data_offset, size_t data_size);
+								  size_t data_offset, size_t data_size, Cpu65816 *cpu);
 void panel_memory_load_fonts();
 
 #endif // DROMAIUS_GUI_PANEL_MEMORY_H

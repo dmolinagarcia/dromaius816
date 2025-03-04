@@ -12,6 +12,7 @@
 
 #include "filt_6502_asm.h"
 #include "filt_65816_asm.h"
+#include "cpu_65816.h"				// Needed to get M and X
 #include "ui_context.h"
 #include "device.h"
 #include "cpu.h"
@@ -25,12 +26,13 @@
 class PanelMemory : public Panel {
 public:
 	PanelMemory(UIContext *ctx, ImVec2 pos, const char *title,
-				size_t data_size, size_t data_offset) :
+				size_t data_size, size_t data_offset, Cpu65816 *cpu) :
 		Panel(ctx),
 		position(pos),
 		title(title),
 		mem_size(data_size),
-		mem_offset(data_offset) {
+		mem_offset(data_offset), 
+		cpu(cpu) {
 	}
 
 	void init() override {
@@ -39,8 +41,7 @@ public:
 
 	void display() override {
 
-		uint32_t model_number = ui_context->device->get_cpu(ui_context->device)->model_number(ui_context->device->get_cpu(ui_context->device));
-
+		uint32_t model_number = cpu->model_number(cpu);
 		std::vector<std::string> display_types_v = {"Raw", "PET Screen"};
 
 		// Agregar un nuevo elemento
@@ -130,6 +131,10 @@ public:
 		constexpr const char *symbols[] = {" ", ">"};
 		static const ImVec4 colors[] = { ImGui::GetStyle().Colors[ImGuiCol_Text], ImVec4(1.0f, 1.0f, 0.0f, 1.0f)};
 
+		ImGui::Text("M = %d X = %d", FLAG_IS_SET(cpu->reg_p, FLAG_65816_M), FLAG_IS_SET(cpu->reg_p, FLAG_65816_X));
+		bool m = FLAG_IS_SET(cpu->reg_p, FLAG_65816_M);
+		bool x = FLAG_IS_SET(cpu->reg_p, FLAG_65816_X);
+
 		auto region = ImGui::GetContentRegionAvail();
 		region.y -= footer_height;
 		ImGui::BeginChild("raw", region, false, 0);
@@ -154,7 +159,7 @@ public:
 				index += filt_6502_asm_line(buffer, 16, 0, mem_offset + index, &line);
 
 			if (model_number == 65816)
-				index += filt_65816_asm_line(buffer, 16, 0, mem_offset + index, &line);
+				index += filt_65816_asm_line(buffer, 16, 0, mem_offset + index, &line, m, x);
 
 			ImGui::TextColored(colors[is_current], "%s%s", symbols[is_current], line);
 			arrsetlen(line, 0);
@@ -247,14 +252,16 @@ private:
 	int64_t					jump_addr = -1;
 
 	static ImFont *			pet_font;
+
+	Cpu65816	*			cpu;
 };
 
 ImFont * PanelMemory::pet_font = nullptr;
 
 Panel::uptr_t panel_memory_create(UIContext *ctx, struct ImVec2 pos, const char *title,
-								  size_t data_offset, size_t data_size) {
+								  size_t data_offset, size_t data_size, struct  Cpu65816 *cpu) {
 
-	return std::make_unique<PanelMemory>(ctx, pos, title, data_size, data_offset);
+	return std::make_unique<PanelMemory>(ctx, pos, title, data_size, data_offset, cpu);
 }
 
 void panel_memory_load_fonts() {

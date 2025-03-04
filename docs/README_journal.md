@@ -105,17 +105,25 @@
 ---
 
 ### ✅ **W09 / 2025**
+> **Memory**
+> A basic structure for a 65816 disassembler is implemented. It will need E, M and X values. 
+>
 > **CPU**
 > Basic fetch and decode is in place. Only NOP is decoded, but the decoding routine is set up. CPU pins have been modified to reflect 65816. P Register is fully implemented. Memory is connected to all devices and running fine. Bank address output is implemented, although it is a hardcoded value for now.
 >
-> `Execute instruction` depends on the CPU signaling the start of instruction. The 6502 uses its `SYNC`output for this. The 65816 uses `VPA` and `VDA`. `VPA` has been modified to mimic 6502's `SYNC` output and the single stepping now works.
+> `Execute instruction` depends on the CPU signaling the start of instruction. The 6502 uses its `SYNC` output for this. The 65816 uses `VPA` and `VDA`. `VPA` has been modified to mimic 6502's `SYNC` output and the single stepping now works. `VPA` and `VDA` need more work though.
 >
-> Device logger is implemented in device_process. We get the and print relevant registers. We can access device memory from here and calls to the dissasembler will be needed to get the OPCODEs and instruction length.
-> 
+> `XCE` is implemented. 2 out of 256 opcodes done.
+>
+> Device logger is implemented in device_process. We get the and print relevant registers. We can access device memory from here and call the dissasembler to get the OPCODEs and instruction length. Partially implemented. The dissasembler has been extended to handle 65816 opcodes, but more work is needed. 
+
+
+### ✅ **W09 / 2025**
 > **Memory**
-> A basic structure for a 65816 disassembler is implemented. It will need E, M and X values. 
+> Disassembler is completed. Current M and X are used to display 8 or 16 bit operands. It can be done better, but it is good enough for now. 
 
 ---
+
 
 ## ✅ **Pending Tasks**
 
@@ -135,6 +143,8 @@
 >     - [ ] View the CPU.
 >     - [ ] Display `reset` and `clock`.
 >     - [ ] Is it possible to see the complete circuit? Evaluate this option.
+>  - [ ] Tracer needs a few more fields. Stack and operand address.
+>  - [ ] Disassembler is not calculating relative jumps. Fix this. 
 > 
 > - [ ] **Simulations:**
 >   - [ ] Simulate `74xx` chips.
@@ -157,9 +167,4 @@
 >   - [x] Add scrolling.
 >     -  [ ] Zooming while scrolled. Keep point under mouse pointer static
 >   - [ ] Custom buses. 
->
->  - [ ] **Monitor**
->   - [ ] Basic memory view has a 6502 disassembler. Build a 65816 one. E, M and X need to be taken into account.
->
->  - [ ] **Logging**
->    -[ ] Build a custom log that ressembles that of emu816
+

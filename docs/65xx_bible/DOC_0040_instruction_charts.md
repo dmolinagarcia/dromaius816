@@ -95,7 +95,7 @@
  8 | BRA r  |STA(d,x)| BRL rl | STA d,s  | STY d  | STA d  | STX d  | STA [d] | DEY i | BIT #  | TXA i | PHB s | STY a  | STA a  | STX a  | STA al  |
    |  2 2   |  2 6   |  3 3   |   2 4    |  2 3   |  2 3   |  2 3   |  2 6    |  1 2  |  2 2   |  1 2  |  1 3  |  3 4   |  3 4   |  3 4   |   4 5   |
    +--------+--------+--------+----------+--------+--------+--------+---------+-------+--------+-------+-------+--------+--------+--------+---------+
- 9 | BCC r  |STA(d),y| STA (d)|STA(d,s),y| STYd,x | STA d,x| STX d,y|STA [d],y| TYA i | STA a,y| TXS i | TXY i | STZ a  | STA a,x| STZ a,x| STA al,x|
+ 9 | BCC r  |STA(d),y| STA (d)|STA(d,s),y| STY d,x| STA d,x| STX d,y|STA [d],y| TYA i | STA a,y| TXS i | TXY i | STZ a  | STA a,x| STZ a,x| STA al,x|
    |  2 2   |  2 6   |  2 5   |   2 7    |  2 4   |  2 4   |  2 4   |  2 6    |  1 2  |  3 5   |  1 2  |  1 2  |  3 4   |  3 5   |  3 5   |   4 5   |
    +--------+--------+--------+----------+--------+--------+--------+---------+-------+--------+-------+-------+--------+--------+--------+---------+
  A | LDY #  |LDA(d,x)|  LDX # | LDA d,s  | LDY d  | LDA d  | LDX d  | LDA [d] | TAY i | LDA #  | TAX i | PLB s | LDY a  | LDA a  | LDX a  | LDA al  |
