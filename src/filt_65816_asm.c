@@ -179,34 +179,34 @@ size_t filt_65816_asm_line(const uint8_t *binary, size_t bin_size, size_t bin_in
 	}
 
 	switch (OPCODE_ADDRESS_MODES[op]) {
-		case ABSA: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s $%.2x%.2x",			bin_index + bin_offset, b0, b1, b2    , OPCODE_NAMES[op],	b2, b1      );			break;
-		case JAII: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s ($%.2x%.2x,x)",		bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op],	b2, b1      ); 			break;
-		case ABIX: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s $%.2x%.2x,x", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	b2, b1      );			break;
-		case ABIY: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s $%.2x%.2x,y", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op],	b2, b1      );			break;
-		case ABSI: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s ($%.2x%.2x)", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	b2, b1      ); 			break;
-		case ALIX: arr_printf(*line, "%.4x: %.2x %.2x %.2x %.2x %s $%.2x%.2x%.2x,x", 	bin_index + bin_offset, b0, b1, b2, b3, OPCODE_NAMES[op], 	b3, b2, b1	);			break;
-		case ABSL: arr_printf(*line, "%.4x: %.2x %.2x %.2x %.2x %s $%.2x%.2x%.2x", 		bin_index + bin_offset, b0, b1, b2, b3,	OPCODE_NAMES[op], 	b3, b2, b1	);	 		break;
-		case BLKM: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s $%.2x,%.2x", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	b2, b1      ); 			break;
-		case DIIX: arr_printf(*line,     "%.4x: %.2x %.2x       %s ($%.2x,x)", 			bin_index + bin_offset, b0, b1        ,	OPCODE_NAMES[op], 	b1          );			break;
-		case DINX: arr_printf(*line,     "%.4x: %.2x %.2x       %s $%.2x,x",        	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case DINY: arr_printf(*line,     "%.4x: %.2x %.2x       %s $%.2x,Y",         	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case DIIN: arr_printf(*line,     "%.4x: %.2x %.2x       %s ($%.2x),Y",       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case DILI: arr_printf(*line,     "%.4x: %.2x %.2x       %s [$%.2x],Y",       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case DILO: arr_printf(*line,     "%.4x: %.2x %.2x       %s [$%.2x]",	       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case DIRI: arr_printf(*line,     "%.4x: %.2x %.2x       %s ($%.2x)",	       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case DIRE: arr_printf(*line,     "%.4x: %.2x %.2x       %s $%.2x",	       		bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case ABSA: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s $%.2x%.2x",			bin_index + bin_offset, b0, b1, b2    , OPCODE_NAMES[op],	b2, b1      );			break;
+		case JAII: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s ($%.2x%.2x,x)",		bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op],	b2, b1      ); 			break;
+		case ABIX: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s $%.2x%.2x,x", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	b2, b1      );			break;
+		case ABIY: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s $%.2x%.2x,y", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op],	b2, b1      );			break;
+		case ABSI: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s ($%.2x%.2x)", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	b2, b1      ); 			break;
+		case ALIX: arr_printf(*line, "%.6x  %.2x %.2x %.2x %.2x %s $%.2x%.2x%.2x,x", 	bin_index + bin_offset, b0, b1, b2, b3, OPCODE_NAMES[op], 	b3, b2, b1	);			break;
+		case ABSL: arr_printf(*line, "%.6x  %.2x %.2x %.2x %.2x %s $%.2x%.2x%.2x", 		bin_index + bin_offset, b0, b1, b2, b3,	OPCODE_NAMES[op], 	b3, b2, b1	);	 		break;
+		case BLKM: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s $%.2x,%.2x", 	 	bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	b2, b1      ); 			break;
+		case DIIX: arr_printf(*line,     "%.6x  %.2x %.2x       %s ($%.2x,x)", 			bin_index + bin_offset, b0, b1        ,	OPCODE_NAMES[op], 	b1          );			break;
+		case DINX: arr_printf(*line,     "%.6x  %.2x %.2x       %s $%.2x,x",        	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case DINY: arr_printf(*line,     "%.6x  %.2x %.2x       %s $%.2x,Y",         	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case DIIN: arr_printf(*line,     "%.6x  %.2x %.2x       %s ($%.2x),Y",       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case DILI: arr_printf(*line,     "%.6x  %.2x %.2x       %s [$%.2x],Y",       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case DILO: arr_printf(*line,     "%.6x  %.2x %.2x       %s [$%.2x]",	       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case DIRI: arr_printf(*line,     "%.6x  %.2x %.2x       %s ($%.2x)",	       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case DIRE: arr_printf(*line,     "%.6x  %.2x %.2x       %s $%.2x",	       		bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
 		case IMME: 
 			switch (arg_size) {		
-				case 1: arr_printf(*line,     "%.4x: %.2x %.2x       %s #$%.2x",	    bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-				case 2: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s #$%.2x%.2x",	bin_index + bin_offset, b0, b1, b2    , OPCODE_NAMES[op],   b2, b1		);			break;
+				case 1: arr_printf(*line,     "%.6x  %.2x %.2x       %s #$%.2x",	    bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+				case 2: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s #$%.2x%.2x",	bin_index + bin_offset, b0, b1, b2    , OPCODE_NAMES[op],   b2, b1		);			break;
 				default: break;
 			}
 			break;
-		case PCRL: arr_printf(*line,   "%.4x: %.2x %.2x %.2x    %s $%.4x",  bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	GET_ADDR_16(bin_index + bin_offset, b1, b2 )     ); 			break;
-		case PCRE: arr_printf(*line,     "%.4x: %.2x %.2x       %s $%.4x",	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   GET_ADDR_8(bin_index + bin_offset, b1)		);			break;
-		case SREL: arr_printf(*line,     "%.4x: %.2x %.2x       %s $%.2x,s",	       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		case SRII: arr_printf(*line,     "%.4x: %.2x %.2x       %s ($%.2x,s),Y",       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
-		default:   arr_printf(*line,       "%.4x: %.2x          %s ",			       	bin_index + bin_offset, b0,             OPCODE_NAMES[op]                );			break;
+		case PCRL: arr_printf(*line,   "%.6x  %.2x %.2x %.2x    %s $%.4x",  bin_index + bin_offset, b0, b1, b2    ,	OPCODE_NAMES[op], 	GET_ADDR_16(bin_index + bin_offset, b1, b2 )     ); 			break;
+		case PCRE: arr_printf(*line,     "%.6x  %.2x %.2x       %s $%.4x",	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   GET_ADDR_8(bin_index + bin_offset, b1)		);			break;
+		case SREL: arr_printf(*line,     "%.6x  %.2x %.2x       %s $%.2x,s",	       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		case SRII: arr_printf(*line,     "%.6x  %.2x %.2x       %s ($%.2x,s),Y",       	bin_index + bin_offset, b0, b1        , OPCODE_NAMES[op],   b1			);			break;
+		default:   arr_printf(*line,       "%.6x  %.2x          %s ",			       	bin_index + bin_offset, b0,             OPCODE_NAMES[op]                );			break;
 	}
 
 	//>todo rel INDICATES IT IS A BRANCH WITH RELATIVE ADDRSING. I HAVE TO CALCULATE THIS

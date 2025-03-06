@@ -98,7 +98,7 @@ public:
 			uint8_t buffer[16];
 			ui_context->device->read_memory(ui_context->device, mem_offset + index, 16, buffer);
 
-			ImGui::Text("%.4lx:", mem_offset + index);
+			ImGui::Text("%.6lx:", mem_offset + index);
 
 			for (int i = 0; i < 16; ++i) {
 				if (i > 0 && (i % 4) == 0) {
