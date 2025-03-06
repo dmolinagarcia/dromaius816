@@ -20,7 +20,7 @@
 // Calculate relative offsets for branch instructions
 #define GET_ADDR_8(pc, offset) ((size_t)(((ptrdiff_t)(pc)) + 2 + (int8_t)(offset)))
 #define GET_ADDR_16(pc, b1, b2) \
-    ((uint16_t)((((ptrdiff_t)(pc)) + 2 + (int16_t)(((uint16_t)(b2) << 8) | ((uint16_t)(b1)))) & 0xFFFF))
+    ((uint16_t)((((ptrdiff_t)(pc)) + 3 + (int16_t)(((uint16_t)(b2) << 8) | ((uint16_t)(b1)))) & 0xFFFF))
 
 
 
@@ -105,7 +105,7 @@ static const ADDR_MODE OPCODE_ADDRESS_MODES[256] = {
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINX,   DILI,   IMPL,   ABIY,   ACCU,   IMPL,   ABIX,   ABIX,   ABIX,   ALIX,     // 3
     STCK,   DIIX,   IMME,   SREL,   BLKM,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSA,   ABSA,   ABSA,   ABSL,     // 4
     PCRE,   DIIN,   DIRI,   SRII,   BLKM,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   ABSL,   ABIX,   ABIX,   ALIX,     // 5
-    STCK,   DIIX,   ABSA,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSI,   ABSA,   ABSA,   ABSL,     // 6
+    STCK,   DIIX,   PCRL,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSI,   ABSA,   ABSA,   ABSL,     // 6
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   JAII,   ABIX,   ABIX,   ALIX,     // 7
     PCRE,   DIIX,   PCRL,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   IMPL,   IMME,   IMPL,   STCK,   ABSA,   ABSA,   ABSA,   ABSL,     // 8
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINY,   DILI,   IMPL,   ABIY,   IMPL,   IMPL,   ABSA,   ABIX,   ABIX,   ALIX,     // 9
