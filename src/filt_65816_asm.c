@@ -105,16 +105,16 @@ static const ADDR_MODE OPCODE_ADDRESS_MODES[256] = {
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINX,   DILI,   IMPL,   ABIY,   ACCU,   IMPL,   ABIX,   ABIX,   ABIX,   ALIX,     // 3
     STCK,   DIIX,   IMME,   SREL,   BLKM,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSA,   ABSA,   ABSA,   ABSL,     // 4
     PCRE,   DIIN,   DIRI,   SRII,   BLKM,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   ABSL,   ABIX,   ABIX,   ALIX,     // 5
-    STCK,   DIIX,   STCK,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSI,   ABSA,   ABSA,   ABSL,     // 6
+    STCK,   DIIX,   ABSA,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSI,   ABSA,   ABSA,   ABSL,     // 6
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   JAII,   ABIX,   ABIX,   ALIX,     // 7
     PCRE,   DIIX,   PCRL,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   IMPL,   IMME,   IMPL,   STCK,   ABSA,   ABSA,   ABSA,   ABSL,     // 8
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINY,   DILI,   IMPL,   ABIY,   IMPL,   IMPL,   ABSA,   ABIX,   ABIX,   ALIX,     // 9
     IMME,   DIIX,   IMME,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   IMPL,   IMME,   IMPL,   STCK,   ABSA,   ABSA,   ABSA,   ABSL,     // a
     PCRE,   DIIN,   DIRI,   SRII,   DINX,   DINX,   DINY,   DILI,   IMPL,   ABIY,   IMPL,   IMPL,   ABIX,   ABIX,   ABIY,   ALIX,     // b
     IMME,   DIIX,   IMME,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   IMPL,   IMME,   IMPL,   IMPL,   ABSA,   ABSA,   ABSA,   ABSL,     // c
-    PCRE,   DIIN,   DIRI,   SRII,   STCK,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   ABSI,   ABIX,   ABIX,   ALIX,     // D
+    PCRE,   DIIN,   DIRI,   SRII,   DIRE,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   ABSI,   ABIX,   ABIX,   ALIX,     // D
     IMME,   DIIX,   IMME,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   IMPL,   IMME,   IMPL,   IMPL,   ABSA,   ABSA,   ABSA,   ABSL,     // E
-    PCRE,   DIIN,   DIRI,   SRII,   STCK,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   JAII,   ABIX,   ABIX,   ALIX      // F
+    PCRE,   DIIN,   DIRI,   SRII,   IMME,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   JAII,   ABIX,   ABIX,   ALIX      // F
 };
 
 // addressing mode => number of arguments
@@ -168,6 +168,8 @@ size_t filt_65816_asm_line(const uint8_t *binary, size_t bin_size, size_t bin_in
 			arg_size = m ? 1 : 2; 					// 09 29 49 69 89 A9 C9 E9
 		if ((op & 0x0F) == 0x00 || op == 0xA2) 
 			arg_size = x ? 1 : 2;					// A0 C0 E0 A2
+		if (op == 0xF4) 
+			arg_size = 2;							// F4 PER
 		// 42 wdm, c2 rep AND e2 sep always 2 bytes
 	}
 
