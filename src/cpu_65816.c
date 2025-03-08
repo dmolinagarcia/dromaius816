@@ -153,6 +153,8 @@ typedef struct Cpu65816_private {
 	bool			delayed_cycle;
 
 	uint16_t		last_out_address;
+
+	uint32_t        cycles;
 } Cpu65816_private;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -587,6 +589,11 @@ uint32_t cpu_65816_model_number(void *cpu) {
 	return 65816;
 }
 
+uint32_t cpu_65816_get_cycles(void *cpu) {
+	assert (cpu);
+	return PRIVATE(cpu)->cycles;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // interface functions
@@ -615,6 +622,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	//>TODO iasof and pc uncommented due to them being used in context ui
 	//>TODO pointes to functions? Common interface accross CPUS?
 	cpu->model_number = (CPU_MODEL_NUMBER) cpu_65816_model_number;
+	cpu->get_cycles = (CPU_GET_CYCLES) cpu_65816_get_cycles;
 	
 	dms_memcpy(cpu->signals, signals, sizeof(Cpu65816Signals));
 
@@ -659,6 +667,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	priv->state = CS_INIT;
 	priv->nmi_triggered = false;
 	priv->override_pc = 0;
+	priv->cycles = 0;
 
 	//>TODO Also, unused flag in emulation mode is always set
 	//>       so we SET it on CPU Creation
@@ -734,6 +743,7 @@ static void CPU_65816_process(Cpu65816 *cpu) {
 	if (priv->delayed_cycle) {
 		priv->delayed_cycle = false;
 		++priv->decode_cycle;
+		priv->cycles++;
 		CPU_65816_execute_phase(cpu, CYCLE_BEGIN);
 	} else if (clock && clock_changed) {
 		// a positive going clock marks the halfway point of the cycle
