@@ -378,6 +378,23 @@ static void execute_init(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 // internal memory functions
 //
 
+static inline void fetch_memory(Cpu65816 *cpu, uint16_t addr, uint8_t *dst, CPU_65816_CYCLE phase) {
+	assert(cpu);
+	assert(dst);
+
+	switch (phase) {
+		case CYCLE_BEGIN :
+			PRIVATE(cpu)->output.address = addr;
+			OUTPUT_DATA(cpu->reg_pbr);
+			break;
+		case CYCLE_MIDDLE:
+			break;
+		case CYCLE_END :
+			*dst = PRIVATE(cpu)->in_data;
+			break;
+	}
+}
+
 	// Fetch PC into *dst
 static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE phase) {
 	// Fetch operation
@@ -405,6 +422,74 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 			break;
 	}
 }
+
+
+static inline int fetch_address_immediate(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
+	assert(cpu);
+
+	if (PRIVATE(cpu)->decode_cycle == 1) {
+		switch (phase) {
+			case CYCLE_BEGIN :
+				PRIVATE(cpu)->addr.full = cpu->reg_pc;
+				OUTPUT_DATA(cpu->reg_pbr);
+				//>TODO BANK ADDRESS?
+				break;
+			case CYCLE_MIDDLE:
+				break;
+			case CYCLE_END :
+				++cpu->reg_pc;
+				break;
+		}
+	}
+
+	return 1;
+}
+
+//> TODO... this... theres a bunch of fetch_address
+static inline int fetch_address_shortcut(Cpu65816 *cpu, ADDR_MODES_65816 mode, CPU_65816_CYCLE phase) {
+
+	switch (mode) {
+		case imme:
+			// 8bit immediate
+			return fetch_address_immediate(cpu, phase);
+//>		case AM_65816_ZEROPAGE:
+//>			return fetch_address_zeropage(cpu, phase);
+//>		case AM_65816_ZEROPAGE_X:
+//>			return fetch_address_zeropage_indexed(cpu, phase, cpu->reg_x);
+//>		case AM_65816_ZEROPAGE_Y:
+//>			return fetch_address_zeropage_indexed(cpu, phase, cpu->reg_y);
+//>		case AM_65816_ABSOLUTE:
+//>			return fetch_address_absolute(cpu, phase);
+//>		case AM_65816_ABSOLUTE_X:
+//>			return fetch_address_absolute_indexed_shortcut(cpu, phase, cpu->reg_x);
+//>		case AM_65816_ABSOLUTE_Y:
+//>			return fetch_address_absolute_indexed_shortcut(cpu, phase, cpu->reg_y);
+//>		case AM_65816_INDIRECT:
+//>			return fetch_address_indirect(cpu, phase);
+//>		case AM_65816_INDIRECT_X:
+//>			return fetch_address_indexed_indirect(cpu, phase);
+//>		case AM_65816_INDIRECT_Y:
+//>			return fetch_address_indirect_indexed_shortcut(cpu, phase);
+		default:
+			return 0;
+	};
+}
+
+
+static inline bool fetch_operand(Cpu65816 *cpu, ADDR_MODES_65816 mode, CPU_65816_CYCLE phase) {
+
+	bool result = false;
+
+	int memop_cycle = fetch_address_shortcut(cpu, mode, phase);
+
+	if (memop_cycle == PRIVATE(cpu)->decode_cycle) {
+		fetch_memory(cpu, PRIVATE(cpu)->addr.full, &PRIVATE(cpu)->operand, phase);
+		result = phase == CYCLE_END;
+	}
+
+	return result;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
