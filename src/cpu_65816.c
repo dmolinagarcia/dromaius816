@@ -181,10 +181,13 @@ static void process_end(Cpu65816 *cpu) {
 
 	//>TODO If we are in emulation mode, Stack Pointer HI BYTE is 1
 	//>     Also, PBR = 00
+	//>     Also, M and X = 1
 	//>TODO Is this correct here?
 	if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_E)) {
 		cpu->reg_sp = cpu->reg_sp & 0x01FF;
 		cpu->reg_pbr = 0;
+		CPU_CHANGE_FLAG(M, true);
+		CPU_CHANGE_FLAG(X, true);
 	}
 
 	//>TODO Also, if X is 1, high byte of X and Y must be cleared
