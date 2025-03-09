@@ -118,12 +118,14 @@
 > Device logger is implemented in device_process. We get the and print relevant registers. We can access device memory from here and call the dissasembler to get the OPCODEs and instruction length. Partially implemented. The dissasembler has been extended to handle 65816 opcodes, but more work is needed. 
 
 
-### ✅ **W09 / 2025**
+### ✅ **W09-W10 / 2025**
 > **Memory**
-> Disassembler is completed. Current M and X are used to display 8 or 16 bit operands. It can be done better, but it is good enough for now. 
+> Disassembler is completed. Current M and X are used to display 8 or 16 bit operands. It can be done better, but it is good enough for now. Disassembler is now used for the AJtracer improving its output
+>
+> **CPU**
+> Added immediate addresing, and with it some memory fetches and decoding. `fetch_memory` fetches pc into operand. LDA immediate (0xA9) has bene implemented and tested. It responds properly to Accumulator size changes. Now for X and Y, some tweaks to `reg_x` and `reg_y` on `FLAG_X` changes may be needed.
 
 ---
-
 
 ## ✅ **Pending Tasks**
 
@@ -145,6 +147,9 @@
 >     - [ ] Is it possible to see the complete circuit? Evaluate this option.
 >  - [ ] Tracer needs a few more fields. Stack and operand address.
 >  - [ ] Disassembler is not calculating relative jumps. Fix this. 
+>
+>  - [ ] **65816 emulated computer**
+>    - [ ] Implement bigger RAM. (16MB)
 > 
 > - [ ] **Simulations:**
 >   - [ ] Simulate `74xx` chips.
@@ -167,4 +172,3 @@
 >   - [x] Add scrolling.
 >     -  [ ] Zooming while scrolled. Keep point under mouse pointer static
 >   - [ ] Custom buses. 
-

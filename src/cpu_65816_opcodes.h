@@ -8,12 +8,71 @@
 #define DROMAIUS_CPU_65816_OPCODES_H
 
 #include "types.h"
+
 // opcodes
 typedef enum OPCODES_65816_ {
 	OP_65816_BRK			= 0x00,
+	OP_65816_LDA_IMME       = 0xA9,
+	OP_65816_REP            = 0xc2,
+	OP_65816_SEP            = 0xe2,
 	OP_65816_NOP			= 0xea,
 	OP_65816_XCE			= 0xfb
 } OPCODES_65816;
+
+// addressing modes list
+
+typedef enum ADDR_MODES_65816_ {
+	UNDF = 0,                     //> UNDF, Placeholder                 //            // Non-existant. Just a placeholder
+  	impl    ,                     //> Implied                           //    i       // 3.5.19 in WDC DataSheet
+	imme    ,                     //> Immediate                         //    #       // 3.5.18 in WDC DataSheet  
+																					  // 2 bytes or 3 depending on MX....
+																					  // Up to the opcode decoder to choose
+
+//	ABSA    ,                     //> Absolute   		                //    a       // 3.5.1  in WDC DataSheet
+//  JAII    ,                     //> Absolute Indexed Indirect Jump    //    (a,x)   // 3.5.2  in WDC DataSheet
+//	ABIX    ,                     //> Absolute Indexed with X           //    a,x     // 3.5.3  in WDC DataSheet
+//  ABIY    ,                     //> Absolute Indexed with Y           //    a,y     // 3.5.4  in WDC DataSheet	
+//	ABSI    ,                     //> Absolute Indirect                 //    (a)     // 3.5.5  in WDC DataSheet
+//	ALIX    ,                     //> Absolute Long Indexes with X      //    al,x    // 3.5.6  in WDC DataSheet
+//	ABSL    ,                     //> Absolute Long                     //    al      // 3.5.7  in WDC DataSheet
+//	ACCU    ,                     //> Accumulator                       //    A       // 3.5.8  in WDC DataSheet
+//	BLKM    ,                     //> Block Move                        //    xyc     // 3.5.9  in WDC DataSheet
+//	DIIX    ,                     //> Direct Indexed Indirect           //    (d,x)   // 3.5.10 in WDC DataSheet
+//	DINX    ,                     //> Direct Indexed with X             //    d,x     // 3.5.11 in WDC DataSheet
+//	DINY    ,                     //> Direct Indexed with Y             //    d,y     // 3.5.12 in WDC DataSheet
+//	DIIN    ,                     //> Direct Indirect Indexed           //    (d),y   // 3.5.13 in WDC DataSheet
+//	DILI    ,                     //> Direct Indirect Long Indexed      //    [d],y   // 3.5.14 in WDC DataSheet
+//	DILO    ,                     //> Direct Indirect Long              //    [d]     // 3.5.15 in WDC DataSheet
+//	DIRI    ,                     //> Direct Indirect                   //    (d)     // 3.5.16 in WDC DataSheet
+//	DIRE    ,                     //> Direct                            //    d       // 3.5.17 in WDC DataSheet
+//	IMME    ,                     //> Immediate                         //    #       // 3.5.18 in WDC DataSheet  2 bytes or 3 depending on MX....
+//	PCRL    ,                     //> Program Counter Relative Long     //    rl      // 3.5.20 in WDC DataSheet
+//	PCRE    ,                     //> Program Counter Relative          //    r       // 3.5.21 in WDC DataSheet
+//	STCK    ,                     //> Stack                             //    s       // 3.5.22 in WDC DataSheet
+//	SREL    ,                     //> Stack Relative                    //    d,s     // 3.5.23 in WDC DataSheet
+//	SRII    ,                     //> Stack Relative Indirect Indexed   //    (d,s),y // 3.5.24 in WDC DataSheet
+} ADDR_MODES_65816;
+
+static const ADDR_MODES_65816 ADDRESS_MODES_MATRIX_65816[256] = {
+	//    0        1      2       3       4      5       6       7       8       9       A       B      C       D        E        F
+		impl,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 0
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 1
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 2
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 3
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 4
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 5
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 6
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 7
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 8
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 9
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   imme,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // a
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // b
+		UNDF,   UNDF,   imme,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // c
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // D
+		UNDF,   UNDF,   imme,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   impl,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // E
+		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   impl,   UNDF,   UNDF,   UNDF,   UNDF      // F
+	};
+	
 
 /*
 // opcodes
@@ -107,7 +166,6 @@ typedef enum OPCODES_65816_ {
 
 	OP_65816_JSR			= 0x20,
 
-	OP_65816_LDA_IMM		= 0xa9,
 	OP_65816_LDA_ZP		= 0xa5,
 	OP_65816_LDA_ZPX		= 0xb5,
 	OP_65816_LDA_ABS		= 0xad,

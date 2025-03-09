@@ -11,26 +11,29 @@ This document outlines the steps and recommendations for creating a file similar
   - [x] Understand procesor cycle
     - [x] Timing and bus behavior. I need to implement the BankAddress.
     - [x] Should I change process phases?. I may need new steps
-  - [ ] CPU Registers
-    - [x] Understand status register and how it changes between Emulation and Native
-      - [x] Implement Status Register
-    - [ ] Understand remaining processor registers
-      - [ ] When and how registers change size?
-      - [ ] How does changing size affect the values stored?
-      - [ ] Implement remaining registers.
-      - [ ] When is an operation 16bit or 8bit? Check BDD's post!
+  - [x] Understand status register and how it changes between Emulation and Native
+    - [x] Implement Status Register
   - [x] Implement OPCODES Phase 1
     - [x] Understand processor phases
     - [x] Initially, everything is a NOP. Advance PC and continue
     - [x] Add a catch all that triggers some warning (Illegal Opcode)
     - [x] Add NOP. Run a free NOP
     - [x] emu816-like logging needs to be implemented here
+  - [x] Understand remaining processor registers
+    - [x] When and how registers change size?
+    - [ ] How does changing size affect the values stored?
+    - [ ] Implement remaining registers.
+    - [ ] When is an operation 16bit or 8bit? Check BDD's post!
+    - [ ] Variable length Instructions
+      - [ ] The length of some instructions depends on E,M and X. Understand this
+      - [ ] Modify the disassembler to take this into account
+      - [ ] Adapt the AJTracer to use the dissassembler to get the instruction, as it will return the operand too.
   - [ ] Implement OPCODES Phase 2
     - [ ] XCE. CLC. SEC. Switch emulation/native
     - [ ] Test status register change on switch
-    - [ ] Implement decoding logic. How to? Two tables?
+    - [x] Implement decoding logic,
   - [ ] Implement OPCODES Phase 3
-    - [ ] Implement instructions that change M/X
+    - [ ] Implement instructions that change M/X. REP & SEP
     - [ ] Implement register size changes and how their values change
   - [ ] Understand addresing modes
   - [ ] Implement OPCODES Phase 4
@@ -132,6 +135,20 @@ In the emulator, the status register is implemented as a 17 bits register
 Bits 0-7 represent the status register in emulation mode. Bits 8-15 represent the status register in native mode. Bit 16 is the emulation flag. Bits present in "both" status register, have a mask with both bits active like `FLAG_65816_CARRY = ((uint32_t) 0b00000000100000001)`, while bits present only on one register have only their correponding bit set like `FLAG_65816_MEMORY = ((uint32_t) 0b00010000000000000)`. As flag test are a boolean check against the flag values, they keep working as before. To get the current (P) register value, a macro is defined: `#define CPU_REG_P ((cpu->reg_p >> (8*!(FLAG_IS_SET(cpu->reg_p, FLAG_65816_E))) ) & 0xFF)`. Anywhere in the cpu emulation code where status register is needed, such on JSR opcodes, when status register is pushed into the stak, this macro has to be invoked.
 
 When in Emulation mode (E=1) both M and X are forced to 1. This has some effects on both the accumulator and the index registers, which we will discuss later. If M or X are cleared, and then we go back into emulation Mode, both are then set.
+
+## Accumulator and index registers
+
+When the 65816 boots up, we already know it starts in Emulation mode, forcing flags M and X to 1, therefore making both the accumulator and the index registers 8 bits wide. It is only after switching to Native mode that we can clear M and/or X, making the registers 16 bits wide.
+
+The registers width will directly affect the CPU behaviour. A LDA immediate, when M is set (Accumulator is 8 bits wide) will only read one more byte, and will load it into A. However, if M is clear, the first byte read will be loaded in to A (Accumulator LO byte) and then, a second byte will be fetched into B (Accumulator HI byte).
+
+This means both the instruction length and the cycles it takes to execute changes. Instructions related to X and Y depend on the X flag in the same way.
+
+In the original dromaius, each addressing mode had a fuction that returned `true` the moment the operand was fetched. To implement this varying behaviour in dromaius816, if the instruction has to read a 16 bit operand, the decoding cycle is not reset, and a second fetch is done, by calling the same fetch function.
+
+Switching A from 16 to 8 bits, keeps the value stored in the HI Byte, which can be acceses with the XBA instruction. Switching X and Y from 16 to 8 bits, zeroes out the HI byte on both. 
+
+Behaviour of instructions involving both registers, such as TXA, usually depend on the target register width. For example TXA when x is 16 bits and A is 8 bits, copies only the LO byte from X to A, keeping B intact. More testing is needed on this matter.
 
 ## Docs
 

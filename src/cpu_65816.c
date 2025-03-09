@@ -287,6 +287,8 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 				//>     So are M and X
 				//>     Is this ok here???
 				//>     Also, if E=1, always, PBR=0!!!!
+				//>     And.... what about other regs???
+				//>    Nothing is done in the original code!
 				CPU_CHANGE_FLAG(E, true);	
 				CPU_CHANGE_FLAG(M, true);	
 				CPU_CHANGE_FLAG(X, true);
@@ -427,7 +429,8 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 static inline int fetch_address_immediate(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	assert(cpu);
 
-	if (PRIVATE(cpu)->decode_cycle == 1) {
+	if (PRIVATE(cpu)->decode_cycle == 1 || PRIVATE(cpu)->decode_cycle == 2) {
+		// Cycle 1 for 8 bit fetch, cycle 2 for 16 bit fetch
 		switch (phase) {
 			case CYCLE_BEGIN :
 				PRIVATE(cpu)->addr.full = cpu->reg_pc;
@@ -480,9 +483,9 @@ static inline bool fetch_operand(Cpu65816 *cpu, ADDR_MODES_65816 mode, CPU_65816
 
 	bool result = false;
 
-	int memop_cycle = fetch_address_shortcut(cpu, mode, phase);
+	int memop_cycle = fetch_address_shortcut(cpu, mode, phase) ;
 
-	if (memop_cycle == PRIVATE(cpu)->decode_cycle) {
+	if (memop_cycle <= PRIVATE(cpu)->decode_cycle) {
 		fetch_memory(cpu, PRIVATE(cpu)->addr.full, &PRIVATE(cpu)->operand, phase);
 		result = phase == CYCLE_END;
 	}
@@ -511,11 +514,11 @@ OpcodeHandler opcodeTable[256];
  [ ] 70 [ ] 71 [ ] 72 [ ] 73 [ ] 74 [ ] 75 [ ] 76 [ ] 77 [ ] 78 [ ] 79 [ ] 7A [ ] 7B [ ] 7C [ ] 7D [ ] 7E [ ] 7F
  [ ] 80 [ ] 81 [ ] 82 [ ] 83 [ ] 84 [ ] 85 [ ] 86 [ ] 87 [ ] 88 [ ] 89 [ ] 8A [ ] 8B [ ] 8C [ ] 8D [ ] 8E [ ] 8F
  [ ] 90 [ ] 91 [ ] 92 [ ] 93 [ ] 94 [ ] 95 [ ] 96 [ ] 97 [ ] 98 [ ] 99 [ ] 9A [ ] 9B [ ] 9C [ ] 9D [ ] 9E [ ] 9F
- [ ] A0 [ ] A1 [ ] A2 [ ] A3 [ ] A4 [ ] A5 [ ] A6 [ ] A7 [ ] A8 [ ] A9 [ ] AA [ ] AB [ ] AC [ ] AD [ ] AE [ ] AF
+ [ ] A0 [ ] A1 [ ] A2 [ ] A3 [ ] A4 [ ] A5 [ ] A6 [ ] A7 [ ] A8 [x] A9 [ ] AA [ ] AB [ ] AC [ ] AD [ ] AE [ ] AF
  [ ] B0 [ ] B1 [ ] B2 [ ] B3 [ ] B4 [ ] B5 [ ] B6 [ ] B7 [ ] B8 [ ] B9 [ ] BA [ ] BB [ ] BC [ ] BD [ ] BE [ ] BF
- [ ] C0 [ ] C1 [ ] C2 [ ] C3 [ ] C4 [ ] C5 [ ] C6 [ ] C7 [ ] C8 [ ] C9 [ ] CA [ ] CB [ ] CC [ ] CD [ ] CE [ ] CF
+ [ ] C0 [ ] C1 [x] C2 [ ] C3 [ ] C4 [ ] C5 [ ] C6 [ ] C7 [ ] C8 [ ] C9 [ ] CA [ ] CB [ ] CC [ ] CD [ ] CE [ ] CF
  [ ] D0 [ ] D1 [ ] D2 [ ] D3 [ ] D4 [ ] D5 [ ] D6 [ ] D7 [ ] D8 [ ] D9 [ ] DA [ ] DB [ ] DC [ ] DD [ ] DE [ ] DF
- [ ] E0 [ ] E1 [ ] E2 [ ] E3 [ ] E4 [ ] E5 [ ] E6 [ ] E7 [ ] E8 [ ] E9 [x] EA [ ] EB [ ] EC [ ] ED [ ] EE [ ] EF
+ [ ] E0 [ ] E1 [x] E2 [ ] E3 [ ] E4 [ ] E5 [ ] E6 [ ] E7 [ ] E8 [ ] E9 [x] EA [ ] EB [ ] EC [ ] ED [ ] EE [ ] EF
  [ ] F0 [ ] F1 [ ] F2 [ ] F3 [ ] F4 [ ] F5 [ ] F6 [ ] F7 [ ] F8 [ ] F9 [ ] FA [x] FB [ ] FC [ ] FD [ ] FE [ ] FF
 */
 
@@ -566,8 +569,84 @@ void op_XCE(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			bool keep_carry = FLAG_IS_SET(cpu->reg_p, FLAG_65816_C);
 			CPU_CHANGE_FLAG(C, FLAG_IS_SET(cpu->reg_p, FLAG_65816_E));
 			CPU_CHANGE_FLAG(E, keep_carry);
-			break;
 	}
+}
+
+void op_REP_SEP(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
+	//>TODO My very first opcode with operand!	
+	//>     SEP is always 3 cycles. Fetch, fetch operand, and action
+	//>		According to the datasheet, VPA is low during last cycle
+	//>     Also, I can recycle this for REP!
+	//>     Does it depend on processor mode? MX, -B?
+	//>     Nothing on the docs related to this. Testing necessary.
+
+	switch (PRIVATE(cpu)->decode_cycle) {
+		case 1:
+			if (fetch_operand (cpu, mode, phase)) { //>TODO
+					// Nothing!
+					// decode cycle advances on its own!
+					// SEP takes naother cycle becauase.... no reason?				
+			}
+			break;
+		case 2:
+			switch (phase) {
+				case CYCLE_BEGIN:
+					PRIVATE(cpu)->output.address = cpu->reg_pc;
+					OUTPUT_DATA(cpu->reg_pbr);
+						//>TODO BANK ADDRESS?
+						//>     According to data sheet, pbr seems correct here
+					break;
+				case CYCLE_MIDDLE:
+					break;
+				case CYCLE_END :
+					PRIVATE(cpu)->decode_cycle = -1;
+					bool new_flag = false; // Default, if REP do not change
+					if (cpu->reg_ir==OP_65816_SEP) new_flag = true;
+					if (PRIVATE(cpu)->operand & 0b00000001) CPU_CHANGE_FLAG(C, new_flag);
+					if (PRIVATE(cpu)->operand & 0b00000010) CPU_CHANGE_FLAG(Z, new_flag);
+					if (PRIVATE(cpu)->operand & 0b00000100) CPU_CHANGE_FLAG(I, new_flag);
+					if (PRIVATE(cpu)->operand & 0b00001000) CPU_CHANGE_FLAG(D, new_flag);
+					if (PRIVATE(cpu)->operand & 0b00010000) CPU_CHANGE_FLAG(X, new_flag);
+					if (PRIVATE(cpu)->operand & 0b00100000) CPU_CHANGE_FLAG(M, new_flag);
+					if (PRIVATE(cpu)->operand & 0b01000000) CPU_CHANGE_FLAG(V, new_flag);
+					if (PRIVATE(cpu)->operand & 0b10000000) CPU_CHANGE_FLAG(N, new_flag);
+					break;
+			}			
+	}
+
+} 
+
+void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
+	//> TODO LDA: Just imme for now
+	//> Can I handle everything here
+
+	int cycles=0;
+
+	// Determine amount of cycles
+	// Used on 8 vs 16 bit fetches
+	if (mode == imme) cycles = 1;
+
+	if ((PRIVATE(cpu)->decode_cycle) == cycles) {
+		if (fetch_operand(cpu, mode, phase)) {
+			// Once fetch is done, store low byte)
+			cpu->reg_a = (cpu->reg_a & 0xFF00) | (PRIVATE(cpu)->operand & 0xFF);
+			if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_M)) {
+				// M is set. ACC is 8 bit, end process
+				CPU_CHANGE_FLAG(Z, cpu->reg_a == 0);
+				CPU_CHANGE_FLAG(N, BIT_IS_SET(cpu->reg_a, 7));
+				PRIVATE(cpu)->decode_cycle = -1;
+			} // IF M is unset, advance
+		}
+	} else if ((PRIVATE(cpu)->decode_cycle) == cycles + 1 ) {
+		// Time to fetch next byte!
+		if (fetch_operand(cpu, mode, phase)) {
+			// Combinar para formar el valor de 16 bits en el acumulador.
+			cpu->reg_a = (PRIVATE(cpu)->operand << 8) | (cpu->reg_a & 0x00FF);
+			CPU_CHANGE_FLAG(Z, cpu->reg_a == 0);
+			CPU_CHANGE_FLAG(N, (cpu->reg_a & 0x8000) != 0);
+			PRIVATE(cpu)->decode_cycle = -1;
+		}
+	} 
 }
 
 void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
@@ -638,7 +717,7 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 		}
 		fetch_pc_memory(cpu, &cpu->reg_ir, phase);
 	} else {
-		opcodeTable[cpu->reg_ir](cpu, phase);
+		opcodeTable[cpu->reg_ir](cpu, phase, ADDRESS_MODES_MATRIX_65816[cpu->reg_ir]);
 	}
 }
 
@@ -692,6 +771,7 @@ static void CPU_65816_process(Cpu65816 *cpu);
 
 Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 
+	//> TODO. What happens with SP on reset? And on native/emulation switching?
 
 	Cpu65816_private *priv = (Cpu65816_private *) dms_calloc(1, sizeof(Cpu65816_private));
 	Cpu65816 *cpu = &priv->intf;
@@ -766,9 +846,11 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 		for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
 
 		// Load the opcodes
-		opcodeTable[OP_65816_NOP] = op_NOP;
-		opcodeTable[OP_65816_XCE] = op_XCE;
-
+		opcodeTable[OP_65816_NOP]      = op_NOP;
+		opcodeTable[OP_65816_LDA_IMME] = op_LDA;
+		opcodeTable[OP_65816_REP]      = op_REP_SEP;
+		opcodeTable[OP_65816_SEP]      = op_REP_SEP;
+		opcodeTable[OP_65816_XCE]      = op_XCE;
 
 	//>TODO INit registers
 	// how is it done in the 6502?
