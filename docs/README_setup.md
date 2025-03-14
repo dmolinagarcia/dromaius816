@@ -17,6 +17,7 @@ sudo apt install libxkbcommon-dev
 sudo apt install mingw-w64
 sudo apt install wine
 sudo apt install default-jre
+sudo apt install python3
 ```
 
 ## Trying the original Dromaius Project
@@ -61,6 +62,7 @@ git push
 
 ## Install an emulator
 
+### emu816
 get Andrew Jacobs emu from https://github.com/andrew-jacobs/emu816
 
 unzip emu-master
@@ -73,6 +75,20 @@ java -cp ../Dev65.jar uk.co.demon.obelisk.w65xx.As65 simple.asm
 
 Link:
 java -cp ../Dev65.jar uk.co.demon.obelisk.w65xx.Lk65 -bss '$0000-$7FFF' -code '$F000-$FFFF' -s28 -output simple.s28 simple.obj
+
+sudo ln -s /home/devbox/work/emu816/emu816-master/emu816 /usr/sbin/emu816
+
+
+### bsnes-plus
+https://github.com/devinacker/bsnes-plus
+
+sudo apt install qtbase5-dev qtbase5-dev-tools libxv-dev libsdl1.2-dev libao-dev libopenal-dev g++ libdbus-1-dev
+git clone https://github.com/devinacker/bsnes-plus.git
+cd bsnes-plus/bsnes
+make
+sudo ln -s /home/devbox/work/bsnes-plus/bsnes/out/bsnes /usr/sbin/bsnes
+
+
 
 
 
