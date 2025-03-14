@@ -230,8 +230,3 @@ size_t filt_65816_asm_count_instruction(const uint8_t *binary, size_t bin_size, 
 
 	return count;
 }
-
-//> TODO_DMG I think this is unused.
-const char* filt_65816_get_opcode(uint8_t opcode) {
-    return OPCODE_NAMES[opcode];
-}

@@ -63,33 +63,65 @@ void cpu_65816_trace (Device *device) {
     static bool prev_start = false;      
     bool start;
 
-    //>TODO Complete CPU logging.
     uint32_t model_number = (device->get_cpu(device))->model_number(device->get_cpu(device));
     if (model_number == 65816) {
         struct Cpu65816 *cpu = (struct Cpu65816 *) device->get_cpu(device);
         start = cpu->is_at_start_of_instruction(cpu);
         if (start && !prev_start) {
-            uint8_t mem_pc_0;
+            // Definimos el tamaño máximo de la instrucción a leer
+            #define MAX_INSTR_BYTES 8
+            uint8_t buffer[MAX_INSTR_BYTES];
+            // Leemos MAX_INSTR_BYTES a partir de la dirección actual del PC
+            device->read_memory(device, cpu->reg_pc, MAX_INSTR_BYTES, buffer);
+
+            // Preparamos un buffer para almacenar la línea desensamblada.
+            // Se asume un tamaño máximo de 256 caracteres (ajustable si es necesario).
+            // Usamos un puntero auxiliar para pasar a la función (podrías usar también asm_line directamente si tu función lo permite)
+            char *asm_line = NULL;
+
+            // Las banderas m y x se extraen del registro de estado
+            bool m_flag = (cpu->reg_p & FLAG_65816_M) != 0;
+            bool x_flag = (cpu->reg_p & FLAG_65816_X) != 0;
+
+            // Llamamos a la función de desensamblado.
+            // Se pasa:
+            // - buffer: los bytes leídos de memoria.
+            // - MAX_INSTR_BYTES: cantidad total de bytes disponibles.
+            // - 0: índice dentro del buffer (se empieza en el primer byte).
+            // - cpu->reg_pc: se usa como offset para imprimir la dirección absoluta.
+            // - &line_ptr: dirección del puntero donde se escribirá la línea.
+            // - m_flag y x_flag: para ajustar el tamaño de operando en modo inmediato.
+            size_t bytes_consumed = filt_65816_asm_line(buffer, MAX_INSTR_BYTES, 0, cpu->reg_pc, &asm_line, m_flag, x_flag);
+
+            (void) bytes_consumed; // En caso de que quieras usar el valor, por ahora se ignora.
+
+            // Read the stack
+            #define STACK_BYTES 9
+            uint8_t stack[STACK_BYTES];
+            // Leemos MAX_INSTR_BYTES a partir de la dirección actual del PC
+            device->read_memory(device, cpu->reg_sp+1, STACK_BYTES, stack);
+
+
+            // Formateamos los valores de los registros para la traza
             char reg_a[10], reg_x[10], reg_y[10], reg_sp[10];
             format_reg_value(cpu->reg_a , cpu->reg_p & FLAG_65816_M, reg_a );
             format_reg_value(cpu->reg_x , cpu->reg_p & FLAG_65816_X, reg_x );
             format_reg_value(cpu->reg_y , cpu->reg_p & FLAG_65816_X, reg_y );
             format_reg_value(cpu->reg_sp, cpu->reg_p & FLAG_65816_E, reg_sp);
 
-            device->read_memory(device, cpu->reg_pc, 1, &mem_pc_0);
-            LOG (1, "%02X:%04X %02X          %s {dd:hhll} %s A=%s X=%s Y=%s DP=%04X SP=%s { xx xx xx xx } DBR=%02x CYCLE=%d", 
-                                        cpu->reg_pbr, cpu->reg_pc,  		// PC
-                                        mem_pc_0, 							// Instruction OPCODE
-                                        filt_65816_get_opcode(mem_pc_0),	// Instruction MNEMONIC
-                                        get_reg_p_status(cpu->reg_p),       // Processor status register
-                                        reg_a,          // Acc
-                                        reg_x,          // X
-                                        reg_y,          // Y
-                                        cpu->reg_dp,    // DP
-                                        reg_sp,         // SP
-                                        cpu->reg_dbr,   // DBR
-                                        cpu->get_cycles(cpu)
-                                    );  
+            // Imprimimos la traza incluyendo la línea desensamblada completa
+            LOG(1, "%-35s    %s A=%s X=%s Y=%s DP=%04X SP=%s DBR=%02x s>%02x %02x %02x %02x %02x %02x %02x %02x| CYCLE=%d", 
+                asm_line,
+                get_reg_p_status(cpu->reg_p),
+                reg_a,
+                reg_x,
+                reg_y,
+                cpu->reg_dp,
+                reg_sp,
+                cpu->reg_dbr,
+                stack[0], stack[1], stack[2], stack[3], stack[4], stack[5], stack[6], stack[7], 
+                cpu->get_cycles(cpu)
+            );
         }
     }
     prev_start = start;
