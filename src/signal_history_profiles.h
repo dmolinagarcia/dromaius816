@@ -1,3 +1,7 @@
+// signal_history_profiles.h - Daniel Molina - BSD-3-Clause (see LICENSE)
+//
+// extends
+//
 // signal_history_profiles.h - Johan Smet - BSD-3-Clause (see LICENSE)
 
 #ifndef DROMAIUS_SIGNAL_HISTORY_PROFILES_H

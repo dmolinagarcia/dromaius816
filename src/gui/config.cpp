@@ -1,3 +1,7 @@
+// gui/config.cpp - Daniel Molina - BSD-3-Clause (see LICENSE)
+//
+// extends
+//
 // gui/config.cpp - Johan Smet - BSD-3-Clause (see LICENSE)
 
 #include "config.h"

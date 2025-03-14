@@ -1,3 +1,7 @@
+// gui/config.h - Daniel Molina - BSD-3-Clause (see LICENSE)
+//
+// extends
+//
 // gui/config.h - Johan Smet - BSD-3-Clause (see LICENSE)
 
 #ifndef DROMAIUS_GUI_CONFIG_H

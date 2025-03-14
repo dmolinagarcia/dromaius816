@@ -2,7 +2,7 @@
 // 
 // dev_minimal_6502.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
-// Emulates a minimal MOS-65816 based system, with 32kb of RAM and a 16kb system ROM.
+// Emulates a minimal WDC-65816 based system, with 32kb of RAM and a 16kb system ROM.
 
 /* Address space:
    0x0000 - 0x7fff (32kb) : RAM
@@ -14,6 +14,8 @@
    0x8010 - 0xbfff        : (free)
    0xc000 - 0xffff (16kb) : ROM
 */
+
+//> TODO_DMG Invalid address map. Same for header
 
 #ifndef DROMAIUS_DEV_MINIMAL_65816_H
 #define DROMAIUS_DEV_MINIMAL_65816_H

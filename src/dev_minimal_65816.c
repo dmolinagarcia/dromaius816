@@ -4,6 +4,8 @@
 //
 // Emulates a minimal MOS-65816 based system, with 32kb of RAM and a 16kb system ROM.
 
+//> TODO_DMG Header description is not accurate
+
 #include "dev_minimal_65816.h"
 
 #include "log.h"
@@ -11,14 +13,14 @@
 #include "utils.h"
 #include "stb/stb_ds.h"
 
-//> #include "chip_6520.h"
-//> #include "chip_hd44780.h"
+//> COUT_DMG #include "chip_6520.h"
+//> COUT_DMG #include "chip_hd44780.h"
 #include "chip_oscillator.h"
 #include "chip_poweronreset.h"
 #include "cpu_65816.h"
-//> #include "input_keypad.h"
+//> COUT_DMG #include "input_keypad.h"
 #include "ram_8d_16a.h"
-//> #include "rom_8d_16a.h"
+//> COUT_DMG #include "rom_8d_16a.h"
 
 #include "signal_history_profiles.h"
 
@@ -136,18 +138,18 @@ static void glue_logic_process(ChipGlueLogic *chip) {
 	SIGNAL_WRITE(RAM_OE_B, !next_rw);
 	SIGNAL_WRITE(RAM_WE_B, next_rw || !SIGNAL_READ(CLOCK));
 
-//> 
-//> 	// >> rom logic
-//> 	//  - ce_b: assert when the top 2 bits of the address is set
-//> 	SIGNAL_WRITE(ROM_CE_B, !(SIGNAL_READ(AB15) && SIGNAL_READ(AB14)));
-//> 
-//> 	// >> pia logic
-//> 	//  - no peripheral connected, irq lines not connected
-//> 	//	- cs0: assert when top bit of address is set (copy of a15)
-//> 	//	- cs1: always asserted
-//> 	//  - cs2_b: assert when bits 4-14 are zero
-//> 	uint16_t bus_address =  SIGNAL_GROUP_READ_U16(address);
-//> 	SIGNAL_WRITE(PIA_CS2_B, (bus_address & 0x7ff0) != 0x0000);
+//> COUT_DMG 
+//> COUT_DMG 	// >> rom logic
+//> COUT_DMG 	//  - ce_b: assert when the top 2 bits of the address is set
+//> COUT_DMG 	SIGNAL_WRITE(ROM_CE_B, !(SIGNAL_READ(AB15) && SIGNAL_READ(AB14)));
+//> COUT_DMG 
+//> COUT_DMG 	// >> pia logic
+//> COUT_DMG 	//  - no peripheral connected, irq lines not connected
+//> COUT_DMG 	//	- cs0: assert when top bit of address is set (copy of a15)
+//> COUT_DMG 	//	- cs1: always asserted
+//> COUT_DMG 	//  - cs2_b: assert when bits 4-14 are zero
+//> COUT_DMG 	uint16_t bus_address =  SIGNAL_GROUP_READ_U16(address);
+//> COUT_DMG 	SIGNAL_WRITE(PIA_CS2_B, (bus_address & 0x7ff0) != 0x0000);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -308,88 +310,87 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	});
 	DEVICE_REGISTER_CHIP("RAM", device->ram);
 
-//>	// rom
-//>	device->rom = rom_8d16a_create(14, device->simulator, (Rom8d16aSignals) {
-//>										[CHIP_ROM8D16A_A0]  = SIGNAL(AB0),
-//>										[CHIP_ROM8D16A_A1]  = SIGNAL(AB1),
-//>										[CHIP_ROM8D16A_A2]  = SIGNAL(AB2),
-//>										[CHIP_ROM8D16A_A3]  = SIGNAL(AB3),
-//>										[CHIP_ROM8D16A_A4]  = SIGNAL(AB4),
-//>										[CHIP_ROM8D16A_A5]  = SIGNAL(AB5),
-//>										[CHIP_ROM8D16A_A6]  = SIGNAL(AB6),
-//>										[CHIP_ROM8D16A_A7]  = SIGNAL(AB7),
-//>										[CHIP_ROM8D16A_A8]  = SIGNAL(AB8),
-//>										[CHIP_ROM8D16A_A9]  = SIGNAL(AB9),
-//>										[CHIP_ROM8D16A_A10] = SIGNAL(AB10),
-//>										[CHIP_ROM8D16A_A11] = SIGNAL(AB11),
-//>										[CHIP_ROM8D16A_A12] = SIGNAL(AB12),
-//>										[CHIP_ROM8D16A_A13] = SIGNAL(AB13),
-//>
-//>										[CHIP_ROM8D16A_D0] = SIGNAL(DB0),
-//>										[CHIP_ROM8D16A_D1] = SIGNAL(DB1),
-//>										[CHIP_ROM8D16A_D2] = SIGNAL(DB2),
-//>										[CHIP_ROM8D16A_D3] = SIGNAL(DB3),
-//>										[CHIP_ROM8D16A_D4] = SIGNAL(DB4),
-//>										[CHIP_ROM8D16A_D5] = SIGNAL(DB5),
-//>										[CHIP_ROM8D16A_D6] = SIGNAL(DB6),
-//>										[CHIP_ROM8D16A_D7] = SIGNAL(DB7),
-//>
-//>										[CHIP_ROM8D16A_CE_B] = SIGNAL(ROM_CE_B)
-//>	});
-//>	DEVICE_REGISTER_CHIP("ROM", device->rom);
-//>
+//> COUT_DMG  	// rom
+//> COUT_DMG  	device->rom = rom_8d16a_create(14, device->simulator, (Rom8d16aSignals) {
+//> COUT_DMG  										[CHIP_ROM8D16A_A0]  = SIGNAL(AB0),
+//> COUT_DMG  										[CHIP_ROM8D16A_A1]  = SIGNAL(AB1),
+//> COUT_DMG  										[CHIP_ROM8D16A_A2]  = SIGNAL(AB2),
+//> COUT_DMG  										[CHIP_ROM8D16A_A3]  = SIGNAL(AB3),
+//> COUT_DMG  										[CHIP_ROM8D16A_A4]  = SIGNAL(AB4),
+//> COUT_DMG  										[CHIP_ROM8D16A_A5]  = SIGNAL(AB5),
+//> COUT_DMG  										[CHIP_ROM8D16A_A6]  = SIGNAL(AB6),
+//> COUT_DMG  										[CHIP_ROM8D16A_A7]  = SIGNAL(AB7),
+//> COUT_DMG  										[CHIP_ROM8D16A_A8]  = SIGNAL(AB8),
+//> COUT_DMG  										[CHIP_ROM8D16A_A9]  = SIGNAL(AB9),
+//> COUT_DMG  										[CHIP_ROM8D16A_A10] = SIGNAL(AB10),
+//> COUT_DMG  										[CHIP_ROM8D16A_A11] = SIGNAL(AB11),
+//> COUT_DMG  										[CHIP_ROM8D16A_A12] = SIGNAL(AB12),
+//> COUT_DMG  										[CHIP_ROM8D16A_A13] = SIGNAL(AB13),
+//> COUT_DMG  
+//> COUT_DMG  										[CHIP_ROM8D16A_D0] = SIGNAL(DB0),
+//> COUT_DMG  										[CHIP_ROM8D16A_D1] = SIGNAL(DB1),
+//> COUT_DMG  										[CHIP_ROM8D16A_D2] = SIGNAL(DB2),
+//> COUT_DMG  										[CHIP_ROM8D16A_D3] = SIGNAL(DB3),
+//> COUT_DMG  										[CHIP_ROM8D16A_D4] = SIGNAL(DB4),
+//> COUT_DMG  										[CHIP_ROM8D16A_D5] = SIGNAL(DB5),
+//> COUT_DMG  										[CHIP_ROM8D16A_D6] = SIGNAL(DB6),
+//> COUT_DMG  										[CHIP_ROM8D16A_D7] = SIGNAL(DB7),
+//> COUT_DMG  
+//> COUT_DMG  										[CHIP_ROM8D16A_CE_B] = SIGNAL(ROM_CE_B)
+//> COUT_DMG  	});
+//> COUT_DMG  	DEVICE_REGISTER_CHIP("ROM", device->rom);
+//> COUT_DMG  
 if (rom_data) {
-//>		dms_memcpy(device->rom->data_array, rom_data, arrlenu(rom_data));
+//> COUT_DMG 	dms_memcpy(device->rom->data_array, rom_data, arrlenu(rom_data));
 }
-//>
-//>	// pia
-//>	device->pia = chip_6520_create(device->simulator, (Chip6520Signals) {
-//>										[CHIP_6520_D0] = SIGNAL(DB0),
-//>										[CHIP_6520_D1] = SIGNAL(DB1),
-//>										[CHIP_6520_D2] = SIGNAL(DB2),
-//>										[CHIP_6520_D3] = SIGNAL(DB3),
-//>										[CHIP_6520_D4] = SIGNAL(DB4),
-//>										[CHIP_6520_D5] = SIGNAL(DB5),
-//>										[CHIP_6520_D6] = SIGNAL(DB6),
-//>										[CHIP_6520_D7] = SIGNAL(DB7),
-//>										[CHIP_6520_PHI2] = SIGNAL(CLOCK),
-//>										[CHIP_6520_RESET_B] = SIGNAL(RESET_B),
-//>										[CHIP_6520_RW] = SIGNAL(CPU_RW),
-//>										[CHIP_6520_CS0] = SIGNAL(AB15),
-//>										[CHIP_6520_CS1] = SIGNAL(HIGH),
-//>										[CHIP_6520_RS0] = SIGNAL(AB0),
-//>										[CHIP_6520_RS1] = SIGNAL(AB1),
-//>										[CHIP_6520_CS2_B] = SIGNAL(PIA_CS2_B)
-//>	});
-//>	DEVICE_REGISTER_CHIP("PIA", device->pia);
-//>
-//>	// lcd-module
-//>	device->lcd = chip_hd44780_create(device->simulator, (ChipHd44780Signals) {
-//>										[CHIP_HD44780_DB4] = device->pia->signals[CHIP_6520_PA0],
-//>										[CHIP_HD44780_DB5] = device->pia->signals[CHIP_6520_PA1],
-//>										[CHIP_HD44780_DB6] = device->pia->signals[CHIP_6520_PA2],
-//>										[CHIP_HD44780_DB7] = device->pia->signals[CHIP_6520_PA3],
-//>										[CHIP_HD44780_RS]  = device->pia->signals[CHIP_6520_PA7],
-//>										[CHIP_HD44780_RW]  = device->pia->signals[CHIP_6520_PA6],
-//>										[CHIP_HD44780_E]   = device->pia->signals[CHIP_6520_PA5]
-//>	});
-//>	DEVICE_REGISTER_CHIP("LCD", device->lcd);
-//>
-//>	// keypad
-//>	device->keypad = input_keypad_create(device->simulator, true, 4, 4, 500, 100,
-//>										 (Signal[]) {device->pia->signals[CHIP_6520_PB4], device->pia->signals[CHIP_6520_PB5],
-//>													 device->pia->signals[CHIP_6520_PB6], device->pia->signals[CHIP_6520_PB7]},
-//>										 (Signal[]) {device->pia->signals[CHIP_6520_PB0], device->pia->signals[CHIP_6520_PB1],
-//>													 device->pia->signals[CHIP_6520_PB2], device->pia->signals[CHIP_6520_PB3]}
-//>	);
-//>
-//>	DEVICE_REGISTER_CHIP("KEYPAD", device->keypad);
-//>	signal_group_defaults(SIGNAL_POOL, device->keypad->sg_rows, 0x00);
-//>
+//> COUT_DMG 
+//> COUT_DMG 	// pia
+//> COUT_DMG 	device->pia = chip_6520_create(device->simulator, (Chip6520Signals) {
+//> COUT_DMG 										[CHIP_6520_D0] = SIGNAL(DB0),
+//> COUT_DMG 										[CHIP_6520_D1] = SIGNAL(DB1),
+//> COUT_DMG 										[CHIP_6520_D2] = SIGNAL(DB2),
+//> COUT_DMG 										[CHIP_6520_D3] = SIGNAL(DB3),
+//> COUT_DMG 										[CHIP_6520_D4] = SIGNAL(DB4),
+//> COUT_DMG 										[CHIP_6520_D5] = SIGNAL(DB5),
+//> COUT_DMG 										[CHIP_6520_D6] = SIGNAL(DB6),
+//> COUT_DMG 										[CHIP_6520_D7] = SIGNAL(DB7),
+//> COUT_DMG 										[CHIP_6520_PHI2] = SIGNAL(CLOCK),
+//> COUT_DMG 										[CHIP_6520_RESET_B] = SIGNAL(RESET_B),
+//> COUT_DMG 										[CHIP_6520_RW] = SIGNAL(CPU_RW),
+//> COUT_DMG 										[CHIP_6520_CS0] = SIGNAL(AB15),
+//> COUT_DMG 										[CHIP_6520_CS1] = SIGNAL(HIGH),
+//> COUT_DMG 										[CHIP_6520_RS0] = SIGNAL(AB0),
+//> COUT_DMG 										[CHIP_6520_RS1] = SIGNAL(AB1),
+//> COUT_DMG 										[CHIP_6520_CS2_B] = SIGNAL(PIA_CS2_B)
+//> COUT_DMG 	});
+//> COUT_DMG 	DEVICE_REGISTER_CHIP("PIA", device->pia);
+//> COUT_DMG 
+//> COUT_DMG 	// lcd-module
+//> COUT_DMG 	device->lcd = chip_hd44780_create(device->simulator, (ChipHd44780Signals) {
+//> COUT_DMG 										[CHIP_HD44780_DB4] = device->pia->signals[CHIP_6520_PA0],
+//> COUT_DMG 										[CHIP_HD44780_DB5] = device->pia->signals[CHIP_6520_PA1],
+//> COUT_DMG 										[CHIP_HD44780_DB6] = device->pia->signals[CHIP_6520_PA2],
+//> COUT_DMG 										[CHIP_HD44780_DB7] = device->pia->signals[CHIP_6520_PA3],
+//> COUT_DMG 										[CHIP_HD44780_RS]  = device->pia->signals[CHIP_6520_PA7],
+//> COUT_DMG 										[CHIP_HD44780_RW]  = device->pia->signals[CHIP_6520_PA6],
+//> COUT_DMG 										[CHIP_HD44780_E]   = device->pia->signals[CHIP_6520_PA5]
+//> COUT_DMG 	});
+//> COUT_DMG 	DEVICE_REGISTER_CHIP("LCD", device->lcd);
+//> COUT_DMG 
+//> COUT_DMG 	// keypad
+//> COUT_DMG 	device->keypad = input_keypad_create(device->simulator, true, 4, 4, 500, 100,
+//> COUT_DMG 										 (Signal[]) {device->pia->signals[CHIP_6520_PB4], device->pia->signals[CHIP_6520_PB5],
+//> COUT_DMG 													 device->pia->signals[CHIP_6520_PB6], device->pia->signals[CHIP_6520_PB7]},
+//> COUT_DMG 										 (Signal[]) {device->pia->signals[CHIP_6520_PB0], device->pia->signals[CHIP_6520_PB1],
+//> COUT_DMG 													 device->pia->signals[CHIP_6520_PB2], device->pia->signals[CHIP_6520_PB3]}
+//> COUT_DMG 	);
+//> COUT_DMG 
+//> COUT_DMG 	DEVICE_REGISTER_CHIP("KEYPAD", device->keypad);
+//> COUT_DMG 	signal_group_defaults(SIGNAL_POOL, device->keypad->sg_rows, 0x00);
+//> COUT_DMG 
 // custom chip for the glue logic
 DEVICE_REGISTER_CHIP("LOGIC", glue_logic_create(device));
-//>
-//>
+
 	// let the simulator know no more chips will be added
 	simulator_device_complete(device->simulator);
 
@@ -449,7 +450,7 @@ void dev_minimal_65816_read_memory(DevMinimal65816 *device, size_t start_address
 				dms_zero(output + done, to_copy);
 				break;
 			case 2:				// ROM
-//>				dms_memcpy(output + done, device->rom->data_array + region_offset, to_copy);
+//> COUT_DMG 			dms_memcpy(output + done, device->rom->data_array + region_offset, to_copy);
 				break;
 		}
 
@@ -486,13 +487,13 @@ size_t dev_minimal_65816_get_irq_signals(DevMinimal65816 *device, SignalBreakpoi
 }
 
 void dev_minimal_65816_rom_from_file(DevMinimal65816 *device, const char *filename) {
-//>	file_load_binary_fixed(filename, device->rom->data_array, device->rom->data_size);
+//> COUT_DMG 	file_load_binary_fixed(filename, device->rom->data_array, device->rom->data_size);
 	if (device && filename) {
 		//> dummy if to avoid warning due to unused device
+		//> TODO_DMG Do something with this!
 	}
 }
 
 void dev_minimal_65816_ram_from_file(DevMinimal65816 *device, const char *filename) {
 	file_load_binary_fixed(filename, device->ram->data_array, device->ram->data_size);
 }
-

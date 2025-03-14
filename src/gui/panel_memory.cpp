@@ -1,8 +1,12 @@
+// gui/panel_memory.c - Daniel Molina - BSD-3-Clause (see LICENSE)
+// extends
 // gui/panel_memory.c - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // UI-panel to visualize a block of memory
 //
 // FIXME: optimize by only copying/processing the memory actually displayed by the window
+
+//> TODO_DMG Spanish!
 
 #include "panel_memory.h"
 

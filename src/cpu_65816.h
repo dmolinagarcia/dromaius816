@@ -2,7 +2,7 @@
 // Based on
 // cpu_6502.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
-// Emulation of the MOS 6502
+// Emulation of the WDC 65816
 
 // WDC DataSheet: https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf
 
@@ -61,7 +61,11 @@ enum Cpu65816SignalAssignments {
 #define CHIP_65816_PIN_COUNT 40
 typedef Signal Cpu65816Signals[CHIP_65816_PIN_COUNT];
 
-//>TODO Flags need to be adapted to the 65c816
+//> TODO_DMG Flags need to be adapted to the 65c816
+//> TODO_DMG Unused and Break actually do no exist on the CPU die
+//> TODO_DMG Only when P is pushed onto the stack they get a value
+//> TODO_DMG This can probably be done more efficiently
+
 typedef enum Cpu65816Flags {
 	FLAG_65816_CARRY			 = ((uint32_t) 0b00000000100000001),
 	FLAG_65816_ZERO_RESULT		 = ((uint32_t) 0b00000001000000010),

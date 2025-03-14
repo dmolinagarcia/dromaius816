@@ -444,18 +444,18 @@ typedef struct DevCommodorePet {
 
 	// major components
 	struct Cpu6502 *		cpu;
-//> 	struct Chip63xxRom *	roms[7];
+//> COUT_DMG 	struct Chip63xxRom *	roms[7];
 	struct Oscillator *		oscillator_y1;
-//> 	struct Chip6520 *		pia_1;
-//> 	struct Chip6520 *		pia_2;
-//> 	struct Chip6522 *		via;
+//> COUT_DMG 	struct Chip6520 *		pia_1;
+//> COUT_DMG 	struct Chip6520 *		pia_2;
+//> COUT_DMG 	struct Chip6522 *		via;
 
-//> 	struct InputKeypad *	keypad;
-//> 	struct PerifPetCrt *	crt;
-//> 	struct DisplayRGBA *	screen;
-//> 	struct PerifDatassette *datassette;
+//> COUT_DMG	struct InputKeypad *	keypad;
+//> COUT_DMG	struct PerifPetCrt *	crt;
+//> COUT_DMG	struct DisplayRGBA *	screen;
+//> COUT_DMG	struct PerifDatassette *datassette;
 
-//> 	struct PerifDisk2031 *  disk_2031;
+//> COUT_DMG	struct PerifDisk2031 *  disk_2031;
 
 	bool					in_reset;
 

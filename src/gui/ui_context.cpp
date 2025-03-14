@@ -22,7 +22,7 @@
 #include "panel_dev_minimal_6502.h"
 #include "panel_dev_minimal_65816.h"
 #include "panel_dev_nova_64.h"
-//> #include "panel_memory.h"
+//> COUT_DMG #include "panel_memory.h"
 
 namespace {
 
@@ -41,7 +41,7 @@ void UIContext::switch_machine(MachineType machine) {
 void UIContext::setup_ui(struct GLFWwindow *window) {
 	glfw_window = window;
 	switch_machine(config.machine_type);
-//> 	panel_memory_load_fonts();								Viene de panel_memory.h
+//> COUT_DMG 	panel_memory_load_fonts();								Viene de panel_memory.h
 }
 
 void UIContext::shutdown_ui() {

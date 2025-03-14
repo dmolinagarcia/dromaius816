@@ -1,7 +1,7 @@
 // chip_template.h - Daniel Molina - BSD-3-Clause (see LICENSE)
 //
 // Template to create new chips
-//>> All lines beggining with //>> Are instructions to create new chip. r
+//>> All lines beggining with //>> Are instructions to create new chip.
 //>> Remove then from your final code for clarity
 
 

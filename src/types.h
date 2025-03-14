@@ -1,3 +1,7 @@
+// types.h - Daniel Molina - BSD-3-Clause (see LICENSE)
+//
+// extends
+//
 // types.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // Easy include to make sure commonly used basic types are defined

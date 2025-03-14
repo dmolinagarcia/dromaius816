@@ -9,8 +9,8 @@
 #include "simulator.h"
 #include "crt.h"
 
-//>> Prefix for signal names. 
-#define SIGNAL_PREFIX		CHIP_OSCILLATOR_
+//>> Prefix for signal names. Change name
+#define SIGNAL_PREFIX		CHIP_TEMPLATE_
 //>> SIGNAL_OWNER defines the layer. Not so sure yet. Could be the name of the
 //>>   object? Still more investigation needed.
 #define SIGNAL_OWNER		tmp

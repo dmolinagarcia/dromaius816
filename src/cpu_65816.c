@@ -13,32 +13,35 @@
 #define SIGNAL_OWNER		cpu
 #define SIGNAL_PREFIX		PIN_65816_
 
-//>TODO Include timing diagram here
+//> TODO_DMG Include timing diagram here
+
+//> TODO_DMG Status register, stack, and return from interrupts. 
+//> TODO_DMG What is pushed and restored!
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // internal data types
 //
 
-//>TODO PinTypes Declaration
-//>TODO Known pins ported directly from the 6502
-//>TODO Unknown pins commented as such. Pending review
+//> TODO_DMG PinTypes Declaration
+//> TODO_DMG Known pins ported directly from the 6502
+//> TODO_DMG Unknown pins commented as such. Pending review
 
 static uint8_t Cpu65816_PinTypes[CHIP_65816_PIN_COUNT] = {
     [PIN_65816_VPB  ] = CHIP_PIN_OUTPUT,
-		//>TODO Vector Pull ACTLO. Just output. Should be OK
+		//> TODO_DMG Vector Pull ACTLO. Just output. Should be OK
 	[PIN_65816_RDY  ] = CHIP_PIN_INPUT,
-		//>TODO Should be output too?
+		//> TODO_DMG Should be output too?
 	[PIN_65816_ABORT] = CHIP_PIN_INPUT,
-		//>TODO Sames as IRQB, should be OK
-		//>TODO This is a new type of Interrupt
+		//> TODO_DMG Sames as IRQB, should be OK
+		//> TODO_DMG This is a new type of Interrupt
 	[PIN_65816_IRQ_B] = CHIP_PIN_INPUT,
 	[PIN_65816_MLB  ] = CHIP_PIN_OUTPUT,
-		//>TODO Memory Lock ACTLO. Output should be OK
+		//> TODO_DMG Memory Lock ACTLO. Output should be OK
 	[PIN_65816_NMI_B] = CHIP_PIN_INPUT,
-        //>TODO Should be trigger too??
+        //> TODO_DMG Should be trigger too??
 	[PIN_65816_VPA  ] = CHIP_PIN_OUTPUT,
-		//>TODO VPA output. Should be OK
+		//> TODO_DMG VPA output. Should be OK
 	[PIN_65816_AB0  ] = CHIP_PIN_OUTPUT,
 	[PIN_65816_AB1  ] = CHIP_PIN_OUTPUT,
 	[PIN_65816_AB2  ] = CHIP_PIN_OUTPUT,
@@ -65,14 +68,14 @@ static uint8_t Cpu65816_PinTypes[CHIP_65816_PIN_COUNT] = {
 	[PIN_65816_DB0  ] = CHIP_PIN_INPUT | CHIP_PIN_OUTPUT,
 	[PIN_65816_RWB	] = CHIP_PIN_OUTPUT,
 	[PIN_65816_E    ] = CHIP_PIN_OUTPUT,
-		//>TODO Emulatoin status. Should be OK
+		//> TODO_DMG Emulation status. Should be OK
 	[PIN_65816_BE   ] = CHIP_PIN_INPUT | CHIP_PIN_TRIGGER,
-		//>TODO Bus Enable. Asyc should should be trigger?
+		//> TODO_DMG Bus Enable. Asyc should should be trigger?
 	[PIN_65816_PHI2 ] = CHIP_PIN_INPUT | CHIP_PIN_TRIGGER,
 	[PIN_65816_MX	] = CHIP_PIN_OUTPUT,
-		//>TODO MX status, toggles betweeh PIHI2 H and L
+		//> TODO_DMG MX status, toggles betweeh PIHI2 H and L
 	[PIN_65816_VDA  ] = CHIP_PIN_OUTPUT,
-		//>TODO VPA output. Should be OK
+		//> TODO_DMG VPA output. Should be OK
 	[PIN_65816_RES_B] = CHIP_PIN_INPUT | CHIP_PIN_TRIGGER,
 };
 
@@ -91,7 +94,7 @@ const char* CPU_65816_PHASE_NAMES[] = {
     "CYCLE_END        "
 };
 	
-//>TODO. I may need more steps to emulate the CPU
+//> TODO_DMG. I may need more steps to emulate the CPU
 
 typedef enum CPU_65816_STATE {
 	CS_INIT = 0,
@@ -99,7 +102,7 @@ typedef enum CPU_65816_STATE {
 	CS_IN_IRQ = 2,
 	CS_IN_NMI = 3
 } CPU_65816_STATE;
-	//>TODO. I may need more states too!
+	//> TODO_DMG. I may need more states too!
 
 typedef enum CPU_65816_INTERRUPT_TYPE {
 	INTR_RESET = 0,
@@ -107,7 +110,7 @@ typedef enum CPU_65816_INTERRUPT_TYPE {
 	INTR_IRQ = 2,
 	INTR_NMI = 3
 } CPU_65816_INTERRUPT_TYPE;
-    //>TODO and for sure, at least one more interrupt time. ABORT.
+    //> TODO_DMG and for sure, at least one more interrupt time. ABORT.
 
 typedef union addr_t {
 	uint16_t full;
@@ -126,11 +129,11 @@ typedef struct output_t {
 
 	bool 			vpa;				// vpa PIN
 
-	//>TODO. Here we remove SYNC and replace it with VPA
-	//>TODO. VDA and VPA Perform similar function to sync
-	//>TODO. On the original code this output is implemented in the
-	//>      process_end function
-	//>    . Only VPA for now to provide for step instruction!
+	//> TODO_DMG. Here we remove SYNC and replace it with VPA
+	//> TODO_DMG. VDA and VPA Perform similar function to sync
+	//> TODO_DMG. On the original code this output is implemented in the
+	//> TODO_DMG. process_end function
+	//> TODO_DMG. Only VPA for now to provide for step instruction!
 
 } output_t;
 
@@ -179,10 +182,10 @@ static void process_end(Cpu65816 *cpu) {
 	output_t *output = &PRIVATE(cpu)->output;
 	output_t *last_output = &PRIVATE(cpu)->last_output;
 
-	//>TODO If we are in emulation mode, Stack Pointer HI BYTE is 1
-	//>     Also, PBR = 00
-	//>     Also, M and X = 1
-	//>TODO Is this correct here?
+	//> TODO_DMG If we are in emulation mode, Stack Pointer HI BYTE is 1
+	//> TODO_DMG Also, PBR = 00
+	//> TODO_DMG Also, M and X = 1
+	//> TODO_DMG Is this correct here?
 	if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_E)) {
 		cpu->reg_sp = cpu->reg_sp & 0x01FF;
 		cpu->reg_pbr = 0;
@@ -190,12 +193,10 @@ static void process_end(Cpu65816 *cpu) {
 		CPU_CHANGE_FLAG(X, true);
 	}
 
-	//>TODO Also, if X is 1, high byte of X and Y must be cleared
-	//>     Is this a good place?
-	//>		Still pending.
+	//> TODO_DMG Also, if X is 1, high byte of X and Y must be cleared
+	//> TODO_DMG Is this a good place?
+	//>	TODO_DMG still pending.
 
-	//>TODO Also, if E=1, M and X should be 1 too. 
-	//>     Here?
 
 	// address bus
 	if (output->address != last_output->address) {
@@ -229,11 +230,11 @@ static void process_end(Cpu65816 *cpu) {
 //> 		SIGNAL_WRITE(SYNC, output->sync);
 //> 		last_output->sync = output->sync;
 //> 	}
-//>TODO SYNC pinc does not exist on 65816.
-//>TODO VDA and VPA should be here
+//> TODO_DMG SYNC pinc does not exist on 65816.
+//> TODO_DMG VDA and VPA should be here
 
 	// VPA PIN
-	//>TODO. Temporary solution. VPA replicates SYNC on 6502
+	//> TODO_DMG. Temporary solution. VPA replicates SYNC on 6502
 	//>    . Used for step instruction in control panel.
 	output->vpa = PRIVATE(cpu)->decode_cycle == 0;
 	if (output->vpa != last_output->vpa) {
@@ -245,7 +246,7 @@ static void process_end(Cpu65816 *cpu) {
 	// Handle interrupt sequence
 static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_INTERRUPT_TYPE irq_type) {
 
-	//>TODO New interrupt types and vectors
+	//> TODO_DMG New interrupt types and vectors
 	static const bool FORCE_READ[] = {
 		true,		// reset
 		false,		// BRK-instruction
@@ -274,8 +275,14 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 		0			// non-maskable IRQ
 	}; */
 
+	//> TODO_DMG I removed PC_INC and tweakd BRK but... should I undo that?
+	//> TODO_DMG Note: PC_INC is already commented out in cpu_6502.c!
 
-	//>TODO I need bank address here too!
+	//> TODO_DMG I need bank address here too!
+	//> TODO_DMG In native mode interrupts take one more cycle
+	//> TODO_DMG As PBR is also pushed!
+	//> TODO_DMG RTI should take this into account too
+
 	switch(PRIVATE(cpu)->decode_cycle) {
 		case 0 :		// finish previous operation
 			if (phase == CYCLE_BEGIN) {
@@ -283,7 +290,7 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 				LOG (2, "Address bus: %04x", cpu->reg_pc);
 			}
 			if (phase == CYCLE_END && irq_type == INTR_RESET) {
-				//>TODO Emulation is set to TRUE on reset
+				//> TODO_DMG Emulation is set to TRUE on reset
 				//>     So are M and X
 				//>     Is this ok here???
 				//>     Also, if E=1, always, PBR=0!!!!
@@ -339,8 +346,9 @@ static void interrupt_sequence(Cpu65816 *cpu, CPU_65816_CYCLE phase, CPU_65816_I
 					PRIVATE(cpu)->output.rwb = RW_WRITE | FORCE_READ[irq_type];
 					break;
 				case CYCLE_MIDDLE:
-					//>TODO reg_p, reg_ep, how to handle this!
+					//> TODO_DMG reg_p, reg_ep, how to handle this!
 					//>   I think it already is handled :)
+					//> TODO_DMG, or probably it is not .(
 					OUTPUT_DATA(CPU_REG_P);
 					break;
 				case CYCLE_END:
@@ -412,7 +420,7 @@ static inline void fetch_pc_memory(Cpu65816 *cpu, uint8_t *dst, CPU_65816_CYCLE 
 			LOG (2, "Fetching %04x", cpu->reg_pc);
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			OUTPUT_DATA(cpu->reg_pbr);
-				//>TODO BANK ADDRESS?
+				//> TODO_DMG BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
 			break;
@@ -435,7 +443,7 @@ static inline int fetch_address_immediate(Cpu65816 *cpu, CPU_65816_CYCLE phase) 
 			case CYCLE_BEGIN :
 				PRIVATE(cpu)->addr.full = cpu->reg_pc;
 				OUTPUT_DATA(cpu->reg_pbr);
-				//>TODO BANK ADDRESS?
+				//> TODO_DMG BANK ADDRESS?
 				break;
 			case CYCLE_MIDDLE:
 				break;
@@ -448,7 +456,7 @@ static inline int fetch_address_immediate(Cpu65816 *cpu, CPU_65816_CYCLE phase) 
 	return 1;
 }
 
-//> TODO... this... theres a bunch of fetch_address
+//> TODO_DMG... this... theres a bunch of fetch_address not implemented
 static inline int fetch_address_shortcut(Cpu65816 *cpu, ADDR_MODES_65816 mode, CPU_65816_CYCLE phase) {
 
 	switch (mode) {
@@ -528,13 +536,14 @@ void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	// FETCH is always handlesd in the execute phase functions
 	// SO only EXECUTE is here (Decode Cycle 1)
 	// As it is a 2 cycle instruction, no decode cycle decoding is needed
+	//> TODO_DMG Maybe too much information here?
 
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			LOG (2, "Address bus: %04x", cpu->reg_pc);
 			OUTPUT_DATA(cpu->reg_pbr);
-				//>TODO BANK ADDRESS?
+				//> TODO_DMG BANK ADDRESS?
 				//>     According to data sheet, pbr seems correct here
 			break;
 		case CYCLE_MIDDLE:
@@ -558,7 +567,7 @@ void op_XCE(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			LOG (2, "Address bus: %04x", cpu->reg_pc);
 			OUTPUT_DATA(cpu->reg_pbr);
-				//>TODO BANK ADDRESS?
+				//> TODO_DMG BANK ADDRESS?
 				//>     According to data sheet, pbr seems correct here
 			break;
 		case CYCLE_MIDDLE:
@@ -573,7 +582,7 @@ void op_XCE(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 }
 
 void op_REP_SEP(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
-	//>TODO My very first opcode with operand!	
+	//> TODO_DMG My very first opcode with operand!	
 	//>     SEP is always 3 cycles. Fetch, fetch operand, and action
 	//>		According to the datasheet, VPA is low during last cycle
 	//>     Also, I can recycle this for REP!
@@ -582,7 +591,7 @@ void op_REP_SEP(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 
 	switch (PRIVATE(cpu)->decode_cycle) {
 		case 1:
-			if (fetch_operand (cpu, mode, phase)) { //>TODO
+			if (fetch_operand (cpu, mode, phase)) { //> TODO_DMG
 					// Nothing!
 					// decode cycle advances on its own!
 					// SEP takes naother cycle becauase.... no reason?				
@@ -593,7 +602,7 @@ void op_REP_SEP(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 				case CYCLE_BEGIN:
 					PRIVATE(cpu)->output.address = cpu->reg_pc;
 					OUTPUT_DATA(cpu->reg_pbr);
-						//>TODO BANK ADDRESS?
+						//> TODO_DMG BANK ADDRESS?
 						//>     According to data sheet, pbr seems correct here
 					break;
 				case CYCLE_MIDDLE:
@@ -641,6 +650,7 @@ void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 		// Time to fetch next byte!
 		if (fetch_operand(cpu, mode, phase)) {
 			// Combinar para formar el valor de 16 bits en el acumulador.
+			//> TODO_DMG Spanish!
 			cpu->reg_a = (PRIVATE(cpu)->operand << 8) | (cpu->reg_a & 0x00FF);
 			CPU_CHANGE_FLAG(Z, cpu->reg_a == 0);
 			CPU_CHANGE_FLAG(N, (cpu->reg_a & 0x8000) != 0);
@@ -650,13 +660,13 @@ void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 }
 
 void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
-	//>TODO all unknowns are treated as NOPs
+	//> TODO_DMG all unknowns are treated as NOPs
 	switch (phase) {
 		case CYCLE_BEGIN:
 			PRIVATE(cpu)->output.address = cpu->reg_pc;
 			LOG (2,"Address bus: %04x", cpu->reg_pc);
 			OUTPUT_DATA(cpu->reg_pbr);
-				//>TODO BANK ADDRESS?
+				//> TODO_DMG BANK ADDRESS?
 			break;
 		case CYCLE_MIDDLE:
 			break;
@@ -668,7 +678,7 @@ void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 }
 
 static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
-	//>TODO Function copied as-is. I may need some changes!
+	//> TODO_DMG Function copied as-is. I may need some changes!
 	LOG (3, "%s Decode_cycle: %d IR: %x" , CPU_65816_PHASE_NAMES[phase], PRIVATE(cpu)->decode_cycle, cpu->reg_ir);
 
 	// data-bus
@@ -722,17 +732,17 @@ static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase)
 }
 
 void CPU_65816_override_next_instruction_address(Cpu65816 *cpu, uint16_t pc) {
-	//>TODO Function copied as-is. I may need some changes!
+	//> TODO_DMG Function copied as-is. I may need some changes!
 	assert(cpu);
 	PRIVATE(cpu)->override_pc = pc;
 }
 
 bool CPU_65816_at_start_of_instruction(Cpu65816 *cpu) {
-	//>TODO Function copied as-is. I may need some changes!
+	//> TODO_DMG Function copied as-is. I may need some changes!
 
 	assert(cpu);
 	return SIGNAL_READ_NEXT(VPA);
-	//>TODO SHould return a valid combination of VPA and VDA
+	//> TODO_DMG SHould return a valid combination of VPA and VDA
 	//> //> 	return SIGNAL_READ_NEXT(SYNC);
 	//>     This is temporary and mimics 6502 SYNC
 	//>     USed on the ui for stepping instructions
@@ -744,9 +754,9 @@ bool CPU_65816_irq_is_asserted(Cpu65816 *cpu) {
 }
 
 int64_t CPU_65816_program_counter(Cpu65816 *cpu) {
-	//>TODO Function copied as IS. 
-	//>TODO IDN why this is needed.
-	//>TODO IDN Why this is needed in the UI. Something related to getting the PC
+	//> TODO_DMG Function copied as IS. 
+	//> TODO_DMG IDN why this is needed.
+	//> TODO_DMG IDN Why this is needed in the UI. Something related to getting the PC
 	assert(cpu);
 	return cpu->reg_pc;
 }
@@ -786,9 +796,9 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	cpu->is_at_start_of_instruction = (CPU_IS_AT_START_OF_INSTRUCTION) CPU_65816_at_start_of_instruction;
 	//> cpu->irq_is_asserted = (CPU_IRQ_IS_ASSERTED) CPU_65816_irq_is_asserted;
 	cpu->program_counter = (CPU_PROGRAM_COUNTER) CPU_65816_program_counter;
-	//>TODO These are commented out. Not yet implemented... what do they do?
-	//>TODO iasof and pc uncommented due to them being used in context ui
-	//>TODO pointes to functions? Common interface accross CPUS?
+	//> TODO_DMG These are commented out. Not yet implemented... what do they do?
+	//> TODO_DMG iasof and pc uncommented due to them being used in context ui
+	//> TODO_DMG pointes to functions? Common interface accross CPUS?
 	cpu->model_number = (CPU_MODEL_NUMBER) cpu_65816_model_number;
 	cpu->get_cycles = (CPU_GET_CYCLES) cpu_65816_get_cycles;
 	
@@ -837,7 +847,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 	priv->override_pc = 0;
 	priv->cycles = 0;
 
-	//>TODO Also, unused flag in emulation mode is always set
+	//> TODO_DMG Also, unused flag in emulation mode is always set
 	//>       so we SET it on CPU Creation
 	CPU_CHANGE_FLAG(U, true);
 
@@ -852,7 +862,7 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 		opcodeTable[OP_65816_SEP]      = op_REP_SEP;
 		opcodeTable[OP_65816_XCE]      = op_XCE;
 
-	//>TODO INit registers
+	//> TODO_DMG INit registers
 	// how is it done in the 6502?
 	
 	cpu->reg_pbr = 0;
@@ -868,8 +878,8 @@ static void CPU_65816_destroy(Cpu65816 *cpu) {
 }
 
 
-//>TODO CPU process. 
-//>TODO We're assuming cycle is the same, but with bank register output
+//> TODO_DMG CPU process. 
+//> TODO_DMG We're assuming cycle is the same, but with bank register output
 //>     During PHI2 low?
 
 static void CPU_65816_process(Cpu65816 *cpu) {

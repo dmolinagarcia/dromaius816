@@ -27,7 +27,6 @@ typedef enum ADDR_MODES_65816_ {
 	imme    ,                     //> Immediate                         //    #       // 3.5.18 in WDC DataSheet  
 																					  // 2 bytes or 3 depending on MX....
 																					  // Up to the opcode decoder to choose
-
 //	ABSA    ,                     //> Absolute   		                //    a       // 3.5.1  in WDC DataSheet
 //  JAII    ,                     //> Absolute Indexed Indirect Jump    //    (a,x)   // 3.5.2  in WDC DataSheet
 //	ABIX    ,                     //> Absolute Indexed with X           //    a,x     // 3.5.3  in WDC DataSheet
@@ -45,7 +44,6 @@ typedef enum ADDR_MODES_65816_ {
 //	DILO    ,                     //> Direct Indirect Long              //    [d]     // 3.5.15 in WDC DataSheet
 //	DIRI    ,                     //> Direct Indirect                   //    (d)     // 3.5.16 in WDC DataSheet
 //	DIRE    ,                     //> Direct                            //    d       // 3.5.17 in WDC DataSheet
-//	IMME    ,                     //> Immediate                         //    #       // 3.5.18 in WDC DataSheet  2 bytes or 3 depending on MX....
 //	PCRL    ,                     //> Program Counter Relative Long     //    rl      // 3.5.20 in WDC DataSheet
 //	PCRE    ,                     //> Program Counter Relative          //    r       // 3.5.21 in WDC DataSheet
 //	STCK    ,                     //> Stack                             //    s       // 3.5.22 in WDC DataSheet

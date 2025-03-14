@@ -7,7 +7,7 @@
 // Emulates a minimal 65816 based system
 
 /* Address space:
-   // TBD
+//> TODO_DMG
 */
 
 #ifndef DROMAIUS_DEV_NOVA_64_H

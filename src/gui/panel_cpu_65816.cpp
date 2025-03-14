@@ -30,7 +30,7 @@ public:
 
 		if (ImGui::Begin(panel_title.c_str(), &stay_open)) {
 
-			//>TODO adjust register witdh!
+			//> TODO_DMG adjust register witdh!
 
 			if (ImGui::CollapsingHeader(txt_header_registers, ImGuiTreeNodeFlags_DefaultOpen)) {
 				ui_register_16bit(8, "Accumulator", cpu->reg_a);

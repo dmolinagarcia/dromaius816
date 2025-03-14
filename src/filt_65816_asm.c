@@ -52,7 +52,7 @@ static const char OPCODE_NAMES[256][4] = {
 };
 
 // addressing modes
-//>TODO Update for 65816
+//> TODO_DMG Update for 65816. Maybe it can be simplified
 typedef enum ADDR_MODE {
 	NONE = 0,                     //> NONE, Placeholder                 //            // Non-existant. Just a placeholder
 	ABSA    ,                     //> Absolute   		                //    a       // 3.5.1  in WDC DataSheet
@@ -96,7 +96,7 @@ typedef enum ADDR_MODE {
 } ADDR_MODE;
 
 // opcode => addressing mode
-//>TODO Update for 65816
+//> TODO_DMG Update for 65816. If above is simplified, this will change
 static const ADDR_MODE OPCODE_ADDRESS_MODES[256] = {
 //    0        1      2       3       4      5       6       7       8       9       A       B      C       D        E        F
     STCK,   DIIX,   STCK,   SREL,   DIRE,   DIRE,   DIRE,   DILO,   STCK,   IMME,   ACCU,   STCK,   ABSA,   ABSA,   ABSA,   ABSL,     // 0
@@ -117,8 +117,7 @@ static const ADDR_MODE OPCODE_ADDRESS_MODES[256] = {
     PCRE,   DIIN,   DIRI,   SRII,   IMME,   DINX,   DINX,   DILI,   IMPL,   ABIY,   STCK,   IMPL,   JAII,   ABIX,   ABIX,   ALIX      // F
 };
 
-// addressing mode => number of arguments
-//> TODO Modify based on MX,E
+// addressing mode => number of bytes in the opcerand
 static const unsigned int ADDRESS_MODE_LEN[25] = {
 	0, // NONE   0
 	2, // ABSA   1
@@ -161,7 +160,7 @@ size_t filt_65816_asm_line(const uint8_t *binary, size_t bin_size, size_t bin_in
 	// argument
 	unsigned arg_size = ADDRESS_MODE_LEN[OPCODE_ADDRESS_MODES[op]];
 
-		//>TODO Test this!
+		//> TODO_DMG Test this!
 	if (OPCODE_ADDRESS_MODES[op] == IMME ) {
 		// Addresing mode is Immediate. We have to choose between if operand is 8 or 16 bits
 		if ((op & 0x0F) == 0x09) 
@@ -209,10 +208,6 @@ size_t filt_65816_asm_line(const uint8_t *binary, size_t bin_size, size_t bin_in
 		default:   arr_printf(*line,       "%.6x  %.2x          %s ",			       	bin_index + bin_offset, b0,             OPCODE_NAMES[op]                );			break;
 	}
 
-	//>todo rel INDICATES IT IS A BRANCH WITH RELATIVE ADDRSING. I HAVE TO CALCULATE THIS
-	//>TODO rel is bin_index + bin_offset + 2 + int8_t (offset which is b1)
-	//>  A394   D0 21    BNE $A3b7
-
 	return 1 + arg_size;
 }
 
@@ -236,8 +231,7 @@ size_t filt_65816_asm_count_instruction(const uint8_t *binary, size_t bin_size, 
 	return count;
 }
 
-//>TODO What about variable length instructions?
-
+//> TODO_DMG I think this is unused.
 const char* filt_65816_get_opcode(uint8_t opcode) {
     return OPCODE_NAMES[opcode];
 }

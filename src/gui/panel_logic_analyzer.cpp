@@ -1,3 +1,5 @@
+// gui/panel_logic_analyzer.cpp - Daniel Molina - BSD-3-Clause (see LICENSE)
+// extends
 // gui/panel_logic_analyzer.cpp - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // visualize signal state
@@ -409,48 +411,39 @@ private:
 	    auto region = ImGui::GetContentRegionAvail();
 	    auto mouse = ImGui::GetMousePos();
 
-	    // Dibujar la línea vertical en la posición del mouse
+	    // Draw the vertical line
 	    draw_list->AddLine({mouse.x, origin.y}, {mouse.x, origin.y + region.y}, COLOR_GUIDE);
 
-	    // Convertir mouse.x a un valor de tiempo
+	    // Translate mouse.x into timestamps
 	    int64_t time_at_cursor = (int64_t)((mouse.x - origin.x - BORDER_WIDTH) * time_scale + (float)diagram_data.time_begin);
 
-	    // Convertir el valor de tiempo a string
+	    // Timestamp into string
 	    char position_text[32];
 	    snprintf(position_text, sizeof(position_text), "%" PRId64, time_at_cursor);
 
-	    // Obtener el tamaño de la ventana para colocar el texto en la parte inferior visible
+	    // Draw text on the bototm
 	    ImVec2 window_pos = ImGui::GetWindowPos();   // Posición de la ventana
 	    ImVec2 window_size = ImGui::GetWindowSize(); // Tamaño de la ventana
-
-	    // Posicionar el texto en la parte inferior visible de la ventana
 	    ImVec2 text_pos = {mouse.x + 5, window_pos.y + window_size.y - 20}; 
-
-	    // Dibujar el texto con la posición del tiempo usando COLOR_WHITE
 	    draw_list->AddText(text_pos, COLOR_WHITE, position_text);
 	}
 
 	void handle_mouse_scroll() {
-	    // Obtener la posición del mouse
+	    // Get mouse location
 	    ImVec2 mouse_pos = ImGui::GetMousePos();
 	    ImVec2 window_pos = ImGui::GetWindowPos();
 	    ImVec2 window_size = ImGui::GetWindowSize();
 
-	    // Verificar si el mouse está dentro del panel
+	    // Is it within the panel?
 	    if (mouse_pos.x >= window_pos.x && mouse_pos.x <= window_pos.x + window_size.x &&
 	        mouse_pos.y >= window_pos.y && mouse_pos.y <= window_pos.y + window_size.y) {
 			
-	        // Obtener la dirección del scroll
+	        // Scroll dir
 	        float scroll_delta = ImGui::GetIO().MouseWheel;
 
 	        if (scroll_delta != 0.0f) {
-	            // Ajustar `time_base` en pasos de 0.1
 	            time_base += scroll_delta * 0.1f;
-
-	            // Limitar `time_base` al rango permitido (1.0 - 32.0)
 	            time_base = ImClamp(time_base, 1.0f, 32.0f);
-
-	            // Recalcular `time_scale`
 	            time_scale = (1000000.0f / time_base) / (20.0f * (float) ui_context->device->simulator->tick_duration_ps);
 	        }
 	    }

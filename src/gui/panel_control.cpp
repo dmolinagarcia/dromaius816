@@ -188,7 +188,6 @@ public:
 				static double new_freq = freq;
 			
 				if (SliderFrequency(&new_freq, min, max)) {
-				    // Se ha modificado la frecuencia; puedes realizar las acciones necesarias
 					speed_ratio = (float) new_freq / (float) oscillator->frequency;
 					dms_change_simulation_speed_ratio(ui_context->dms_ctx, speed_ratio);
 				}

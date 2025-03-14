@@ -1,3 +1,7 @@
+// signal_history_profiles.c - Daniel Molina - BSD-3-Clause (see LICENSE)
+//
+// extends
+//
 // signal_history_profiles.c - Johan Smet - BSD-3-Clause (see LICENSE)
 
 #include "signal_history_profiles.h"
@@ -7,12 +11,12 @@
 #include "dev_minimal_65816.h"
 
 #include "cpu_6502.h"
-//> #include "chip_6520.h"
-//> #include "chip_6522.h"
-//> #include "chip_rom.h"
-//> 
-//> #include "perif_datassette_1530.h"
-//> #include "perif_disk_2031.h"
+//> COUT_DMG #include "chip_6520.h"
+//> COUT_DMG #include "chip_6522.h"
+//> COUT_DMG #include "chip_rom.h"
+//> COUT_DMG 
+//> COUT_DMG #include "perif_datassette_1530.h"
+//> COUT_DMG #include "perif_disk_2031.h"
 
 void dev_minimal_65816_history_profiles(struct DevMinimal65816 *device, const char *chip_name, struct SignalHistory *history) {
 
@@ -77,124 +81,124 @@ void cpu_6502_signal_history_profiles(struct Cpu6502 *cpu, const char *chip_name
 	signal_history_profile_add_signal(history, prof_ctrl, cpu->signals[PIN_6502_NMI_B], "/NMI");
 }
 
-//> void chip_6520_signal_history_profiles(struct Chip6520 *pia, const char *chip_name, struct SignalHistory *history) {
-//> 
-//> 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Control Signals");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RESET_B],	"/RESET");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_PHI2],		"PHI2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CA1],		"CA1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CA2],		"CA2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CB1],		"CB1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CB2],		"CB2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_IRQA_B],	"/IRQA");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_IRQB_B],	"/IRQB");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RW],		"RW");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RS0],		"RS0");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RS1],		"RS1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CS0],		"CS0");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CS1],		"CS1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CS2_B],	"/CS2");
-//> 
-//> 	uint32_t prof_porta = signal_history_profile_create(history, chip_name, "Port-A");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA0],		"PA0");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA1],		"PA1");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA2],		"PA2");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA3],		"PA3");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA4],		"PA4");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA5],		"PA5");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA6],		"PA6");
-//> 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA7],		"PA7");
-//> 
-//> 	uint32_t prof_portb = signal_history_profile_create(history, chip_name, "Port-B");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB0],		"PB0");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB1],		"PB1");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB2],		"PB2");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB3],		"PB3");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB4],		"PB4");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB5],		"PB5");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB6],		"PB6");
-//> 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB7],		"PB7");
-//> }
-//> 
-//> void chip_6522_signal_history_profiles(struct Chip6522 *via, const char *chip_name, struct SignalHistory *history) {
-//> 
-//> 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Control Signals");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RESET_B],	"/RESET");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_PHI2],		"PHI2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CA1],		"CA1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CA2],		"CA2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CB1],		"CB1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CB2],		"CB2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_IRQ_B],	"/IRQ");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RW],		"RW");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS0],		"RS0");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS1],		"RS1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS2],		"RS2");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS3],		"RS3");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CS1],		"CS1");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CS2_B],	"/CS2");
-//> 
-//> 	uint32_t prof_porta = signal_history_profile_create(history, chip_name, "Port-A");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA0],		"PA0");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA1],		"PA1");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA2],		"PA2");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA3],		"PA3");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA4],		"PA4");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA5],		"PA5");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA6],		"PA6");
-//> 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA7],		"PA7");
-//> 
-//> 	uint32_t prof_portb = signal_history_profile_create(history, chip_name, "Port-B");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB0],		"PB0");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB1],		"PB1");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB2],		"PB2");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB3],		"PB3");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB4],		"PB4");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB5],		"PB5");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB6],		"PB6");
-//> 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB7],		"PB7");
-//> }
-//> 
-//> void chip_63xx_signal_history_profiles(struct Chip63xxRom *rom, const char *chip_name, struct SignalHistory *history) {
-//> 
-//> 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Control Signals");
-//> 	if (rom->data_size == ROM_6316_DATA_SIZE) {
-//> 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6316_CS1_B],	"/CS1");
-//> 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6316_CS2_B],	"/CS2");
-//> 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6316_CS3],		"CS3");
-//> 	} else {
-//> 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6332_CS1_B],	"/CS1");
-//> 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6332_CS3],		"CS3");
-//> 	}
-//> }
-
-//> void perif_datassette_signal_history_profiles(struct PerifDatassette *datassette, const char *chip_name, struct SignalHistory *history) {
-//> 
-//> 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Signals");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_MOTOR],		"MOTOR");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_SENSE],		"SENSE");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_DATA_FROM_DS],	"TO-DS");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_DATA_TO_DS],	"FROM-DS");
-//> }
-//> 
-//> void perif_disk2031_signal_history_profiles(struct PerifDisk2031 *fd2031, const char *chip_name, struct SignalHistory *history) {
-//> 
-//> 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Signals");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_EOI_B],	"/EOI");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_DAV_B],	"/DAV");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_NRFD_B],	"/NRFD");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_NDAC_B],	"/NDAC");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_ATN_B],	"/ATN");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_SRQ_B],	"/SRQ");
-//> 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_IFC_B],	"/IFC");
-//> 
-//> 	uint32_t prof_io = signal_history_profile_create(history, chip_name, "I/O");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO0],	"DIO0");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO1],	"DIO1");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO2],	"DIO2");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO3],	"DIO3");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO4],	"DIO4");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO5],	"DIO5");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO6],	"DIO6");
-//> 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO7],	"DIO7");
-//> }
+//> COUT_DMG void chip_6520_signal_history_profiles(struct Chip6520 *pia, const char *chip_name, struct SignalHistory *history) {
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Control Signals");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RESET_B],	"/RESET");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_PHI2],		"PHI2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CA1],		"CA1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CA2],		"CA2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CB1],		"CB1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CB2],		"CB2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_IRQA_B],	"/IRQA");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_IRQB_B],	"/IRQB");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RW],		"RW");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RS0],		"RS0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_RS1],		"RS1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CS0],		"CS0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CS1],		"CS1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, pia->signals[CHIP_6520_CS2_B],	"/CS2");
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_porta = signal_history_profile_create(history, chip_name, "Port-A");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA0],		"PA0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA1],		"PA1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA2],		"PA2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA3],		"PA3");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA4],		"PA4");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA5],		"PA5");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA6],		"PA6");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, pia->signals[CHIP_6520_PA7],		"PA7");
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_portb = signal_history_profile_create(history, chip_name, "Port-B");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB0],		"PB0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB1],		"PB1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB2],		"PB2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB3],		"PB3");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB4],		"PB4");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB5],		"PB5");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB6],		"PB6");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, pia->signals[CHIP_6520_PB7],		"PB7");
+//> COUT_DMG }
+//> COUT_DMG 
+//> COUT_DMG void chip_6522_signal_history_profiles(struct Chip6522 *via, const char *chip_name, struct SignalHistory *history) {
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Control Signals");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RESET_B],	"/RESET");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_PHI2],		"PHI2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CA1],		"CA1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CA2],		"CA2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CB1],		"CB1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CB2],		"CB2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_IRQ_B],	"/IRQ");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RW],		"RW");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS0],		"RS0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS1],		"RS1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS2],		"RS2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_RS3],		"RS3");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CS1],		"CS1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, via->signals[CHIP_6522_CS2_B],	"/CS2");
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_porta = signal_history_profile_create(history, chip_name, "Port-A");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA0],		"PA0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA1],		"PA1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA2],		"PA2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA3],		"PA3");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA4],		"PA4");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA5],		"PA5");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA6],		"PA6");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_porta, via->signals[CHIP_6522_PA7],		"PA7");
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_portb = signal_history_profile_create(history, chip_name, "Port-B");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB0],		"PB0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB1],		"PB1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB2],		"PB2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB3],		"PB3");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB4],		"PB4");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB5],		"PB5");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB6],		"PB6");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_portb, via->signals[CHIP_6522_PB7],		"PB7");
+//> COUT_DMG }
+//> COUT_DMG 
+//> COUT_DMG void chip_63xx_signal_history_profiles(struct Chip63xxRom *rom, const char *chip_name, struct SignalHistory *history) {
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Control Signals");
+//> COUT_DMG 	if (rom->data_size == ROM_6316_DATA_SIZE) {
+//> COUT_DMG 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6316_CS1_B],	"/CS1");
+//> COUT_DMG 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6316_CS2_B],	"/CS2");
+//> COUT_DMG 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6316_CS3],		"CS3");
+//> COUT_DMG 	} else {
+//> COUT_DMG 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6332_CS1_B],	"/CS1");
+//> COUT_DMG 		signal_history_profile_add_signal(history, prof_ctrl, rom->signals[CHIP_6332_CS3],		"CS3");
+//> COUT_DMG 	}
+//> COUT_DMG }
+//> COUT_DMG
+//> COUT_DMG void perif_datassette_signal_history_profiles(struct PerifDatassette *datassette, const char *chip_name, struct SignalHistory *history) {
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Signals");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_MOTOR],		"MOTOR");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_SENSE],		"SENSE");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_DATA_FROM_DS],	"TO-DS");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, datassette->signals[PIN_DS1530_DATA_TO_DS],	"FROM-DS");
+//> COUT_DMG }
+//> COUT_DMG 
+//> COUT_DMG void perif_disk2031_signal_history_profiles(struct PerifDisk2031 *fd2031, const char *chip_name, struct SignalHistory *history) {
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_ctrl = signal_history_profile_create(history, chip_name, "Signals");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_EOI_B],	"/EOI");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_DAV_B],	"/DAV");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_NRFD_B],	"/NRFD");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_NDAC_B],	"/NDAC");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_ATN_B],	"/ATN");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_SRQ_B],	"/SRQ");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_ctrl, fd2031->signals[PERIF_FD2031_IFC_B],	"/IFC");
+//> COUT_DMG 
+//> COUT_DMG 	uint32_t prof_io = signal_history_profile_create(history, chip_name, "I/O");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO0],	"DIO0");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO1],	"DIO1");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO2],	"DIO2");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO3],	"DIO3");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO4],	"DIO4");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO5],	"DIO5");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO6],	"DIO6");
+//> COUT_DMG 	signal_history_profile_add_signal(history, prof_io, fd2031->signals[PERIF_FD2031_DIO7],	"DIO7");
+//> COUT_DMG }

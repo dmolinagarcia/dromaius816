@@ -4,6 +4,8 @@
 //
 // list all support 65816 opcodes
 
+//> TODO_DMG translation needed!
+
 #ifndef DROMAIUS_CPU_65816_TRACE_H
 #define DROMAIUS_CPU_65816_TRACE_H
 

@@ -1,3 +1,5 @@
+// device.c - Daniel Molina - BSD-3-Clause (see LICENSE)
+// extends
 // device.c - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // Common 'base' for devices
@@ -12,5 +14,3 @@ void device_process(Device *device) {
 	if ((device->get_cpu(device))->model_number(device->get_cpu(device)) == 65816) cpu_65816_trace(device);
 	simulator_simulate_timestep(device->simulator);
 }
-
-

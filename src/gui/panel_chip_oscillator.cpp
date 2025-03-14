@@ -48,19 +48,6 @@ public:
 private:
 	const ImVec2			size = {330, 0};
 
-//>>#define CR_FLAG(r,f)	FLAG_IS_SET((r), FLAG_6520_##f)
-//>>	const char *selected_register() {
-//>>		int reg_addr = (SIGNAL_READ(RS1) << 1) | static_cast<int>(SIGNAL_READ(RS0));
-//>>
-//>>		switch (reg_addr) {
-//>>			case 0:		return (CR_FLAG(pia->reg_cra, DDR_OR_SELECT)) ? "ORA" : "DDRA";
-//>>			case 1:		return "CRA";
-//>>			case 2:		return (CR_FLAG(pia->reg_crb, DDR_OR_SELECT)) ? "ORB" : "DDRB";
-//>>			case 3:		return "CRB";
-//>>			default:	return "Unknown";
-//>>		}
-//>>	}
-
 private:
 	ImVec2				position;
 	std::string			title;

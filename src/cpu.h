@@ -1,3 +1,7 @@
+// cpu.h - Daniel Molina - BSD-3-Clause (see LICENSE)
+//
+// extends
+//
 // cpu.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // Common 'base' for cpu implementations
