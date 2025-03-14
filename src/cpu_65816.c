@@ -196,7 +196,10 @@ static void process_end(Cpu65816 *cpu) {
 	//> TODO_DMG Also, if X is 1, high byte of X and Y must be cleared
 	//> TODO_DMG Is this a good place?
 	//>	TODO_DMG still pending.
-
+    if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_X)) {
+		cpu->reg_x = cpu->reg_x & 0x00ff;
+		cpu->reg_y = cpu->reg_y & 0x00ff;
+	}
 
 	// address bus
 	if (output->address != last_output->address) {
@@ -501,6 +504,28 @@ static inline bool fetch_operand(Cpu65816 *cpu, ADDR_MODES_65816 mode, CPU_65816
 	return result;
 }
 
+static inline uint8_t stack_pop(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
+	//> TODO_DMG copied as is
+	//>     sp is hardcoded, possible bug in native!
+	//>     check all sp related access
+	uint8_t result = 0;
+
+	switch (phase) {
+		case CYCLE_BEGIN:
+			cpu->reg_sp++;
+			PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
+			break;
+		case CYCLE_MIDDLE:
+			break;
+		case CYCLE_END:
+			result = PRIVATE(cpu)->in_data;
+			break;
+	}
+
+	return result;
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -529,6 +554,49 @@ OpcodeHandler opcodeTable[256];
  [ ] E0 [ ] E1 [x] E2 [ ] E3 [ ] E4 [ ] E5 [ ] E6 [ ] E7 [ ] E8 [ ] E9 [x] EA [ ] EB [ ] EC [ ] ED [ ] EE [ ] EF
  [ ] F0 [ ] F1 [ ] F2 [ ] F3 [ ] F4 [ ] F5 [ ] F6 [ ] F7 [ ] F8 [ ] F9 [ ] FA [x] FB [ ] FC [ ] FD [ ] FE [ ] FF
 */
+
+void op_BRK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
+	//> TODO_DMG Copied as is
+	//>     Return address is off by 1 byte it seems
+	//>     Monitor the stack ant test verify
+	//> Added increment to reg_pc to fix this.
+	if (PRIVATE(cpu)->decode_cycle == 1 && phase == CYCLE_BEGIN) {
+		CPU_CHANGE_FLAG(B, true);
+		++cpu->reg_pc;
+	}
+	interrupt_sequence(cpu, phase, INTR_BRK);
+}
+
+void op_RTI(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
+	//> TODO_DMG Copied as is
+	//> TODO_DMG bad recovery of status register!
+	switch (PRIVATE(cpu)->decode_cycle) {
+		case 1 :		// decode RTI
+			fetch_pc_memory(cpu, &PRIVATE(cpu)->addr.lo_byte, phase);
+			break;
+		case 2 :		// "increment" stack pointer
+			if (phase == CYCLE_BEGIN) {
+				//> TODO_DMG another hardcoded SP!
+				PRIVATE(cpu)->output.address = MAKE_WORD(0x01, cpu->reg_sp);
+			}
+			break;
+		case 3 :		// pop status register
+			cpu->reg_p = stack_pop(cpu, phase);
+			if (phase == CYCLE_END) {
+				CPU_CHANGE_FLAG(B, false);
+			}
+			break;
+		case 4 :		// pop program_counter - low byte
+			cpu->reg_pc = SET_LO_BYTE(cpu->reg_pc, stack_pop(cpu, phase));
+			break;
+		case 5 :		// pop program_counter - low byte
+			cpu->reg_pc = SET_HI_BYTE(cpu->reg_pc, stack_pop(cpu, phase));
+			if (phase == CYCLE_END) {
+				PRIVATE(cpu)->decode_cycle = -1;
+			}
+			break;
+	}
+}
 
 void op_NOP(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
 	// Opcodes EA - NOP [EN]
@@ -629,12 +697,12 @@ void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 	//> TODO LDA: Just imme for now
 	//> Can I handle everything here
 
-	int cycles=0;
-
+	int cycles;
 	// Determine amount of cycles
 	// Used on 8 vs 16 bit fetches
 	if (mode == imme) cycles = 1;
 
+		//> TODO_DMG <= maybe? for longer executions?
 	if ((PRIVATE(cpu)->decode_cycle) == cycles) {
 		if (fetch_operand(cpu, mode, phase)) {
 			// Once fetch is done, store low byte)
@@ -654,6 +722,40 @@ void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 			cpu->reg_a = (PRIVATE(cpu)->operand << 8) | (cpu->reg_a & 0x00FF);
 			CPU_CHANGE_FLAG(Z, cpu->reg_a == 0);
 			CPU_CHANGE_FLAG(N, (cpu->reg_a & 0x8000) != 0);
+			PRIVATE(cpu)->decode_cycle = -1;
+		}
+	} 
+}
+
+void op_LDX(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
+	//> TODO LDX: Just imme for now
+	//> Can I handle everything here
+
+	int cycles;
+	// Determine amount of cycles
+	// Used on 8 vs 16 bit fetches
+	if (mode == imme) cycles = 1;
+
+	//> TODO_DMG is == enough or should it be <= ?
+	if ((PRIVATE(cpu)->decode_cycle) == cycles) {
+		if (fetch_operand(cpu, mode, phase)) {
+			// Once fetch is done, store low byte)
+			cpu->reg_x = (cpu->reg_x & 0xFF00) | (PRIVATE(cpu)->operand & 0xFF);
+			if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_X)) {
+				// M is set. ACC is 8 bit, end process
+				CPU_CHANGE_FLAG(Z, cpu->reg_x == 0);
+				CPU_CHANGE_FLAG(N, BIT_IS_SET(cpu->reg_x, 7));
+				PRIVATE(cpu)->decode_cycle = -1;
+			} // IF X is unset, advance
+		}
+	} else if ((PRIVATE(cpu)->decode_cycle) == cycles + 1 ) {
+		// Time to fetch next byte!
+		if (fetch_operand(cpu, mode, phase)) {
+			// Combinar para formar el valor de 16 bits en el acumulador.
+			//> TODO_DMG spanish!
+			cpu->reg_x = (PRIVATE(cpu)->operand << 8) | (cpu->reg_x & 0x00FF);
+			CPU_CHANGE_FLAG(Z, cpu->reg_x == 0);
+			CPU_CHANGE_FLAG(N, (cpu->reg_x & 0x8000) != 0);
 			PRIVATE(cpu)->decode_cycle = -1;
 		}
 	} 
@@ -856,7 +958,10 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 		for (int i = 0; i < 256; i++) opcodeTable[i] = op_UNK; 
 
 		// Load the opcodes
+		opcodeTable[OP_65816_BRK]      = op_BRK;
+		opcodeTable[OP_65816_RTI]      = op_RTI;
 		opcodeTable[OP_65816_NOP]      = op_NOP;
+		opcodeTable[OP_65816_LDX_IMME] = op_LDX;
 		opcodeTable[OP_65816_LDA_IMME] = op_LDA;
 		opcodeTable[OP_65816_REP]      = op_REP_SEP;
 		opcodeTable[OP_65816_SEP]      = op_REP_SEP;

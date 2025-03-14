@@ -12,6 +12,8 @@
 // opcodes
 typedef enum OPCODES_65816_ {
 	OP_65816_BRK			= 0x00,
+	OP_65816_RTI			= 0x40,
+	OP_65816_LDX_IMME       = 0xA2,
 	OP_65816_LDA_IMME       = 0xA9,
 	OP_65816_REP            = 0xc2,
 	OP_65816_SEP            = 0xe2,
@@ -22,7 +24,7 @@ typedef enum OPCODES_65816_ {
 // addressing modes list
 
 typedef enum ADDR_MODES_65816_ {
-	UNDF = 0,                     //> UNDF, Placeholder                 //            // Non-existant. Just a placeholder
+	____ = 0,                     //> ____, Placeholder                 //            // Non-existant. Just a placeholder
   	impl    ,                     //> Implied                           //    i       // 3.5.19 in WDC DataSheet
 	imme    ,                     //> Immediate                         //    #       // 3.5.18 in WDC DataSheet  
 																					  // 2 bytes or 3 depending on MX....
@@ -53,22 +55,22 @@ typedef enum ADDR_MODES_65816_ {
 
 static const ADDR_MODES_65816 ADDRESS_MODES_MATRIX_65816[256] = {
 	//    0        1      2       3       4      5       6       7       8       9       A       B      C       D        E        F
-		impl,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 0
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 1
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 2
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 3
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 4
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 5
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 6
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 7
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 8
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // 9
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   imme,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // a
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // b
-		UNDF,   UNDF,   imme,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // c
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // D
-		UNDF,   UNDF,   imme,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   impl,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,     // E
-		UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   UNDF,   impl,   UNDF,   UNDF,   UNDF,   UNDF      // F
+		impl,   ____,   ____,   ____,   impl,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 0
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 1
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 2
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 3
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 4
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 5
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 6
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 7
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 8
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // 9
+		____,   ____,   imme,   ____,   ____,   ____,   ____,   ____,   ____,   imme,   ____,   ____,   ____,   ____,   ____,   ____,     // a
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // b
+		____,   ____,   imme,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // c
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,     // D
+		____,   ____,   imme,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   impl,   ____,   ____,   ____,   ____,   ____,     // E
+		____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   ____,   impl,   ____,   ____,   ____,   ____      // F
 	};
 	
 
@@ -306,6 +308,4 @@ typedef enum ADDRESSING_MODE_65816_ {
 } ADDRESSING_MODE_65816;
 
 */
-
-
 #endif // DROMAIUS_CPU_65816_OPCODES_H
