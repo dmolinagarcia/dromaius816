@@ -45,3 +45,4 @@ imgui.ini
 profiling*
 perf.data
 perf.data.old
+runtime/minimal_65816/ram_test.bin

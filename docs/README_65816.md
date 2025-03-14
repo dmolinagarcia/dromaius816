@@ -150,6 +150,14 @@ Switching A from 16 to 8 bits, keeps the value stored in the HI Byte, which can 
 
 Behaviour of instructions involving both registers, such as TXA, usually depend on the target register width. For example TXA when x is 16 bits and A is 8 bits, copies only the LO byte from X to A, keeping B intact. More testing is needed on this matter.
 
+## Interrupts
+
+### Software vs hardware interrupts
+> I need to talk about BRK here
+
+### Emulation vs Native mode interrupts
+> Different vector and emulator implementation
+
 ## Docs
 
 http://6502.org/tutorials/65c816opcodes.html
