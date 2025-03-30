@@ -459,6 +459,21 @@ static inline int fetch_address_immediate(Cpu65816 *cpu, CPU_65816_CYCLE phase) 
 	return 1;
 }
 
+static inline int fetch_address_absolute(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
+	//> TODO_DMG Copied as is
+
+	switch (PRIVATE(cpu)->decode_cycle) {
+		case 1 :		// fetch address - low byte
+			fetch_pc_memory(cpu, &PRIVATE(cpu)->addr.lo_byte, phase);
+			break;
+		case 2 :		// fetch address - high byte
+			fetch_pc_memory(cpu, &PRIVATE(cpu)->addr.hi_byte, phase);
+			break;
+	};
+
+	return 3;
+}
+
 //> TODO_DMG... this... theres a bunch of fetch_address not implemented
 static inline int fetch_address_shortcut(Cpu65816 *cpu, ADDR_MODES_65816 mode, CPU_65816_CYCLE phase) {
 
@@ -530,6 +545,7 @@ static inline uint8_t stack_pop(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 //////////////////////////////////////////////////////////////////////////////
 //
 // Instruction decoding
+// Opcodes Start
 //
 
 // Define the decode array
@@ -547,7 +563,7 @@ OpcodeHandler opcodeTable[256];
  [ ] 70 [ ] 71 [ ] 72 [ ] 73 [ ] 74 [ ] 75 [ ] 76 [ ] 77 [ ] 78 [ ] 79 [ ] 7A [ ] 7B [ ] 7C [ ] 7D [ ] 7E [ ] 7F
  [ ] 80 [ ] 81 [ ] 82 [ ] 83 [ ] 84 [ ] 85 [ ] 86 [ ] 87 [ ] 88 [ ] 89 [ ] 8A [ ] 8B [ ] 8C [ ] 8D [ ] 8E [ ] 8F
  [ ] 90 [ ] 91 [ ] 92 [ ] 93 [ ] 94 [ ] 95 [ ] 96 [ ] 97 [ ] 98 [ ] 99 [ ] 9A [ ] 9B [ ] 9C [ ] 9D [ ] 9E [ ] 9F
- [ ] A0 [ ] A1 [ ] A2 [ ] A3 [ ] A4 [ ] A5 [ ] A6 [ ] A7 [ ] A8 [x] A9 [ ] AA [ ] AB [ ] AC [ ] AD [ ] AE [ ] AF
+ [x] A0 [ ] A1 [ ] A2 [ ] A3 [ ] A4 [ ] A5 [ ] A6 [ ] A7 [ ] A8 [x] A9 [ ] AA [ ] AB [ ] AC [ ] AD [ ] AE [ ] AF
  [ ] B0 [ ] B1 [ ] B2 [ ] B3 [ ] B4 [ ] B5 [ ] B6 [ ] B7 [ ] B8 [ ] B9 [ ] BA [ ] BB [ ] BC [ ] BD [ ] BE [ ] BF
  [ ] C0 [ ] C1 [x] C2 [ ] C3 [ ] C4 [ ] C5 [ ] C6 [ ] C7 [ ] C8 [ ] C9 [ ] CA [ ] CB [ ] CC [ ] CD [ ] CE [ ] CF
  [ ] D0 [ ] D1 [ ] D2 [ ] D3 [ ] D4 [ ] D5 [ ] D6 [ ] D7 [ ] D8 [ ] D9 [ ] DA [ ] DB [ ] DC [ ] DD [ ] DE [ ] DF
@@ -559,7 +575,8 @@ void op_BRK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	//> TODO_DMG Copied as is
 	//>     Return address is off by 1 byte it seems
 	//>     Monitor the stack ant test verify
-	//> Added increment to reg_pc to fix this.
+	//>     Added increment below to reg_pc to fix this.
+	//>     But... what about PC_INC in the interrupt handler function?
 	if (PRIVATE(cpu)->decode_cycle == 1 && phase == CYCLE_BEGIN) {
 		CPU_CHANGE_FLAG(B, true);
 		++cpu->reg_pc;
@@ -570,6 +587,8 @@ void op_BRK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 void op_RTI(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	//> TODO_DMG Copied as is
 	//> TODO_DMG bad recovery of status register!
+	//> TODO_DMG If Native, recover pbr too
+
 	switch (PRIVATE(cpu)->decode_cycle) {
 		case 1 :		// decode RTI
 			fetch_pc_memory(cpu, &PRIVATE(cpu)->addr.lo_byte, phase);
@@ -693,73 +712,65 @@ void op_REP_SEP(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
 
 } 
 
-void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
-	//> TODO LDA: Just imme for now
-	//> Can I handle everything here
+// Register Load
 
-	int cycles;
-	// Determine amount of cycles
-	// Used on 8 vs 16 bit fetches
+static inline void op_load_register(uint16_t *reg, uint16_t flag, Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
+    int cycles = 0;
+
 	if (mode == imme) cycles = 1;
 
-		//> TODO_DMG <= maybe? for longer executions?
-	if ((PRIVATE(cpu)->decode_cycle) == cycles) {
-		if (fetch_operand(cpu, mode, phase)) {
-			// Once fetch is done, store low byte)
-			cpu->reg_a = (cpu->reg_a & 0xFF00) | (PRIVATE(cpu)->operand & 0xFF);
-			if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_M)) {
-				// M is set. ACC is 8 bit, end process
-				CPU_CHANGE_FLAG(Z, cpu->reg_a == 0);
-				CPU_CHANGE_FLAG(N, BIT_IS_SET(cpu->reg_a, 7));
-				PRIVATE(cpu)->decode_cycle = -1;
-			} // IF M is unset, advance
-		}
-	} else if ((PRIVATE(cpu)->decode_cycle) == cycles + 1 ) {
-		// Time to fetch next byte!
-		if (fetch_operand(cpu, mode, phase)) {
-			// Combinar para formar el valor de 16 bits en el acumulador.
-			//> TODO_DMG Spanish!
-			cpu->reg_a = (PRIVATE(cpu)->operand << 8) | (cpu->reg_a & 0x00FF);
-			CPU_CHANGE_FLAG(Z, cpu->reg_a == 0);
-			CPU_CHANGE_FLAG(N, (cpu->reg_a & 0x8000) != 0);
-			PRIVATE(cpu)->decode_cycle = -1;
-		}
-	} 
+    if (PRIVATE(cpu)->decode_cycle == cycles) {
+        if (fetch_operand(cpu, mode, phase)) {
+            // Load LO byte
+            *reg = (*reg & 0xFF00) | (PRIVATE(cpu)->operand & 0xFF);
+            if (FLAG_IS_SET(cpu->reg_p, flag)) {
+                // FLAG determines 8 or 16 bits
+                CPU_CHANGE_FLAG(Z, *reg == 0);
+                CPU_CHANGE_FLAG(N, BIT_IS_SET(*reg, 7));
+                PRIVATE(cpu)->decode_cycle = -1;
+            }
+        }
+    } else if (PRIVATE(cpu)->decode_cycle == cycles + 1) {
+        // We're in 16 bit operand fetch, load HI BYTE
+        if (fetch_operand(cpu, mode, phase)) {
+            *reg = (PRIVATE(cpu)->operand << 8) | (*reg & 0x00FF);
+            CPU_CHANGE_FLAG(Z, *reg == 0);
+            CPU_CHANGE_FLAG(N, (*reg & 0x8000) != 0);
+            PRIVATE(cpu)->decode_cycle = -1;
+        }
+    }
+}
+
+void op_LDA(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
+    op_load_register(&cpu->reg_a, FLAG_65816_M, cpu, phase, mode);
 }
 
 void op_LDX(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
-	//> TODO LDX: Just imme for now
-	//> Can I handle everything here
-
-	int cycles;
-	// Determine amount of cycles
-	// Used on 8 vs 16 bit fetches
-	if (mode == imme) cycles = 1;
-
-	//> TODO_DMG is == enough or should it be <= ?
-	if ((PRIVATE(cpu)->decode_cycle) == cycles) {
-		if (fetch_operand(cpu, mode, phase)) {
-			// Once fetch is done, store low byte)
-			cpu->reg_x = (cpu->reg_x & 0xFF00) | (PRIVATE(cpu)->operand & 0xFF);
-			if (FLAG_IS_SET(cpu->reg_p, FLAG_65816_X)) {
-				// M is set. ACC is 8 bit, end process
-				CPU_CHANGE_FLAG(Z, cpu->reg_x == 0);
-				CPU_CHANGE_FLAG(N, BIT_IS_SET(cpu->reg_x, 7));
-				PRIVATE(cpu)->decode_cycle = -1;
-			} // IF X is unset, advance
-		}
-	} else if ((PRIVATE(cpu)->decode_cycle) == cycles + 1 ) {
-		// Time to fetch next byte!
-		if (fetch_operand(cpu, mode, phase)) {
-			// Combinar para formar el valor de 16 bits en el acumulador.
-			//> TODO_DMG spanish!
-			cpu->reg_x = (PRIVATE(cpu)->operand << 8) | (cpu->reg_x & 0x00FF);
-			CPU_CHANGE_FLAG(Z, cpu->reg_x == 0);
-			CPU_CHANGE_FLAG(N, (cpu->reg_x & 0x8000) != 0);
-			PRIVATE(cpu)->decode_cycle = -1;
-		}
-	} 
+    op_load_register(&cpu->reg_x, FLAG_65816_X, cpu, phase, mode);
 }
+
+void op_LDY(Cpu65816 *cpu, CPU_65816_CYCLE phase, ADDR_MODES_65816 mode) {
+    op_load_register(&cpu->reg_y, FLAG_65816_X, cpu, phase, mode);
+}
+
+// Jumps
+
+static inline void op_JMP(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
+
+	int memop_cycle = 0;
+
+// COUT_DMG	if (cpu->reg_ir == OP_65816_JMP_ABS) {
+		memop_cycle = fetch_address_absolute(cpu, phase);
+// COUT_DMG	} else {
+// COUT_DMG		memop_cycle = fetch_address_indirect(cpu, phase);
+// COUT_DMG	}
+
+	if (PRIVATE(cpu)->decode_cycle == memop_cycle - 1 && phase == CYCLE_END) {
+		cpu->reg_pc = PRIVATE(cpu)->addr.full;
+		PRIVATE(cpu)->decode_cycle = -1;
+	}
+}
+
 
 void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) { 
 	//> TODO_DMG all unknowns are treated as NOPs
@@ -778,6 +789,10 @@ void op_UNK(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 			break;
 	}
 }
+
+//
+//  Opcodes END
+////////////////////////////////////////////////////////////////////////////////
 
 static inline void CPU_65816_execute_phase(Cpu65816 *cpu, CPU_65816_CYCLE phase) {
 	//> TODO_DMG Function copied as-is. I may need some changes!
@@ -961,11 +976,13 @@ Cpu65816 *cpu_65816_create(Simulator *sim, Cpu65816Signals signals) {
 		opcodeTable[OP_65816_BRK]      = op_BRK;
 		opcodeTable[OP_65816_RTI]      = op_RTI;
 		opcodeTable[OP_65816_NOP]      = op_NOP;
+		opcodeTable[OP_65816_LDY_IMME] = op_LDY;
 		opcodeTable[OP_65816_LDX_IMME] = op_LDX;
 		opcodeTable[OP_65816_LDA_IMME] = op_LDA;
 		opcodeTable[OP_65816_REP]      = op_REP_SEP;
 		opcodeTable[OP_65816_SEP]      = op_REP_SEP;
 		opcodeTable[OP_65816_XCE]      = op_XCE;
+		opcodeTable[OP_65816_JMP_ABSO] = op_JMP;
 
 	//> TODO_DMG INit registers
 	// how is it done in the 6502?
