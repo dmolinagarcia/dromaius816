@@ -17,9 +17,12 @@
 // https://github.com/adishavit/argh/blob/master/argh.h
 #include <argh/argh.h>
 
-// Standard C++ funcionts
+// Standard C++ functions
 #include <cstdio>
 #include <memory>
+#include <chrono>
+#include <thread>
+
 
 #include <glad/glad.h>  // Initialize with gladLoadGL()
 
@@ -264,6 +267,10 @@ int main(int argc, char ** argv) {
 	    ImGuiIO& io = ImGui::GetIO();
 	    ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 
+		// FPS control
+		auto frame_start = std::chrono::high_resolution_clock::now();
+
+
 		// Poll and handle events (inputs, window resize, etc.)
 		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
 		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -300,6 +307,14 @@ int main(int argc, char ** argv) {
 		}		
 
 		glfwSwapBuffers(g_window);
+
+		// FPS Control
+		auto frame_end = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(frame_end - frame_start).count();
+	
+		if (elapsed < 100) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(100 - elapsed));
+		}		
 	}
 
 #ifdef __EMSCRIPTEN__
