@@ -85,7 +85,7 @@ typedef struct DevMinimal6502 {
 
 	// components
 	struct Cpu6502 *	cpu;
-	struct Ram8d16a *	ram;
+	struct Ram8d24a *	ram;
 	struct Rom8d16a *	rom;
 	struct Chip6520 *	pia;
 	struct ChipHd44780 *lcd;

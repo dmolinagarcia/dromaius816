@@ -3,6 +3,7 @@
 // dev_minimal_6502.h - Johan Smet - BSD-3-Clause (see LICENSE)
 //
 // Emulates a minimal WDC-65816 based system, with 32kb of RAM and a 16kb system ROM.
+//> TODO_DMG Invalid description above!
 
 /* Address space:
    0x0000 - 0x7fff (32kb) : RAM
@@ -47,6 +48,14 @@ enum DevMinimal65816SignalAssignment {
 	SIG_M65816_AB13,
 	SIG_M65816_AB14,
 	SIG_M65816_AB15,
+    SIG_M65816_AB16,	
+    SIG_M65816_AB17,
+    SIG_M65816_AB18,
+    SIG_M65816_AB19,
+    SIG_M65816_AB20,
+    SIG_M65816_AB21,
+    SIG_M65816_AB22,
+    SIG_M65816_AB23,
 
 	// 8-bit data bus
 	SIG_M65816_DB0,
@@ -90,7 +99,7 @@ typedef struct DevMinimal65816 {
 
 	// components
 	struct Cpu65816 *	cpu;
-	struct Ram8d16a *	ram;
+	struct Ram8d24a *	ram;
 	struct Rom8d16a *	rom;
 	struct Chip6520 *	pia;
 	struct ChipHd44780 *lcd;

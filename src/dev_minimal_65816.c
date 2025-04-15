@@ -19,7 +19,7 @@
 #include "chip_poweronreset.h"
 #include "cpu_65816.h"
 //> COUT_DMG #include "input_keypad.h"
-#include "ram_8d_16a.h"
+#include "ram_8d_24a.h"
 //> COUT_DMG #include "rom_8d_16a.h"
 
 #include "signal_history_profiles.h"
@@ -49,6 +49,14 @@ typedef enum {
 	CHIP_GLUE_LOGIC_AB13,
 	CHIP_GLUE_LOGIC_AB14,
 	CHIP_GLUE_LOGIC_AB15,
+    CHIP_GLUE_LOGIC_AB16,
+    CHIP_GLUE_LOGIC_AB17,
+    CHIP_GLUE_LOGIC_AB18,
+    CHIP_GLUE_LOGIC_AB19,
+    CHIP_GLUE_LOGIC_AB20,
+    CHIP_GLUE_LOGIC_AB21,
+    CHIP_GLUE_LOGIC_AB22,
+    CHIP_GLUE_LOGIC_AB23,
 
 	CHIP_GLUE_LOGIC_CPU_RW,
 	CHIP_GLUE_LOGIC_CLOCK,
@@ -96,7 +104,7 @@ static ChipGlueLogic *glue_logic_create(DevMinimal65816 *device) {
 
 	int pin = 0;
 
-	for (int i = 0; i < 16; ++i) {
+	for (int i = 0; i < 24; ++i) {
 		GLUE_PIN(*device->sg_address[i], CHIP_PIN_INPUT | CHIP_PIN_TRIGGER);
 	}
 	SIGNAL_GROUP(address) = signal_group_create_from_array(16, chip->signals);
@@ -185,7 +193,7 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	device->signal_pool = device->simulator->signal_pool;
 
 	// signals
-	SIGNAL_GROUP_NEW_N(address, 16, &SIGNAL(AB0), "cpu_address", "AB%d");
+	SIGNAL_GROUP_NEW_N(address, 24, &SIGNAL(AB0), "cpu_address", "AB%d");
 
 	SIGNAL_GROUP_NEW_N(data, 8, &SIGNAL(DB0), "cpu_data", "DB%d");
 
@@ -206,6 +214,16 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	SIGNAL_DEFINE_DEFAULT(DB5, 1);
 	SIGNAL_DEFINE_DEFAULT(DB6, 0);
 	SIGNAL_DEFINE_DEFAULT(DB7, 0);
+
+	SIGNAL_DEFINE_DEFAULT(AB16, false);
+	SIGNAL_DEFINE_DEFAULT(AB17, false);
+	SIGNAL_DEFINE_DEFAULT(AB18, false);
+	SIGNAL_DEFINE_DEFAULT(AB19, false);
+	SIGNAL_DEFINE_DEFAULT(AB20, false);
+	SIGNAL_DEFINE_DEFAULT(AB21, false);
+	SIGNAL_DEFINE_DEFAULT(AB22, false);
+	SIGNAL_DEFINE_DEFAULT(AB23, false);
+	
 
 	SIGNAL_DEFINE(RAM_OE_B);
 	SIGNAL_DEFINE(RAM_WE_B);
@@ -276,37 +294,45 @@ DevMinimal65816 *dev_minimal_65816_create(const uint8_t *rom_data) {
 	DEVICE_REGISTER_CHIP("POR", device->poweronreset);
 
 	// ram
-	device->ram = ram_8d16a_create(16, device->simulator, (Ram8d16aSignals) {
-										[CHIP_RAM8D16A_A0]  = SIGNAL(AB0),
-										[CHIP_RAM8D16A_A1]  = SIGNAL(AB1),
-										[CHIP_RAM8D16A_A2]  = SIGNAL(AB2),
-										[CHIP_RAM8D16A_A3]  = SIGNAL(AB3),
-										[CHIP_RAM8D16A_A4]  = SIGNAL(AB4),
-										[CHIP_RAM8D16A_A5]  = SIGNAL(AB5),
-										[CHIP_RAM8D16A_A6]  = SIGNAL(AB6),
-										[CHIP_RAM8D16A_A7]  = SIGNAL(AB7),
-										[CHIP_RAM8D16A_A8]  = SIGNAL(AB8),
-										[CHIP_RAM8D16A_A9]  = SIGNAL(AB9),
-										[CHIP_RAM8D16A_A10] = SIGNAL(AB10),
-										[CHIP_RAM8D16A_A11] = SIGNAL(AB11),
-										[CHIP_RAM8D16A_A12] = SIGNAL(AB12),
-										[CHIP_RAM8D16A_A13] = SIGNAL(AB13),
-										[CHIP_RAM8D16A_A14] = SIGNAL(AB14),
-										[CHIP_RAM8D16A_A15] = SIGNAL(AB15),
+	device->ram = ram_8d24a_create(24, device->simulator, (Ram8d24aSignals) {
+										[CHIP_RAM8D24A_A0]  = SIGNAL(AB0),
+										[CHIP_RAM8D24A_A1]  = SIGNAL(AB1),
+										[CHIP_RAM8D24A_A2]  = SIGNAL(AB2),
+										[CHIP_RAM8D24A_A3]  = SIGNAL(AB3),
+										[CHIP_RAM8D24A_A4]  = SIGNAL(AB4),
+										[CHIP_RAM8D24A_A5]  = SIGNAL(AB5),
+										[CHIP_RAM8D24A_A6]  = SIGNAL(AB6),
+										[CHIP_RAM8D24A_A7]  = SIGNAL(AB7),
+										[CHIP_RAM8D24A_A8]  = SIGNAL(AB8),
+										[CHIP_RAM8D24A_A9]  = SIGNAL(AB9),
+										[CHIP_RAM8D24A_A10] = SIGNAL(AB10),
+										[CHIP_RAM8D24A_A11] = SIGNAL(AB11),
+										[CHIP_RAM8D24A_A12] = SIGNAL(AB12),
+										[CHIP_RAM8D24A_A13] = SIGNAL(AB13),
+										[CHIP_RAM8D24A_A14] = SIGNAL(AB14),
+										[CHIP_RAM8D24A_A15] = SIGNAL(AB15),
+										[CHIP_RAM8D24A_A16] = SIGNAL(AB16),
+										[CHIP_RAM8D24A_A17] = SIGNAL(AB17),
+										[CHIP_RAM8D24A_A18] = SIGNAL(AB18),
+										[CHIP_RAM8D24A_A19] = SIGNAL(AB19),
+										[CHIP_RAM8D24A_A20] = SIGNAL(AB20),
+										[CHIP_RAM8D24A_A21] = SIGNAL(AB21),
+										[CHIP_RAM8D24A_A22] = SIGNAL(AB22),
+										[CHIP_RAM8D24A_A23] = SIGNAL(AB23),
 
-										[CHIP_RAM8D16A_D0] = SIGNAL(DB0),
-										[CHIP_RAM8D16A_D1] = SIGNAL(DB1),
-										[CHIP_RAM8D16A_D2] = SIGNAL(DB2),
-										[CHIP_RAM8D16A_D3] = SIGNAL(DB3),
-										[CHIP_RAM8D16A_D4] = SIGNAL(DB4),
-										[CHIP_RAM8D16A_D5] = SIGNAL(DB5),
-										[CHIP_RAM8D16A_D6] = SIGNAL(DB6),
-										[CHIP_RAM8D16A_D7] = SIGNAL(DB7),
+										[CHIP_RAM8D24A_D0] = SIGNAL(DB0),
+										[CHIP_RAM8D24A_D1] = SIGNAL(DB1),
+										[CHIP_RAM8D24A_D2] = SIGNAL(DB2),
+										[CHIP_RAM8D24A_D3] = SIGNAL(DB3),
+										[CHIP_RAM8D24A_D4] = SIGNAL(DB4),
+										[CHIP_RAM8D24A_D5] = SIGNAL(DB5),
+										[CHIP_RAM8D24A_D6] = SIGNAL(DB6),
+										[CHIP_RAM8D24A_D7] = SIGNAL(DB7),
 
-										[CHIP_RAM8D16A_CE_B] = SIGNAL(RAM_CE_B),
+										[CHIP_RAM8D24A_CE_B] = SIGNAL(RAM_CE_B),
 											//> Always enabled, ACTlo
-										[CHIP_RAM8D16A_OE_B] = SIGNAL(RAM_OE_B),
-										[CHIP_RAM8D16A_WE_B] = SIGNAL(RAM_WE_B)
+										[CHIP_RAM8D24A_OE_B] = SIGNAL(RAM_OE_B),
+										[CHIP_RAM8D24A_WE_B] = SIGNAL(RAM_WE_B)
 	});
 	DEVICE_REGISTER_CHIP("RAM", device->ram);
 
@@ -419,11 +445,11 @@ void dev_minimal_65816_read_memory(DevMinimal65816 *device, size_t start_address
 	assert(output);
 
 
-	static const size_t	REGION_START[] = {0x0000};
-	static const size_t REGION_SIZE[]  = {0x10000};
+	static const size_t	REGION_START[] =    {0x0000};
+	static const size_t REGION_SIZE[]  = {0x1000000};
 	static const int NUM_REGIONS = sizeof(REGION_START) / sizeof(REGION_START[0]);
 
-	if (start_address > 0xffff) {
+	if (start_address > 0xffffff) {
 		dms_memset(output, 0, size);
 		return;
 	}
@@ -438,7 +464,7 @@ void dev_minimal_65816_read_memory(DevMinimal65816 *device, size_t start_address
 	size_t done = 0;
 	size_t addr = start_address;
 
-	for (int region = sr; remain > 0 && addr <= 0xffff && region < NUM_REGIONS; ++region) {
+	for (int region = sr; remain > 0 && addr <= 0xffffff && region < NUM_REGIONS; ++region) {
 		size_t region_offset = addr - REGION_START[region];
 		size_t to_copy = MIN(remain, REGION_SIZE[region] - region_offset);
 

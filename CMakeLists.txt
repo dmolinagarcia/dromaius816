@@ -182,8 +182,8 @@ endif()
 			src/filt_65816_asm.h
 			src/log.c
 			src/log.h
-			src/ram_8d_16a.c
-			src/ram_8d_16a.h
+			src/ram_8d_24a.c
+			src/ram_8d_24a.h
 			src/signal_history.c
 			src/signal_history.h
 			src/signal_history_profiles.c

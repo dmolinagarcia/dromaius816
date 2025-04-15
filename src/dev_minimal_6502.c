@@ -14,7 +14,7 @@
 #include "chip_poweronreset.h"
 #include "cpu_6502.h"
 //> COUT_DMG #include "input_keypad.h"
-#include "ram_8d_16a.h"
+#include "ram_8d_24a.h"
 //> COUT_DMG #include "rom_8d_16a.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -247,36 +247,36 @@ DEVICE_REGISTER_CHIP("POR", poweronreset_create(1000000, device->simulator, (Pow
 }));
 // ram 0x0000 - 0x7fff
 // Changed from 15 to 16 lines to get 64kb of ram
-device->ram = ram_8d16a_create(16, device->simulator, (Ram8d16aSignals) {
-									[CHIP_RAM8D16A_A0]  = SIGNAL(AB0),
-									[CHIP_RAM8D16A_A1]  = SIGNAL(AB1),
-									[CHIP_RAM8D16A_A2]  = SIGNAL(AB2),
-									[CHIP_RAM8D16A_A3]  = SIGNAL(AB3),
-									[CHIP_RAM8D16A_A4]  = SIGNAL(AB4),
-									[CHIP_RAM8D16A_A5]  = SIGNAL(AB5),
-									[CHIP_RAM8D16A_A6]  = SIGNAL(AB6),
-									[CHIP_RAM8D16A_A7]  = SIGNAL(AB7),
-									[CHIP_RAM8D16A_A8]  = SIGNAL(AB8),
-									[CHIP_RAM8D16A_A9]  = SIGNAL(AB9),
-									[CHIP_RAM8D16A_A10] = SIGNAL(AB10),
-									[CHIP_RAM8D16A_A11] = SIGNAL(AB11),
-									[CHIP_RAM8D16A_A12] = SIGNAL(AB12),
-									[CHIP_RAM8D16A_A13] = SIGNAL(AB13),
-									[CHIP_RAM8D16A_A14] = SIGNAL(AB14),
-									[CHIP_RAM8D16A_A15] = SIGNAL(AB15),
-									[CHIP_RAM8D16A_D0] = SIGNAL(DB0),
-									[CHIP_RAM8D16A_D1] = SIGNAL(DB1),
-									[CHIP_RAM8D16A_D2] = SIGNAL(DB2),
-									[CHIP_RAM8D16A_D3] = SIGNAL(DB3),
-									[CHIP_RAM8D16A_D4] = SIGNAL(DB4),
-									[CHIP_RAM8D16A_D5] = SIGNAL(DB5),
-									[CHIP_RAM8D16A_D6] = SIGNAL(DB6),
-									[CHIP_RAM8D16A_D7] = SIGNAL(DB7),
-									[CHIP_RAM8D16A_CE_B] = SIGNAL(LOW),
+device->ram = ram_8d24a_create(16, device->simulator, (Ram8d24aSignals) {
+									[CHIP_RAM8D24A_A0]  = SIGNAL(AB0),
+									[CHIP_RAM8D24A_A1]  = SIGNAL(AB1),
+									[CHIP_RAM8D24A_A2]  = SIGNAL(AB2),
+									[CHIP_RAM8D24A_A3]  = SIGNAL(AB3),
+									[CHIP_RAM8D24A_A4]  = SIGNAL(AB4),
+									[CHIP_RAM8D24A_A5]  = SIGNAL(AB5),
+									[CHIP_RAM8D24A_A6]  = SIGNAL(AB6),
+									[CHIP_RAM8D24A_A7]  = SIGNAL(AB7),
+									[CHIP_RAM8D24A_A8]  = SIGNAL(AB8),
+									[CHIP_RAM8D24A_A9]  = SIGNAL(AB9),
+									[CHIP_RAM8D24A_A10] = SIGNAL(AB10),
+									[CHIP_RAM8D24A_A11] = SIGNAL(AB11),
+									[CHIP_RAM8D24A_A12] = SIGNAL(AB12),
+									[CHIP_RAM8D24A_A13] = SIGNAL(AB13),
+									[CHIP_RAM8D24A_A14] = SIGNAL(AB14),
+									[CHIP_RAM8D24A_A15] = SIGNAL(AB15),
+									[CHIP_RAM8D24A_D0] = SIGNAL(DB0),
+									[CHIP_RAM8D24A_D1] = SIGNAL(DB1),
+									[CHIP_RAM8D24A_D2] = SIGNAL(DB2),
+									[CHIP_RAM8D24A_D3] = SIGNAL(DB3),
+									[CHIP_RAM8D24A_D4] = SIGNAL(DB4),
+									[CHIP_RAM8D24A_D5] = SIGNAL(DB5),
+									[CHIP_RAM8D24A_D6] = SIGNAL(DB6),
+									[CHIP_RAM8D24A_D7] = SIGNAL(DB7),
+									[CHIP_RAM8D24A_CE_B] = SIGNAL(LOW),
 							// Changed from AB15 to LOW. Ram is always selected
 							// It is an active low signal
-									[CHIP_RAM8D16A_OE_B] = SIGNAL(RAM_OE_B),
-									[CHIP_RAM8D16A_WE_B] = SIGNAL(RAM_WE_B)
+									[CHIP_RAM8D24A_OE_B] = SIGNAL(RAM_OE_B),
+									[CHIP_RAM8D24A_WE_B] = SIGNAL(RAM_WE_B)
 });
 
 DEVICE_REGISTER_CHIP("RAM", device->ram);

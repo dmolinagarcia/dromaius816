@@ -19,6 +19,10 @@ This document outlines the steps and recommendations for creating a file similar
     - [x] Add a catch all that triggers some warning (Illegal Opcode)
     - [x] Add NOP. Run a free NOP
     - [x] emu816-like logging needs to be implemented here
+  - [ ] Explore JMPs
+    - [ ] Difference between JMP and JMP
+    - [ ] Different addresing modes in jumps
+    - [ ] Is there some overlapping?
   - [x] Understand remaining processor registers
     - [x] When and how registers change size?
     - [ ] How does changing size affect the values stored?

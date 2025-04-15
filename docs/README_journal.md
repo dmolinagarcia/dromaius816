@@ -117,18 +117,29 @@
 >
 > Device logger is implemented in device_process. We get the and print relevant registers. We can access device memory from here and call the dissasembler to get the OPCODEs and instruction length. Partially implemented. The dissasembler has been extended to handle 65816 opcodes, but more work is needed. 
 
-
-### ✅ **W09-W10 / 2025**
+### ✅ **03 / 2025**
 > **Memory**
 > Disassembler is completed. Current M and X are used to display 8 or 16 bit operands. It can be done better, but it is good enough for now. Disassembler is now used for the AJtracer improving its output
 >
 > **CPU**
 > Added immediate addresing, and with it some memory fetches and decoding. `fetch_memory` fetches pc into operand. LDA immediate (0xA9) has bene implemented and tested. It responds properly to Accumulator size changes. Now for X and Y, some tweaks to `reg_x` and `reg_y` on `FLAG_X` changes may be needed.
 
+
+### ✅ **04 / 2025**
+> Memory is extended to 16MB. Although Bank Latch is not wet implemented. WIP. Memory viewer is expanded, but displaying the whole 16MB kills performance. Some kind of windowing is needed.
 ---
 
 ## ✅ **Pending Tasks**
 
+> - [ ] **16MB Address Space**
+>   - [x] Implement 16MB ram
+>   - [ ] Implement Bank Latch
+>   - [x] Adapt memory viewer
+>     - [ ] Displaying full 16MB kills performance. Limit to current bank maybe?
+>   - [ ] Test long jumps
+>   - [ ] Test BRK in EMULATION / NATIVE
+>   - [ ] Test RTI in EMULATION / NATIVE
+>   
 > - [ ] **Development:**
 >   - [ ] Configure a build task within vscode
 >   - [ ] Configure a debug setup within vscode
